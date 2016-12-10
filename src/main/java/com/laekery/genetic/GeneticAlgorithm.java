@@ -72,7 +72,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.generationSize = generationSize;
     }
     
-    /** Selects {@code 1-crossOverRate} hypothesis relative to their fitness. 
+    /** Selects a fraction of {@code 1-crossOverRate} hypothesis relative to their fitness. 
      * @param population the population to select on.
      * @param selectedList the target list to put selected elements to.
      */
@@ -83,7 +83,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
     }
     
-    /** Cross overs {@code crossOverRate} hypothesis relative to their fitness. 
+    /** Cross-overs a fraction of {@code crossOverRate} hypothesis relative to their fitness. 
      * @param population the population to select on.
      * @param selectedList the target list to put crossed over elements to.
      */
@@ -96,7 +96,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
     }
     
-    /** Mutates {@code mutationRate} hypothesis. 
+    /** Mutates a fraction of {@code mutationRate} hypothesis. 
      * @param selectedSet the population to mutate on.
      */
     void mutate(List<H> selectedSet) {
