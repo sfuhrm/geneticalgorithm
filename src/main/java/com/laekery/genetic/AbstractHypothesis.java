@@ -34,9 +34,11 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private double probability;
     
+    /** The source of randomness that can be used in the hypothesis.
+     */
     protected final static Random RANDOM = new Random();
 
-    /** Randomly initialize the target zones. */
+    /** Randomly initialize the hypothesis. */
     protected abstract T randomInit();
 
     /** Returns a two-element crossover offspring of this and the other hypothesis. 
@@ -45,7 +47,14 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
      */
     protected abstract List<T> crossOver(T other);
     
+    /** Calculates the fitness of this hypothesis.
+     * @return a fitness where a bigger number means more fitness. Please
+     * be advised that negative numbers will be problematic for the algorithm.
+     */
     protected abstract double calculateFitness();
     
+    /** Implements the mutation operator. The mutation operator flips one bit
+     * of the genome of the hypothesis.
+     */
     protected abstract void mutate();
 }
