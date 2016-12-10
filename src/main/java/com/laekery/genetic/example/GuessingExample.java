@@ -12,8 +12,8 @@ class GuessingExample<T extends AbstractHypothesis<T>> {
     
     public static void main(String args[]) {
         GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(
-                GeneticAlgorithm.DEFAULT_CROSSOVER_RATE,
-                GeneticAlgorithm.DEFAULT_MUTATION_RATE,
+                0.5,
+                0.02,
                 150);
         int size = 9;
         algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 

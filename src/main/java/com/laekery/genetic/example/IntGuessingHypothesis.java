@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /** Hypothesis for counting array. */
-public class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
+class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
     /** Zone allocation per drone. */
     @Getter(AccessLevel.PACKAGE)

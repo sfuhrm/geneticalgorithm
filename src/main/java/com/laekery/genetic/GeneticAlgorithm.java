@@ -14,16 +14,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         
     /** Randomness source for genetic algorithm operations. */
     private final static Random RANDOM = new Random();
-        
-    /** Default crossover rate recommended. 
-     * @see #crossOverRate
-     */
-    public final static double DEFAULT_CROSSOVER_RATE = 0.5;
-    /** Default mutation rate recommended. 
-     * @see #mutationRate
-     */
-    public final static double DEFAULT_MUTATION_RATE = 0.02;
-    
+            
     /** The fraction between 0 and 1 at which cross over operations are done.
      * The other part of the population will be filled with selected
      * hypothesis.
@@ -110,9 +101,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      */
     H probabilisticSelect(List<H> population, Collection<H> targetList, boolean addToTargetList) {
         H result = population.get(0);
+        // sum of probabilities
         double totalProbability = population.stream().mapToDouble(h -> h.getProbability()).sum();
-        double rand = RANDOM.nextDouble();
-        double inflated = rand * totalProbability;
+        double rand = RANDOM.nextDouble(); // random number
+        double inflated = rand * totalProbability; // a random point in the sum of probabilities
         
         double soFar = 0;
         for (int i=0; i < population.size() && soFar < inflated; i++) {
