@@ -8,24 +8,58 @@ import lombok.Setter;
 
 /**
  * Generic genetic algorithm implementation. 
+ * @param <H> The hypothesis class to use.
  **/
 public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         
+    /** Randomness source for genetic algorithm operations. */
     private final static Random RANDOM = new Random();
         
+    /** Default crossover rate recommended. 
+     * @see #crossOverRate
+     */
     public final static double DEFAULT_CROSSOVER_RATE = 0.5;
+    /** Default mutation rate recommended. 
+     * @see #mutationRate
+     */
     public final static double DEFAULT_MUTATION_RATE = 0.02;
     
+    /** The fraction between 0 and 1 at which cross over operations are done.
+     * The other part of the population will be filled with selected
+     * hypothesis.
+     */
     @Getter @Setter
     private double crossOverRate;
     
+    /** The fraction between 0 and 1 at which mutations are done.
+     * This is the fraction of hypothesis that the mutation operator
+     * is applied to.
+     */
     @Getter @Setter
     private double mutationRate;
         
+    /** The size of each population generation as a count of individuals.
+     */
     @Getter @Setter
     private int generationSize;
     
+    /**
+     * Constructs a new genetic algorithm.
+     * @param crossOverRate the fraction at which the cross over operator is applied to the population, between 0 and 1.
+     * @param mutationRate the fraction at which the mutation operator is applied to the population, between 0 and 1.
+     * @param generationSize the number of individual hypothesis in the population for each generation, greater than 1.
+     * @throws IllegalArgumentException if the parameters are illegal.
+     */
     public GeneticAlgorithm(double crossOverRate, double mutationRate, int generationSize) {
+        if (crossOverRate < 0. || crossOverRate > 1.) {
+            throw new IllegalArgumentException("Cross over rate not between 0 and 1: "+crossOverRate);
+        }
+        if (mutationRate < 0. || mutationRate > 1.) {
+            throw new IllegalArgumentException("Mutation rate not between 0 and 1: "+mutationRate);
+        }
+        if (generationSize < 2) {
+            throw new IllegalArgumentException("Generation size is < 2: "+mutationRate);
+        }
         this.crossOverRate = crossOverRate;
         this.mutationRate = mutationRate;
         this.generationSize = generationSize;
@@ -55,27 +89,24 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             current.mutate();
         }
     }
-        
-    /** Selects one hypothesis based on its probability.
-     * @param population the total population to select from with Hypothesis.propability fields pre-calculated.
-     * @param targetList target list of which hypothesis were selected. After selection the selected hypothesis is added to the target list.
-     */
+    
     H probabilisticSelect(List<H> population, Collection<H> targetList, boolean addToTargetList) {
-        H result = null;
-        while (result == null) {
-            int index = RANDOM.nextInt(population.size());
-            H selected = population.get(index);
-            double q = RANDOM.nextDouble();
-            if (q < selected.getProbability()) {
-                if (addToTargetList) {
-                    targetList.add(selected);
-                }
-                result = selected;
-            }
+        H result = population.get(0);
+        double totalProbability = population.stream().mapToDouble(h -> h.getProbability()).sum();
+        double rand = RANDOM.nextDouble();
+        double inflated = rand * totalProbability;
+        
+        double soFar = 0;
+        for (int i=0; i < population.size() && soFar < inflated; i++) {
+            result = population.get(i);
+            soFar += result.getProbability();
+        }
+        if (addToTargetList) {
+            targetList.add(result);
         }
         return result;
     }
-    
+        
     Optional<H> max(Collection<H> in) {
         Optional<H> max = in.stream().sorted(Comparator.comparingDouble(h -> h.getEnergy())).skip(in.size() - 1).findFirst();
         return max;
