@@ -117,13 +117,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      */
     H probabilisticSelect(List<H> population, Collection<H> targetList, boolean addToTargetList) {
         H result = population.get(0);
-        // sum of probabilities
-        double totalProbability = population.stream().mapToDouble(h -> h.getProbability()).sum();
-        double rand = RANDOM.nextDouble(); // random number
-        double inflated = rand * totalProbability; // a random point in the sum of probabilities
+        double sumOfProbabilities = population.stream().mapToDouble(h -> h.getProbability()).sum();
+        double randomPoint = RANDOM.nextDouble(); // random number
+        double inflatedPoint = randomPoint * sumOfProbabilities; // a random point in the sum of probabilities
         
         double soFar = 0;
-        for (int i=0; i < population.size() && soFar < inflated; i++) {
+        for (int i=0; i < population.size() && soFar < inflatedPoint; i++) {
             result = population.get(i);
             soFar += result.getProbability();
         }
