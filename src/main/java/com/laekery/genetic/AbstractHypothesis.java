@@ -22,6 +22,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /** Hypothesis base class. 
+ * @param <T> the parameter needs to have the concrete type of the hypothesis class
+ * for the methods to return the correct subtype.
  * @author Stephan Fuhrmann
  */
 public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
