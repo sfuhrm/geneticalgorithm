@@ -1,0 +1,73 @@
+package com.laekery.genetic.example;
+
+import com.laekery.genetic.AbstractHypothesis;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+/** Hypothesis for counting array. */
+public class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
+
+    /** Zone allocation per drone. */
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private int[] genome;
+    
+    IntGuessingHypothesis(int totalNumbers) {
+        genome = new int[totalNumbers];
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof IntGuessingHypothesis)) {
+            return false;
+        }
+        IntGuessingHypothesis other = (IntGuessingHypothesis)obj;
+        return Arrays.equals(genome, other.genome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(genome);
+    }
+
+    @Override
+    protected IntGuessingHypothesis randomInit() {
+        IntStream.range(0, genome.length).forEach(i -> genome[i] = RANDOM.nextInt(genome.length));
+        return this;
+    }
+
+    @Override
+    protected List<IntGuessingHypothesis> crossOver(IntGuessingHypothesis other) {
+        int point = RANDOM.nextInt(genome.length);
+        IntGuessingHypothesis one = new IntGuessingHypothesis(genome.length);
+        IntGuessingHypothesis two = new IntGuessingHypothesis(genome.length);
+        for (int i = 0; i < genome.length; i++) {
+            one.genome[i] = i < point ? genome[i] : other.genome[i];
+            two.genome[i] = i >= point ? genome[i] : other.genome[i];
+        }
+        return Arrays.asList(one, two);
+    }
+
+    @Override
+    protected double calculateFitness() {
+        return IntStream.range(0, genome.length).map(i -> genome[i] == i ? 1 : 0).sum();
+    }
+
+    @Override
+    protected void mutate() {
+        int point = RANDOM.nextInt(genome.length);
+        genome[point] = RANDOM.nextInt(genome.length);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(genome);
+    }
+}
