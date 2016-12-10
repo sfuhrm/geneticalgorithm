@@ -65,6 +65,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.generationSize = generationSize;
     }
     
+    /** Selects {@code 1-crossOverRate} hypothesis relative to their fitness. 
+     * @param population the population to select on.
+     * @param selectedList the target list to put selected elements to.
+     */
     void select(List<H> population, Collection<H> selectedList) {
         int selectSize = (int)((1. - crossOverRate) * population.size());
         while (selectedList.size() < selectSize) {
@@ -72,6 +76,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
     }
     
+    /** Cross overs {@code crossOverRate} hypothesis relative to their fitness. 
+     * @param population the population to select on.
+     * @param selectedList the target list to put crossed over elements to.
+     */
     void crossover(List<H> population, Collection<H> selectedSet) {
         int crossOverSize = (int)((crossOverRate) * population.size());
         for (int i = 0; i < crossOverSize / 2; i++) {
@@ -81,6 +89,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
     }
     
+    /** Mutates {@code mutationRate} hypothesis. 
+     * @param selectedSet the population to mutate on.
+     */
     void mutate(List<H> selectedSet) {
         int mutationSize = (int)(mutationRate * selectedSet.size());
         for (int i = 0; i < mutationSize; i++) {
@@ -90,6 +101,13 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
     }
     
+    /** Probabilistically selects one hypothesis relative to the selection
+     * probability of it.
+     * @param population the population to select from. 
+     * @param targetList the target list to eventually add the element to. 
+     * @param addToTargetList whether to add the element to the targetList. 
+     * @return the selected element.
+     */
     H probabilisticSelect(List<H> population, Collection<H> targetList, boolean addToTargetList) {
         H result = population.get(0);
         double totalProbability = population.stream().mapToDouble(h -> h.getProbability()).sum();
@@ -107,12 +125,20 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         return result;
     }
         
+    /** Find the maximum fitness element of the given collection.
+     * @param in the population to find the maximum in. 
+     * @return the maximum element, if any.
+     */
     Optional<H> max(Collection<H> in) {
         Optional<H> max = in.stream().sorted(Comparator.comparingDouble(h -> h.getEnergy())).skip(in.size() - 1).findFirst();
         return max;
     }
     
-    /** Number of old population elements to re-use. */
+    /** Perform the genetic operation.
+     * @param loopCondition the abort condition that stays true while the maximum is not yet reached. Gets presented the best hypothesis as input.
+     * @param hypothesisSupplier creation function for new hypothesis.
+     * @return the maximum element, if any.
+     */
     public Optional<H> step(Function<H, Boolean> loopCondition, Supplier<H> hypothesisSupplier) {
         List<H> population = new ArrayList<>();
         List<H> selected = new ArrayList<>();
