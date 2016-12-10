@@ -16,6 +16,7 @@
 package com.laekery.genetic.example;
 
 import com.laekery.genetic.*;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,7 +32,8 @@ class GuessingExample<T extends AbstractHypothesis<T>> {
                 0.02,
                 150);
         int size = 9;
-        algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
+        Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
                 () -> new IntGuessingHypothesis(size));
+        System.out.println("Maximum is "+max);
     }
 }
