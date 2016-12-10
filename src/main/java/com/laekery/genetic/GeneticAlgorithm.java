@@ -130,7 +130,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @return the maximum element, if any.
      */
     Optional<H> max(Collection<H> in) {
-        Optional<H> max = in.stream().sorted(Comparator.comparingDouble(h -> h.getEnergy())).skip(in.size() - 1).findFirst();
+        Optional<H> max = in.stream().sorted(Comparator.comparingDouble(h -> h.getFitness())).skip(in.size() - 1).findFirst();
         return max;
     }
     
@@ -139,7 +139,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param hypothesisSupplier creation function for new hypothesis.
      * @return the maximum element, if any.
      */
-    public Optional<H> step(Function<H, Boolean> loopCondition, Supplier<H> hypothesisSupplier) {
+    public Optional<H> findMaximum(Function<H, Boolean> loopCondition, Supplier<H> hypothesisSupplier) {
         List<H> population = new ArrayList<>();
         List<H> selected = new ArrayList<>();
         Optional<H> max = Optional.empty();
@@ -151,9 +151,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         int iteration = 0;
         do {
             // compute the energy per hypothesis
-            population.forEach(h -> h.setEnergy(h.calculateFitness()));
-            double sumFitness = population.stream().mapToDouble(h -> h.getEnergy()).sum();
-            population.forEach(h -> h.setProbability(h.getEnergy() / sumFitness));
+            population.forEach(h -> h.setFitness(h.calculateFitness()));
+            double sumFitness = population.stream().mapToDouble(h -> h.getFitness()).sum();
+            population.forEach(h -> h.setProbability(h.getFitness()/ sumFitness));
             
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {

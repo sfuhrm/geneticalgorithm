@@ -14,9 +14,9 @@ import lombok.Setter;
 /** Hypothesis base class. */
 public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
 
-    /** Energy of this hypothesis. */
+    /** Fitness of this hypothesis. */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
-    private double energy;
+    private double fitness;
     
     /** Selection probability based on energy of this hypothesis. */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)

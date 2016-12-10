@@ -16,7 +16,7 @@ class GuessingExample<T extends AbstractHypothesis<T>> {
                 GeneticAlgorithm.DEFAULT_MUTATION_RATE,
                 150);
         int size = 9;
-        algorithm.step(h -> Math.abs(h.calculateFitness()) < size, 
+        algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
                 () -> new IntGuessingHypothesis(size));
     }
 }
