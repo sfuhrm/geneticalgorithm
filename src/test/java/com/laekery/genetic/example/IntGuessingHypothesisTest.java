@@ -19,6 +19,10 @@ package com.laekery.genetic.example;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/** 
+ * Unit test for the IntGuessingHypothesis
+ * @author Stephan Fuhrmann
+ */
 public class IntGuessingHypothesisTest {
     @Test
     public void testInit() {

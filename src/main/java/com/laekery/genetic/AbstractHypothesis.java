@@ -21,7 +21,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-/** Hypothesis base class. */
+/** Hypothesis base class. 
+ * @author Stephan Fuhrmann
+ */
 public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
 
     /** Fitness of this hypothesis. */

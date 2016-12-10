@@ -23,7 +23,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-/** Hypothesis for counting array. */
+/** Hypothesis for a fixed-size int array content. 
+ * @author Stephan Fuhrmann
+ */
 class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
     /** Zone allocation per drone. */

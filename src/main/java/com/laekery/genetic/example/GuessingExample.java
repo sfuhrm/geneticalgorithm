@@ -21,9 +21,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Energy reduction function approach for Game of Drones.
+ * Example main program for the {@link IntGuessingHypothesis}.
  **/
-class GuessingExample<T extends AbstractHypothesis<T>> {
+class GuessingExample {
         
     
     public static void main(String args[]) {

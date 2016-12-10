@@ -24,6 +24,7 @@ import lombok.Setter;
 /**
  * Generic genetic algorithm implementation. 
  * @param <H> The hypothesis class to use.
+ * @author Stephan Fuhrmann
  **/
 public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         
