@@ -17,4 +17,4 @@
  * Example classes that show the implementation of the genetic algorithm.
  * @author Stephan Fuhrmann
  */
-package com.laekery.genetic.example;
+package com.laekery.genetic.example.intguessing;

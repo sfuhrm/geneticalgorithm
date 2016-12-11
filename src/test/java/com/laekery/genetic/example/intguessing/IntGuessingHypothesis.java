@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.laekery.genetic.example;
+package com.laekery.genetic.example.intguessing;
 
 import com.laekery.genetic.AbstractHypothesis;
 import java.util.Arrays;
