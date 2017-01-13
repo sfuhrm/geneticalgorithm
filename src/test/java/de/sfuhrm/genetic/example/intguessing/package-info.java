@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 /** 
- * Base classes for a genetic algorithm.
- * The {@link AbstractHypothesis} class must be derived and implemented
- * to model your problem. The {@link GeneticAlgorithm} class is the
- * genetic algorithm implementation which is able to calculate the
- * maximum after a defined number of iterations.
+ * Example classes that show the implementation of the genetic algorithm.
  * @author Stephan Fuhrmann
  */
-package com.laekery.genetic;
+package de.sfuhrm.genetic.example.intguessing;

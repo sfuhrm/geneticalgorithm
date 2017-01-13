@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.laekery.genetic.example.intguessing;
+package de.sfuhrm.genetic.example.intguessing;
 
 
 import org.junit.Test;
