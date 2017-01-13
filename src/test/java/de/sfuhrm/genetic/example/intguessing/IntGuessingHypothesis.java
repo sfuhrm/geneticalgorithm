@@ -15,7 +15,7 @@
  */
 package de.sfuhrm.genetic.example.intguessing;
 
-import de.sfuhrm.AbstractHypothesis;
+import de.sfuhrm.genetic.AbstractHypothesis;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;

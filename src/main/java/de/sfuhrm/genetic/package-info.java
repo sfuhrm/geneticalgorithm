@@ -21,4 +21,4 @@
  * maximum after a defined number of iterations.
  * @author Stephan Fuhrmann
  */
-package de.sfuhrm;
+package de.sfuhrm.genetic;
