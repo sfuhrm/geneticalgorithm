@@ -1,4 +1,4 @@
-# Genetic Algorithm in Java ![Travis CI Status](https://travis-ci.org/sfuhrm/geneticalgorithm.svg?branch=master)
+# Genetic Algorithm in Java ![Travis CI Status](https://travis-ci.org/sfuhrm/geneticalgorithm.svg?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/sfuhrm/geneticalgorithm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/sfuhrm/geneticalgorithm)
 
 ## Purpose
 
