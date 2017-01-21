@@ -41,7 +41,7 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
     protected final static Random RANDOM = new Random();
 
     /** Randomly initialize the hypothesis. 
-     * @return returns {@link this} hypothesis after a random initialization.
+     * @return returns {@code this} hypothesis after a random initialization.
      */
     protected abstract T randomInit();
 
