@@ -79,7 +79,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     void select(List<H> population, Collection<H> selectedList) {
         int selectSize = (int)((1. - crossOverRate) * population.size());
         while (selectedList.size() < selectSize) {
-            H selected = probabilisticSelect(population, selectedList, true);
+            probabilisticSelect(population, selectedList, true);
         }
     }
     
@@ -155,7 +155,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             population.add(hypothesisSupplier.get().randomInit());
         }
         
-        int iteration = 0;
         do {
             // compute the energy per hypothesis
             population.forEach(h -> h.setFitness(h.calculateFitness()));
@@ -173,7 +172,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             population.clear();
             population.addAll(selected);
             mutate(population);
-            iteration++;
         } while (loopCondition.apply(max.get()));
         
         return max;
