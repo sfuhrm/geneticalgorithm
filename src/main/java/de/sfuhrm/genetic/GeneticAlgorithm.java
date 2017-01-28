@@ -85,7 +85,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     
     /** Cross-overs a fraction of {@code crossOverRate} hypothesis relative to their fitness. 
      * @param population the population to select on.
-     * @param selectedList the target list to put crossed over elements to.
+     * @param selectedSet the target set to put crossed over elements to.
      */
     protected void crossover(List<H> population, Collection<H> selectedSet) {
         int crossOverSize = (int)((crossOverRate) * population.size());
