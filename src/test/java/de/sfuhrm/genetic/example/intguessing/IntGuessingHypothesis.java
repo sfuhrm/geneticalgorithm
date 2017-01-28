@@ -28,9 +28,9 @@ import lombok.Setter;
  */
 class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
-    /** Zone allocation per drone. */
-    @Getter(AccessLevel.PACKAGE)
-    @Setter(AccessLevel.PACKAGE)
+    /** Slot allocation per number. */
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     private int[] genome;
     
     IntGuessingHypothesis(int totalNumbers) {
