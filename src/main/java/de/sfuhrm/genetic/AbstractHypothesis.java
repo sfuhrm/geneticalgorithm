@@ -38,7 +38,8 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
     
     /** The source of randomness that can be used in the hypothesis.
      */
-    protected final static Random RANDOM = new Random();
+    @Getter(AccessLevel.PROTECTED)
+    private final Random random = new Random();
 
     /** Randomly initialize the hypothesis. 
      * @return returns {@code this} hypothesis after a random initialization.
