@@ -26,7 +26,8 @@ import static org.junit.Assert.*;
 public class IntGuessingHypothesisTest {
     @Test
     public void testInit() {
-        new IntGuessingHypothesis(4);
+        IntGuessingHypothesis guessingHypothesis = new IntGuessingHypothesis(4);
+        assertNotNull(guessingHypothesis.getGenome());
     }
     
     @Test

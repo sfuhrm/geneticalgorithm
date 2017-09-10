@@ -17,8 +17,6 @@ package de.sfuhrm.genetic.example.intguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Example main program for the {@link IntGuessingHypothesis}.

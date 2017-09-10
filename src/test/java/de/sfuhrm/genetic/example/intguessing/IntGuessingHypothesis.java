@@ -28,9 +28,9 @@ import lombok.Setter;
  */
 class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
-    /** Zone allocation per drone. */
-    @Getter(AccessLevel.PACKAGE)
-    @Setter(AccessLevel.PACKAGE)
+    /** Slot allocation per number. */
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     private int[] genome;
     
     IntGuessingHypothesis(int totalNumbers) {
@@ -56,13 +56,13 @@ class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
     @Override
     protected IntGuessingHypothesis randomInit() {
-        IntStream.range(0, genome.length).forEach(i -> genome[i] = RANDOM.nextInt(genome.length));
+        IntStream.range(0, genome.length).forEach(i -> genome[i] = getRandom().nextInt(genome.length));
         return this;
     }
 
     @Override
     protected List<IntGuessingHypothesis> crossOver(IntGuessingHypothesis other) {
-        int point = RANDOM.nextInt(genome.length);
+        int point = getRandom().nextInt(genome.length);
         IntGuessingHypothesis one = new IntGuessingHypothesis(genome.length);
         IntGuessingHypothesis two = new IntGuessingHypothesis(genome.length);
         for (int i = 0; i < genome.length; i++) {
@@ -79,8 +79,8 @@ class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
     @Override
     protected void mutate() {
-        int point = RANDOM.nextInt(genome.length);
-        genome[point] = RANDOM.nextInt(genome.length);
+        int point = getRandom().nextInt(genome.length);
+        genome[point] = getRandom().nextInt(genome.length);
     }
 
     @Override
