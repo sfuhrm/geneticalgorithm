@@ -40,7 +40,9 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
      */
     protected final static Random RANDOM = new Random();
 
-    /** Randomly initialize the hypothesis. */
+    /** Randomly initialize the hypothesis. 
+     * @return {@code this} hypothesis.
+     */
     protected abstract T randomInit();
 
     /** Returns a two-element crossover offspring of this and the other hypothesis. 
