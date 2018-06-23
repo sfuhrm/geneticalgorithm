@@ -22,34 +22,34 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Generic genetic algorithm implementation. 
+ * Generic genetic algorithm implementation.
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
 public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
-        
+
     /** Randomness source for genetic algorithm operations. */
     private final static Random RANDOM = new Random();
-            
+
     /** The fraction between 0 and 1 at which cross over operations are done.
      * The other part of the population will be filled with selected
      * hypothesis.
      */
     @Getter @Setter
     private double crossOverRate;
-    
+
     /** The fraction between 0 and 1 at which mutations are done.
      * This is the fraction of hypothesis that the mutation operator
      * is applied to.
      */
     @Getter @Setter
     private double mutationRate;
-        
+
     /** The size of each population generation as a count of individuals.
      */
     @Getter @Setter
     private int generationSize;
-    
+
     /**
      * Constructs a new genetic algorithm.
      * @param crossOverRate the fraction at which the cross over operator is applied to the population, between 0 and 1.
@@ -71,8 +71,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.mutationRate = mutationRate;
         this.generationSize = generationSize;
     }
-    
-    /** Selects a fraction of {@code 1-crossOverRate} hypothesis relative to their fitness. 
+
+    /** Selects a fraction of {@code 1-crossOverRate} hypothesis relative to their fitness.
      * @param population the population to select on.
      * @param selectedList the target list to put selected elements to.
      */
@@ -82,8 +82,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             probabilisticSelect(population, selectedList, true);
         }
     }
-    
-    /** Cross-overs a fraction of {@code crossOverRate} hypothesis relative to their fitness. 
+
+    /** Cross-overs a fraction of {@code crossOverRate} hypothesis relative to their fitness.
      * @param population the population to select on.
      * @param selectedSet the target set to put crossed over elements to.
      */
@@ -95,8 +95,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             selectedSet.addAll(first.crossOver(second));
         }
     }
-    
-    /** Mutates a fraction of {@code mutationRate} hypothesis. 
+
+    /** Mutates a fraction of {@code mutationRate} hypothesis.
      * @param selectedSet the population to mutate on.
      */
     protected void mutate(List<H> selectedSet) {
@@ -107,20 +107,20 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             current.mutate();
         }
     }
-    
+
     /** Probabilistically selects one hypothesis relative to the selection
      * probability of it.
-     * @param population the population to select from. 
-     * @param targetList the target list to eventually add the element to. 
-     * @param addToTargetList whether to add the element to the targetList. 
+     * @param population the population to select from.
+     * @param targetList the target list to eventually add the element to.
+     * @param addToTargetList whether to add the element to the targetList.
      * @return the selected element.
      */
     protected H probabilisticSelect(List<H> population, Collection<H> targetList, boolean addToTargetList) {
         H result = population.get(0);
-        double sumOfProbabilities = population.stream().mapToDouble(h -> h.getProbability()).sum();
+        double sumOfProbabilities = population.stream().mapToDouble(AbstractHypothesis::getProbability).sum();
         double randomPoint = RANDOM.nextDouble(); // random number
         double inflatedPoint = randomPoint * sumOfProbabilities; // a random point in the sum of probabilities
-        
+
         double soFar = 0;
         for (int i=0; i < population.size() && soFar < inflatedPoint; i++) {
             result = population.get(i);
@@ -131,16 +131,15 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
         return result;
     }
-        
+
     /** Find the maximum fitness element of the given collection.
-     * @param in the population to find the maximum in. 
+     * @param in the population to find the maximum in.
      * @return the maximum element, if any.
      */
     protected Optional<H> max(Collection<H> in) {
-        Optional<H> max = in.stream().sorted(Comparator.comparingDouble(h -> h.getFitness())).skip(in.size() - 1).findFirst();
-        return max;
+        return in.stream().sorted(Comparator.comparingDouble(h -> h.getFitness())).skip(in.size() - 1).findFirst();
     }
-    
+
     /** Perform the genetic operation.
      * @param loopCondition the abort condition that stays true while the maximum is not yet reached. Gets presented the best hypothesis as input.
      * @param hypothesisSupplier creation function for new hypothesis.
@@ -150,30 +149,30 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         List<H> population = new ArrayList<>();
         List<H> selected = new ArrayList<>();
         Optional<H> max = Optional.empty();
-        
+
         for (int i=0; i < generationSize; i++) {
             population.add(hypothesisSupplier.get().randomInit());
         }
-        
+
         do {
             // compute the energy per hypothesis
             population.forEach(h -> h.setFitness(h.calculateFitness()));
             double sumFitness = population.stream().mapToDouble(h -> h.getFitness()).sum();
             population.forEach(h -> h.setProbability(h.getFitness()/ sumFitness));
-            
+
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {
                 max = max.isPresent() ? max(Arrays.asList(curMax.get(), max.get())) : curMax;
             }
-        
+
             selected.clear();
             select(population, selected);
             crossover(population, selected);
             population.clear();
             population.addAll(selected);
             mutate(population);
-        } while (loopCondition.apply(max.get()));
-        
+        } while (max.isPresent() && loopCondition.apply(max.get()));
+
         return max;
     }
 }

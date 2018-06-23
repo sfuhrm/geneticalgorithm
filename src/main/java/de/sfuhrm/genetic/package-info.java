@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/** 
+/**
  * Base classes for a genetic algorithm.
- * The {@link AbstractHypothesis} class must be derived and implemented
- * to model your problem. The {@link GeneticAlgorithm} class is the
+ * The {@link de.sfuhrm.genetic.AbstractHypothesis} class must be derived and implemented
+ * to model your problem. The {@link de.sfuhrm.genetic.GeneticAlgorithm} class is the
  * genetic algorithm implementation which is able to calculate the
  * maximum after a defined number of iterations.
  * @author Stephan Fuhrmann
