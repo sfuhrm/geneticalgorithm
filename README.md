@@ -25,6 +25,8 @@ Using can be done in the following steps:
 * Call GeneticAlgorithm.findMaximum with an appropriate loop abortion function
 and hypothesis creation function.
 
+There is a [JavaDoc](http://api.sfuhrm.de/geneticalgorithm/) documentation online.
+
 ## Example
 
 There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/master/src/test/java/de/sfuhrm/genetic/example/intguessing/GuessingExample.java) that implements the challenge to guess
