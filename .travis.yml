@@ -5,7 +5,7 @@ matrix:
   - jdk: oraclejdk8
   - jdk: oraclejdk9
   - jdk: oraclejdk10
-  - jdk: openjdk10
+#  - jdk: openjdk10
 install: mvn install -Dgpg.skip
 
 after_success:
