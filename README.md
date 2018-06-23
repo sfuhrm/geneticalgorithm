@@ -33,6 +33,19 @@ There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/mast
 a sequence of integer numbers. Each correct digit will increase
 the fitness score by one.
 
+The example usage is shown here:
+
+```java
+GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(
+        0.5,
+        0.02,
+        150);
+int size = 9;
+Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
+                () -> new IntGuessingHypothesis(size));
+System.out.println("Maximum is "+max);
+```
+
 ## Including it in your projects
 
 The recommended way of including the library into your project is using maven:
