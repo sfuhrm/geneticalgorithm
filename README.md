@@ -31,6 +31,22 @@ There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/mast
 a sequence of integer numbers. Each correct digit will increase
 the fitness score by one.
 
+## Including it in your projects
+
+The recommended way of including the library into your project is using maven:
+
+---------------------------------------
+
+```xml
+<dependency>
+    <groupId>de.sfuhrm</groupId>
+    <artifactId>geneticalgorithm</artifactId>
+    <version>1.2.0</version>
+</dependency>
+```
+
+---------------------------------------
+
 ## License
 
   Copyright 2016 Stephan Fuhrmann
