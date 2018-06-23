@@ -27,7 +27,7 @@ and hypothesis creation function.
 
 ## Example
 
-There is an example that implements the challenge to guess
+There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/master/src/test/java/de/sfuhrm/genetic/example/intguessing/GuessingExample.java) that implements the challenge to guess
 a sequence of integer numbers. Each correct digit will increase
 the fitness score by one.
 
