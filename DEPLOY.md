@@ -21,9 +21,9 @@ version.
 
 For 1.0.3 being the current version and 1.0.4 the next, issue the commands
 
-    mvn versions:set -DnewVersion=1.0.3
+    ./scripts/set-version.sh 1.0.3
     mvn clean deploy
-    mvn versions:set -DnewVersion=1.0.4-SNAPSHOT
+   ./scripts/set-version.sh 1.0.4-SNAPSHOT
 
 NOTE: There will be multiple requests for the PGP passphrase.
 
