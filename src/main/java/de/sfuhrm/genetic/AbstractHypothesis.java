@@ -21,9 +21,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-/** Hypothesis base class. 
- * @param <T> the parameter needs to have the concrete type of the hypothesis class
- * for the methods to return the correct subtype.
+/** Hypothesis base class.
+ * @param <T> the parameter needs to have the concrete type of the
+ *           hypothesis class for the methods to return the
+ *           correct subtype.
  * @author Stephan Fuhrmann
  */
 public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
@@ -31,33 +32,34 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
     /** Fitness of this hypothesis. */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private double fitness;
-    
+
     /** Selection probability based on energy of this hypothesis. */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private double probability;
-    
+
     /** The source of randomness that can be used in the hypothesis.
      */
     @Getter(AccessLevel.PROTECTED)
     private final Random random = new Random();
 
-    /** Randomly initialize the hypothesis. 
+    /** Randomly initialize the hypothesis.
      * @return returns {@code this} hypothesis after a random initialization.
      */
     protected abstract T randomInit();
 
-    /** Returns a two-element crossover offspring of this and the other hypothesis. 
+    /** Returns a two-element crossover offspring of this and the
+     * other hypothesis.
      * @param other the other hypothesis to cross-over with.
      * @return a two-element List of the offsprings.
      */
     protected abstract List<T> crossOver(T other);
-    
+
     /** Calculates the fitness of this hypothesis.
      * @return a fitness where a bigger number means more fitness. Please
      * be advised that negative numbers will be problematic for the algorithm.
      */
     protected abstract double calculateFitness();
-    
+
     /** Implements the mutation operator. The mutation operator flips one bit
      * of the genome of the hypothesis.
      */
