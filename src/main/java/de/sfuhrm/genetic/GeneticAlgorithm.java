@@ -33,7 +33,7 @@ import lombok.Setter;
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
-public final class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
+public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
     /** Randomness source for genetic algorithm operations. */
     private static final Random RANDOM = new Random();
