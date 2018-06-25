@@ -15,11 +15,10 @@
  */
 package de.sfuhrm.genetic.example.intguessing;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-/** 
+/**
  * Unit test for the IntGuessingHypothesis
  * @author Stephan Fuhrmann
  */
@@ -29,7 +28,7 @@ public class IntGuessingHypothesisTest {
         IntGuessingHypothesis guessingHypothesis = new IntGuessingHypothesis(4);
         assertNotNull(guessingHypothesis.getGenome());
     }
-    
+
     @Test
     public void testEquals() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);
@@ -38,28 +37,28 @@ public class IntGuessingHypothesisTest {
         b.setGenome(new int[] {1,2,3,4});
         assertEquals(a, b);
     }
-    
+
     @Test
     public void testFitnessWithGoal() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);
         a.setGenome(new int[] {0,1,2,3});
         assertEquals(4., a.calculateFitness(), 0.001);
     }
-    
+
     @Test
     public void testFitnessWithSingleHit() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);
         a.setGenome(new int[] {0,9,9,9});
         assertEquals(1., a.calculateFitness(), 0.001);
     }
-    
+
     @Test
     public void testFitnessWithQuadMiss() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);
         a.setGenome(new int[] {1,2,3,4});
         assertEquals(0., a.calculateFitness(), 0.001);
     }
-    
+
     @Test
     public void testFitnessWithFullMiss() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);

@@ -21,10 +21,10 @@ import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/** 
+/**
  * Integration test for the GuessingExample.
  * @author Stephan Fuhrmann
  */
@@ -39,5 +39,5 @@ public class GuessingExampleTest {
             CharBuffer buffer = Charset.defaultCharset().decode(ByteBuffer.wrap(output));
             assertEquals("Maximum is Optional[[0, 1, 2, 3, 4, 5, 6, 7, 8]]\n", buffer.toString());
         }
-    }    
+    }
 }
