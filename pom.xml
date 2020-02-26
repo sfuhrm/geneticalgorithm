@@ -19,15 +19,9 @@
       <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <developers>
     <developer>
-      <id>stephan</id>
+      <id>sfuhrm</id>
       <name>Stephan Fuhrmann</name>
       <email>s@sfuhrm.de</email>
     </developer>
