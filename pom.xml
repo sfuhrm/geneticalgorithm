@@ -4,7 +4,7 @@
 
   <groupId>de.sfuhrm</groupId>
   <artifactId>geneticalgorithm</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2</version>
   <packaging>jar</packaging>
 
   <name>GeneticAlgorithm</name>
@@ -30,7 +30,7 @@
   <scm>
     <url>https://github.com/sfuhrm/geneticalgorithm</url>
     <connection>scm:git:https://github.com/sfuhrm/geneticalgorithm.git</connection>
-    <tag>HEAD</tag>
+    <tag>geneticalgorithm-1.2.2</tag>
   </scm>
 
   <properties>
