@@ -23,8 +23,8 @@ The library uses Java 8 functions and will only work with Java 8 and above.
 ## Usage
 
 Using can be done in the following steps:
-* Implement your own implementation of AbstractHypothesis.
-* Instantiate the GeneticAlgorithm class with the desired parameters.
+* Implement your own implementation of [AbstractHypothesis](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/AbstractHypothesis.html).
+* Instantiate the [GeneticAlgorithm](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/GeneticAlgorithm.html) class with the desired parameters.
 * Call GeneticAlgorithm.findMaximum with an appropriate loop abortion function
 and hypothesis creation function.
 
