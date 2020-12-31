@@ -1,6 +1,6 @@
 Genetic Algorithm in Java
 ===================
-![Travis CI Status](https://travis-ci.org/sfuhrm/geneticalgorithm.svg?branch=master)
+[![Circle CI Status](https://img.shields.io/circleci/build/github/sfuhrm/geneticalgorithm?style=plastic)](https://app.circleci.com/pipelines/github/sfuhrm/geneticalgorithm)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/218f01a59758476fab45aa373c3e0ec9)](https://www.codacy.com/app/sfuhrm/geneticalgorithm?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sfuhrm/geneticalgorithm&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/sfuhrm/geneticalgorithm/badge.svg)](https://coveralls.io/github/sfuhrm/geneticalgorithm) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm)
