@@ -5,6 +5,8 @@ Genetic Algorithm in Java
 [![Coverage Status](https://coveralls.io/repos/github/sfuhrm/geneticalgorithm/badge.svg)](https://coveralls.io/github/sfuhrm/geneticalgorithm)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm)
 [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
+[![ReleaseDate](https://img.shields.io/github/release-date/sfuhrm/geneticalgorithm)](https://github.com/sfuhrm/geneticalgorithm/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Purpose
 
