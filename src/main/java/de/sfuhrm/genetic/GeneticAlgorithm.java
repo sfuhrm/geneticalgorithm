@@ -106,11 +106,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
                           final Collection<H> selectedList) {
         int selectSize = (int) ((1. - crossOverRate) * population.size());
         while (selectedList.size() < selectSize) {
-            probabilisticSelect(
+            H selected = probabilisticSelect(
                     population,
                     sumOfProbabilities,
-                    selectedList,
-                    true);
+                    selectedList
+            );
+            selectedList.add(selected);
         }
     }
 
@@ -129,12 +130,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         for (int i = 0; i < crossOverSize / 2; i++) {
             H first = probabilisticSelect(population,
                     sumOfProbabilities,
-                    Collections.emptyList(),
-                    false);
+                    Collections.emptyList()
+            );
             H second = probabilisticSelect(population,
                     sumOfProbabilities,
-                    Collections.emptyList(),
-                    false);
+                    Collections.emptyList()
+            );
             selectedSet.addAll(first.crossOver(second));
         }
     }
@@ -157,15 +158,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param sumOfProbabilities the
      * sum of probabilities of the population.
      * @param targetList the target list to eventually add the element to.
-     * @param addToTargetList whether to add the element to the targetList.
-
      * @return the selected element.
      */
     private H probabilisticSelect(final List<H> population,
-                                    final double sumOfProbabilities,
-                                    final Collection<H> targetList,
-                                    final boolean addToTargetList
-                                    ) {
+                                  final double sumOfProbabilities,
+                                  final Collection<H> targetList
+    ) {
         H result = population.get(0);
         double randomPoint = RANDOM.nextDouble(); // random number
         // a random point in the sum of probabilities
@@ -175,9 +173,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
             result = population.get(i);
             soFar += result.getProbability();
-        }
-        if (addToTargetList) {
-            targetList.add(result);
         }
         return result;
     }
