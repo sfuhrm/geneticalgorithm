@@ -193,6 +193,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                      the best hypothesis as input.
      * @param hypothesisSupplier creation function for new hypothesis.
      * @param fitnessCalculator a consumer that calculates the fitness.
+     *       Calls {@link AbstractHypothesis#setFitness(double)}
+     *       with the value calculated from
+     *       {@link AbstractHypothesis#calculateFitness()}.
      * @return the maximum element, if any.
      */
     private Optional<H> innerFindMaximum(
@@ -208,15 +211,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
 
         do {
-            fitnessCalculator.accept(population);
-            double sumFitness = population.stream()
-                    .mapToDouble(AbstractHypothesis::getFitness).sum();
-            population.forEach(h ->
-                    h.setProbability(h.getFitness() / sumFitness));
-            double sumOfProbabilities = population
-                    .stream()
-                    .mapToDouble(AbstractHypothesis::getProbability)
-                    .sum();
+            double sumOfProbabilities = updateFitnessAndGetSumOfProbabilities(fitnessCalculator, population);
 
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {
@@ -236,6 +231,33 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         } while (max.isPresent() && loopCondition.apply(max.get()));
 
         return max;
+    }
+
+    /**
+     * Updates the fitness and probability of the population.
+     * Returns the sum of the probabilities.
+     * @param fitnessCalculator callback to update
+     *          the {@link AbstractHypothesis#getFitness() fitness}
+     *          with.
+     * @param population the population to work on.
+     * @return the sum of probabilities, which should be 1.
+     */
+    private double updateFitnessAndGetSumOfProbabilities(
+            final Consumer<List<H>> fitnessCalculator,
+            final List<H> population) {
+        fitnessCalculator.accept(population);
+
+        double sumFitness = 0.;
+        for (H current : population) {
+            sumFitness += current.getFitness();
+        }
+        double sumOfProbabilities = 0.;
+        for (H current : population) {
+            double probability = current.getFitness() / sumFitness;
+            current.setProbability(probability);
+            sumOfProbabilities += probability;
+        }
+        return sumOfProbabilities;
     }
 
     /** Perform the genetic optimization.
