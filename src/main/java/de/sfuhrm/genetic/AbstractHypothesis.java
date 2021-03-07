@@ -17,9 +17,6 @@ package de.sfuhrm.genetic;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,7 +48,7 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis<?>> {
     /** The source of randomness that can be used in the hypothesis.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final static Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     /** Randomly initialize the hypothesis.
      * @return returns {@code this} hypothesis after a random initialization.
@@ -75,7 +72,8 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis<?>> {
      * of the genome of the hypothesis. Example: If a hypothesis consists
      * of the vector {@code (a,b,c)}, then a possible mutation result
      * could be {@code (a,d,c)} or {@code (d,b,c)}.
-     * @see #crossOver(AbstractHypothesis) the other genetic operator on this instance.
+     * @see #crossOver(AbstractHypothesis) the
+     * other genetic operator on this instance.
      */
     protected abstract void mutate();
 
@@ -83,7 +81,11 @@ public abstract class AbstractHypothesis<T extends AbstractHypothesis<?>> {
      * better performance of this hypothesis. The winner hypothesis will
      * be the one with a high fitness function result.
      * If calculating the fitness function is expensive, consider
-     * using he {@linkplain GeneticAlgorithm#findMaximum(Function, Supplier, ExecutorService)}
+     * using he {@linkplain
+     * GeneticAlgorithm#findMaximum(
+     * java.util.function.Function,
+     * java.util.function.Supplier,
+     * java.util.concurrent.ExecutorService)}
      * parallel approach to have a higher throughput.
      * @return a fitness where a bigger number means more fitness. Please
      * be advised that negative numbers will be problematic for the algorithm.

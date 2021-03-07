@@ -74,8 +74,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                     A good vlaue for the mutation rate is {@code 0.05}.
      * @param inGenerationSize the number of individual hypothesis in the
      *                       population for each generation, greater than 1.
-     *                       The generation size choice depends on the complexity
-     *                       of your problem, but {@code 100} is a good starting point.
+     *                       The generation size choice depends on the
+     *                       complexity of your problem, but {@code 100} is
+     *                       a good starting point.
      * @throws IllegalArgumentException if the parameters are illegal.
      */
     public GeneticAlgorithm(final double inCrossOverRate,
@@ -245,19 +246,25 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * Good implementations for the {@code loopCondition} are:
      * <ul>
      *     <li>a maximum number of generations</li>
-     *     <li>a maximum amount of time, for example 10 seconds of optimization</li>
-     *     <li>a check whether the supplied hypothesis solves the problem</li>
+     *     <li>a maximum amount of time, for example
+     *     10 seconds of optimization</li>
+     *     <li>a check whether the supplied hypothesis solves the
+     *     problem</li>
      * </ul>
      *
      * @param loopCondition the abort condition that stays true while the
      *                      maximum is not yet reached. Gets presented
      *                      the best hypothesis as input after every
      *                      generation of the genetic algorithm.
-     * @param hypothesisSupplier creation function for new hypothesis. This will usually be {@code YourHypothesis::new}.
+     * @param hypothesisSupplier creation function for new hypothesis.
+     *     This will usually be {@code YourHypothesis::new}.
      * @param executorService the executor service to use when calculating the
-     *                        fitness. Can be obtained using a call like
-     *                        {@code Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2)}.
-     * @return the maximum {@link AbstractHypothesis#calculateFitness() fitness} element, if any.
+     *     fitness. Can be obtained using a call like
+     * {@code Executors.newFixedThreadPool(
+     * Runtime.getRuntime().availableProcessors() * 2)}.
+     * @return the maximum
+     *     {@link AbstractHypothesis#calculateFitness() fitness} element,
+     *     if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
      * @see java.util.concurrent.Executors
@@ -288,7 +295,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     }
 
     /** Perform the genetic optimization.
-     * For a discussion on the usage, see {@link #findMaximum(Function, Supplier, ExecutorService)}.
+     * For a discussion on the usage, see
+     * {@link #findMaximum(Function, Supplier, ExecutorService)}.
      * @param loopCondition the abort condition that stays true while the
      *                      maximum is not yet reached. Gets presented
      *                      the best hypothesis as input.
