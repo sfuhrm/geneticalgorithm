@@ -97,30 +97,42 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     /** Selects a fraction of {@code 1-crossOverRate} hypothesis
      * relative to their fitness.
      * @param population the population to select on.
+     * @param sumOfProbabilities the
+     * sum of probabilities of the population.
      * @param selectedList the target list to put selected elements to.
      */
     protected void select(final List<H> population,
+                          final double sumOfProbabilities,
                           final Collection<H> selectedList) {
         int selectSize = (int) ((1. - crossOverRate) * population.size());
         while (selectedList.size() < selectSize) {
-            probabilisticSelect(population, selectedList, true);
+            probabilisticSelect(
+                    population,
+                    sumOfProbabilities,
+                    selectedList,
+                    true);
         }
     }
 
     /** Cross-overs a fraction of {@code crossOverRate} hypothesis
      * relative to their fitness.
      * @param population the population to select on.
+     * @param sumOfProbabilities the
+     * sum of probabilities of the population.
      * @param selectedSet the target set to put crossed over elements to.
      */
     protected void crossover(
             final List<H> population,
+            final double sumOfProbabilities,
             final Collection<H> selectedSet) {
         int crossOverSize = (int) ((crossOverRate) * population.size());
         for (int i = 0; i < crossOverSize / 2; i++) {
             H first = probabilisticSelect(population,
+                    sumOfProbabilities,
                     Collections.emptyList(),
                     false);
             H second = probabilisticSelect(population,
+                    sumOfProbabilities,
                     Collections.emptyList(),
                     false);
             selectedSet.addAll(first.crossOver(second));
@@ -142,18 +154,19 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     /** Probabilistically selects one hypothesis relative to the selection
      * probability of it.
      * @param population the population to select from.
+     * @param sumOfProbabilities the
+     * sum of probabilities of the population.
      * @param targetList the target list to eventually add the element to.
      * @param addToTargetList whether to add the element to the targetList.
+
      * @return the selected element.
      */
     protected H probabilisticSelect(final List<H> population,
+                                    final double sumOfProbabilities,
                                     final Collection<H> targetList,
-                                    final boolean addToTargetList) {
+                                    final boolean addToTargetList
+                                    ) {
         H result = population.get(0);
-        double sumOfProbabilities = population
-                .stream()
-                .mapToDouble(AbstractHypothesis::getProbability)
-                .sum();
         double randomPoint = RANDOM.nextDouble(); // random number
         // a random point in the sum of probabilities
         double inflatedPoint = randomPoint * sumOfProbabilities;
@@ -206,6 +219,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
                     .mapToDouble(h -> h.getFitness()).sum();
             population.forEach(h ->
                     h.setProbability(h.getFitness() / sumFitness));
+            double sumOfProbabilities = population
+                    .stream()
+                    .mapToDouble(AbstractHypothesis::getProbability)
+                    .sum();
 
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {
@@ -217,8 +234,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             }
 
             selected.clear();
-            select(population, selected);
-            crossover(population, selected);
+            select(population, sumOfProbabilities, selected);
+            crossover(population, sumOfProbabilities, selected);
             population.clear();
             population.addAll(selected);
             mutate(population);
