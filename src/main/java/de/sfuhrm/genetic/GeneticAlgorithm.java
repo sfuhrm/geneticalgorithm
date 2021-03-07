@@ -23,8 +23,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -179,10 +185,13 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                      maximum is not yet reached. Gets presented
      *                      the best hypothesis as input.
      * @param hypothesisSupplier creation function for new hypothesis.
+     * @param fitnessCalculator a consumer that calculates the fitness.
      * @return the maximum element, if any.
      */
-    public Optional<H> findMaximum(final Function<H, Boolean> loopCondition,
-                                   final Supplier<H> hypothesisSupplier) {
+    private Optional<H> innerFindMaximum(
+            final Function<H, Boolean> loopCondition,
+            final Supplier<H> hypothesisSupplier,
+            final Consumer<List<H>> fitnessCalculator) {
         List<H> population = new ArrayList<>();
         List<H> selected = new ArrayList<>();
         Optional<H> max = Optional.empty();
@@ -192,8 +201,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
 
         do {
-            // compute the energy per hypothesis
-            population.forEach(h -> h.setFitness(h.calculateFitness()));
+            fitnessCalculator.accept(population);
             double sumFitness = population.stream()
                     .mapToDouble(h -> h.getFitness()).sum();
             population.forEach(h ->
@@ -217,5 +225,53 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         } while (max.isPresent() && loopCondition.apply(max.get()));
 
         return max;
+    }
+
+    /** Perform the genetic operation.
+     * @param loopCondition the abort condition that stays true while the
+     *                      maximum is not yet reached. Gets presented
+     *                      the best hypothesis as input.
+     * @param hypothesisSupplier creation function for new hypothesis.
+     * @param executorService the executor service to use when calculating the
+     *                        fitness.
+     * @return the maximum element, if any.
+     */
+    public Optional<H> findMaximum(final Function<H, Boolean> loopCondition,
+                                   final Supplier<H> hypothesisSupplier,
+                                   final ExecutorService executorService) {
+
+        return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
+            // compute the energy per hypothesis
+            List<Future<?>> futureList = list
+                    .stream()
+                    .map(h -> executorService.submit(
+                            () -> h.setFitness(h.calculateFitness())))
+                    .collect(Collectors.toList());
+
+            futureList.forEach(f -> {
+                try {
+                    f.get();
+                } catch (ExecutionException | InterruptedException e) {
+                    // must not happen
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+    }
+
+    /** Perform the genetic operation.
+     * @param loopCondition the abort condition that stays true while the
+     *                      maximum is not yet reached. Gets presented
+     *                      the best hypothesis as input.
+     * @param hypothesisSupplier creation function for new hypothesis.
+     * @return the maximum element, if any.
+     */
+    public Optional<H> findMaximum(final Function<H, Boolean> loopCondition,
+                                   final Supplier<H> hypothesisSupplier) {
+        return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
+            // compute the energy per hypothesis
+            list.forEach(h -> h.setFitness(h.calculateFitness()));
+        });
     }
 }
