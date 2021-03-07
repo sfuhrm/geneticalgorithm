@@ -67,11 +67,15 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * Constructs a new genetic algorithm.
      * @param inCrossOverRate the fraction at which the cross over
      *                      operator is applied to the population,
-     *                      between 0 and 1.
+     *                      between 0 and 1. A good value for the
+     *                      cross over rate is {@code 0.3}.
      * @param inMutationRate the fraction at which the mutation operator
      *                     is applied to the population, between 0 and 1.
+     *                     A good vlaue for the mutation rate is {@code 0.05}.
      * @param inGenerationSize the number of individual hypothesis in the
      *                       population for each generation, greater than 1.
+     *                       The generation size choice depends on the complexity
+     *                       of your problem, but {@code 100} is a good starting point.
      * @throws IllegalArgumentException if the parameters are illegal.
      */
     public GeneticAlgorithm(final double inCrossOverRate,
