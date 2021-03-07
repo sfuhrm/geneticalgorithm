@@ -10,23 +10,31 @@ Genetic Algorithm in Java
 
 ## Purpose
 
-This is a simple implementation of a genetic algorithm library in Java.
-It is not meant to work for every case.
-
-It comes with an example to simplify making the first steps with
-genetic algorithms.
+A genetic algorithm library in Java with focus on easy usage and high performance.
+Genetic algorithms can be used to solve optimization problems where there's an evaluation
+function available (also known as cost).
 
 ## Requirements
 
 The library uses Java 8 functions and will only work with Java 8 and above.
+There are no libraries needed besides those build-in the JDK.
 
 ## Usage
 
-Using can be done in the following steps:
-* Implement your own implementation of [AbstractHypothesis](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/AbstractHypothesis.html).
-* Instantiate the [GeneticAlgorithm](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/GeneticAlgorithm.html) class with the desired parameters.
-* Call GeneticAlgorithm.findMaximum with an appropriate loop abortion function
-and hypothesis creation function.
+Usage is done in the following steps:
+1. Implement your own subclass of
+  [AbstractHypothesis](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/AbstractHypothesis.html).
+  The constructor can rely on the randInit() method to initialize the hypothesis.
+2. Instantiate the [GeneticAlgorithm](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/GeneticAlgorithm.html)
+  class with the desired parameters. Good starting values for
+  cross-over rate is `0.3` and for mutation rate is `0.05`.
+3. Call one of the [GeneticAlgorithm.findMaximum()](https://javadoc.io/static/de.sfuhrm/geneticalgorithm/1.2.2/de/sfuhrm/genetic/GeneticAlgorithm.html#findMaximum(java.util.function.Function,java.util.function.Supplier))
+  methods with an appropriate loop condition function and hypothesis creation function.
+  There are multiple variants: One variant for simple usage, and one variant that
+  uses an ExecutorService to calculate the fitness in parallel threads.
+  The loop condition stays true while you want to loop.
+  The hypothesis creation function will usually just create a new instance of your
+  `Abstracthypothesis` subclass.
 
 There is a [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
 documentation online.
@@ -60,7 +68,7 @@ The recommended way of including the library into your project is using maven:
 <dependency>
     <groupId>de.sfuhrm</groupId>
     <artifactId>geneticalgorithm</artifactId>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
