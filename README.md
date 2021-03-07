@@ -13,7 +13,7 @@ Genetic Algorithm in Java
 This is a simple implementation of a genetic algorithm library in Java.
 It is not meant to work for every case.
 
-it comes with an example to simplify making the first steps with
+It comes with an example to simplify making the first steps with
 genetic algorithms.
 
 ## Requirements
@@ -68,7 +68,7 @@ The recommended way of including the library into your project is using maven:
 
 ## License
 
-  Copyright 2016 Stephan Fuhrmann
+  Copyright 2016-2021 Stephan Fuhrmann
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
