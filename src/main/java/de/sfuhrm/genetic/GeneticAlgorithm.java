@@ -101,7 +101,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * sum of probabilities of the population.
      * @param selectedList the target list to put selected elements to.
      */
-    protected void select(final List<H> population,
+    private void select(final List<H> population,
                           final double sumOfProbabilities,
                           final Collection<H> selectedList) {
         int selectSize = (int) ((1. - crossOverRate) * population.size());
@@ -121,7 +121,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * sum of probabilities of the population.
      * @param selectedSet the target set to put crossed over elements to.
      */
-    protected void crossover(
+    private void crossover(
             final List<H> population,
             final double sumOfProbabilities,
             final Collection<H> selectedSet) {
@@ -142,7 +142,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     /** Mutates a fraction of {@code mutationRate} hypothesis.
      * @param selectedSet the population to mutate on.
      */
-    protected void mutate(final List<H> selectedSet) {
+    private void mutate(final List<H> selectedSet) {
         int mutationSize = (int) (mutationRate * selectedSet.size());
         for (int i = 0; i < mutationSize; i++) {
             int index = RANDOM.nextInt(selectedSet.size());
@@ -161,7 +161,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
      * @return the selected element.
      */
-    protected H probabilisticSelect(final List<H> population,
+    private H probabilisticSelect(final List<H> population,
                                     final double sumOfProbabilities,
                                     final Collection<H> targetList,
                                     final boolean addToTargetList
@@ -186,7 +186,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param in the population to find the maximum in.
      * @return the maximum element, if any.
      */
-    protected Optional<H> max(final Collection<H> in) {
+    private Optional<H> max(final Collection<H> in) {
         return in.stream().sorted(
                 Comparator.comparingDouble(h -> h.getFitness()))
                 .skip(in.size() - 1)
