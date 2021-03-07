@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -241,9 +242,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                        fitness.
      * @return the maximum element, if any.
      */
-    public Optional<H> findMaximum(final Function<H, Boolean> loopCondition,
-                                   final Supplier<H> hypothesisSupplier,
-                                   final ExecutorService executorService) {
+    public Optional<H> findMaximum(
+            @NonNull final Function<H, Boolean> loopCondition,
+            @NonNull final Supplier<H> hypothesisSupplier,
+            @NonNull final ExecutorService executorService) {
 
         return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
             // compute the energy per hypothesis
@@ -272,8 +274,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param hypothesisSupplier creation function for new hypothesis.
      * @return the maximum element, if any.
      */
-    public Optional<H> findMaximum(final Function<H, Boolean> loopCondition,
-                                   final Supplier<H> hypothesisSupplier) {
+    public Optional<H> findMaximum(
+            @NonNull final Function<H, Boolean> loopCondition,
+            @NonNull final Supplier<H> hypothesisSupplier) {
         return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
             // compute the energy per hypothesis
             list.forEach(h -> h.setFitness(h.calculateFitness()));
