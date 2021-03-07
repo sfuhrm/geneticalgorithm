@@ -74,7 +74,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testFindMaximumSingleThread() {
         int numbers = 4;
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);;
+        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
         Optional<IntGuessingHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
                         h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),
@@ -89,7 +89,7 @@ public class GeneticAlgorithmTest {
     public void testFindMaximumMultiThread() {
         int numbers = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);;
+        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
         Optional<IntGuessingHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
                         h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),

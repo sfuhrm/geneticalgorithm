@@ -27,7 +27,7 @@ import lombok.Setter;
  *           correct subtype.
  * @author Stephan Fuhrmann
  */
-public abstract class AbstractHypothesis<T extends AbstractHypothesis> {
+public abstract class AbstractHypothesis<T extends AbstractHypothesis<?>> {
 
     /** Fitness of this hypothesis. */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)

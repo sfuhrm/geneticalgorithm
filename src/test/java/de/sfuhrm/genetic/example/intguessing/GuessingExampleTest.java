@@ -35,7 +35,7 @@ public class GuessingExampleTest {
         try (PrintStream capture = new PrintStream(arrayOutputStream)) {
             System.setOut(capture);
             GuessingExample.main(new String[0]);
-            byte output[] = arrayOutputStream.toByteArray();
+            byte[] output = arrayOutputStream.toByteArray();
             CharBuffer buffer = Charset.defaultCharset().decode(ByteBuffer.wrap(output));
             assertEquals("Maximum is Optional[[0, 1, 2, 3, 4, 5, 6, 7, 8]]\n", buffer.toString());
         }

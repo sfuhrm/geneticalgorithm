@@ -22,15 +22,15 @@ import java.util.Optional;
  * Example main program for the {@link IntGuessingHypothesis}.
  **/
 class GuessingExample {
-        
-    
-    public static void main(String args[]) {
+
+
+    public static void main(String[] args) {
         GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(
                 0.5,
                 0.02,
                 150);
         int size = 9;
-        Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
+        Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size,
                 () -> new IntGuessingHypothesis(size));
         System.out.println("Maximum is "+max);
     }

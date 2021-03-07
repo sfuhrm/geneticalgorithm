@@ -177,7 +177,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      */
     private Optional<H> max(final Collection<H> in) {
         return in.stream()
-                .max(Comparator.comparingDouble(h2 -> h2.getFitness()));
+                .max(Comparator.comparingDouble(
+                        AbstractHypothesis::getFitness));
     }
 
     /** Perform the genetic operation.
@@ -203,7 +204,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         do {
             fitnessCalculator.accept(population);
             double sumFitness = population.stream()
-                    .mapToDouble(h -> h.getFitness()).sum();
+                    .mapToDouble(AbstractHypothesis::getFitness).sum();
             population.forEach(h ->
                     h.setProbability(h.getFitness() / sumFitness));
             double sumOfProbabilities = population
@@ -213,11 +214,11 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {
-                if (max.isPresent()) {
-                    max = max(Arrays.asList(curMax.get(), max.get()));
-                } else {
-                    max = curMax;
-                }
+                max = max.map(
+                        h -> max(
+                                Arrays.asList(
+                                        curMax.get(),
+                                        h))).orElse(curMax);
             }
 
             selected.clear();
