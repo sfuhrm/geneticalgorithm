@@ -23,17 +23,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-/** Hypothesis for a fixed-size int array content. 
+/** Hypothesis for a fixed-size int array content.
  * @author Stephan Fuhrmann
  */
-class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
+public class IntGuessingHypothesis extends AbstractHypothesis<IntGuessingHypothesis> {
 
     /** Slot allocation per number. */
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     @Setter(AccessLevel.PROTECTED)
     private int[] genome;
-    
-    IntGuessingHypothesis(int totalNumbers) {
+
+    public IntGuessingHypothesis(int totalNumbers) {
         genome = new int[totalNumbers];
     }
 
