@@ -241,6 +241,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param executorService the executor service to use when calculating the
      *                        fitness.
      * @return the maximum element, if any.
+     * @throws NullPointerException
+     * if one of the parameters is {@code null}.
      */
     public Optional<H> findMaximum(
             @NonNull final Function<H, Boolean> loopCondition,
@@ -273,6 +275,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                      the best hypothesis as input.
      * @param hypothesisSupplier creation function for new hypothesis.
      * @return the maximum element, if any.
+     * @throws NullPointerException
+     * if one of the parameters is {@code null}.
      */
     public Optional<H> findMaximum(
             @NonNull final Function<H, Boolean> loopCondition,
