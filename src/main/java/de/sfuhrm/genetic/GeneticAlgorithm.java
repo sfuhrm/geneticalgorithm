@@ -237,16 +237,30 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         return max;
     }
 
-    /** Perform the genetic operation.
+    /** Perform the genetic optimization.
+     * The algorithm will search for an optimal hypothesis until the
+     * {@code loopCondition} returns {@code false}.
+     * New hypothesis are created using the {@code hypothesisSupplier}.
+     *
+     * Good implementations for the {@code loopCondition} are:
+     * <ul>
+     *     <li>a maximum number of generations</li>
+     *     <li>a maximum amount of time, for example 10 seconds of optimization</li>
+     *     <li>a check whether the supplied hypothesis solves the problem</li>
+     * </ul>
+     *
      * @param loopCondition the abort condition that stays true while the
      *                      maximum is not yet reached. Gets presented
-     *                      the best hypothesis as input.
-     * @param hypothesisSupplier creation function for new hypothesis.
+     *                      the best hypothesis as input after every
+     *                      generation of the genetic algorithm.
+     * @param hypothesisSupplier creation function for new hypothesis. This will usually be {@code YourHypothesis::new}.
      * @param executorService the executor service to use when calculating the
-     *                        fitness.
-     * @return the maximum element, if any.
+     *                        fitness. Can be obtained using a call like
+     *                        {@code Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2)}.
+     * @return the maximum {@link AbstractHypothesis#calculateFitness() fitness} element, if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
+     * @see java.util.concurrent.Executors
      */
     public Optional<H> findMaximum(
             @NonNull final Function<H, Boolean> loopCondition,
@@ -273,7 +287,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         });
     }
 
-    /** Perform the genetic operation.
+    /** Perform the genetic optimization.
+     * For a discussion on the usage, see {@link #findMaximum(Function, Supplier, ExecutorService)}.
      * @param loopCondition the abort condition that stays true while the
      *                      maximum is not yet reached. Gets presented
      *                      the best hypothesis as input.
@@ -281,6 +296,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @return the maximum element, if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
+     * @see #findMaximum(Function, Supplier, ExecutorService)
      */
     public Optional<H> findMaximum(
             @NonNull final Function<H, Boolean> loopCondition,
