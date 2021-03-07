@@ -182,10 +182,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @return the maximum element, if any.
      */
     private Optional<H> max(final Collection<H> in) {
-        return in.stream().sorted(
-                Comparator.comparingDouble(h -> h.getFitness()))
-                .skip(in.size() - 1)
-                .findFirst();
+        return in.stream()
+                .max(Comparator.comparingDouble(h2 -> h2.getFitness()));
     }
 
     /** Perform the genetic operation.
