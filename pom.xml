@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.sfuhrm</groupId>
-  <artifactId>geneticalgorithm</artifactId>
+  <artifactId>geneticalgorithm-parent</artifactId>
   <version>2.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>GeneticAlgorithm</name>
+  <name>GeneticAlgorithm Parent POM</name>
   <description>Classes for implementing genetic algorithms</description>
   <url>https://github.com/sfuhrm/geneticalgorithm</url>
   <licenses>
@@ -258,4 +258,9 @@
       </build>
     </profile>
   </profiles>
+
+  <modules>
+    <module>geneticalgorithm</module>
+    <module>geneticalgorithm-example</module>
+  </modules>
 </project>
