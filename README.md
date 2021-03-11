@@ -2,7 +2,7 @@ Genetic Algorithm in Java
 ===================
 [![Java CI with Maven](https://github.com/sfuhrm/geneticalgorithm/actions/workflows/maven.yml/badge.svg)](https://github.com/sfuhrm/geneticalgorithm/actions/workflows/maven.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/218f01a59758476fab45aa373c3e0ec9)](https://www.codacy.com/app/sfuhrm/geneticalgorithm?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sfuhrm/geneticalgorithm&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://coveralls.io/repos/github/sfuhrm/geneticalgorithm/badge.svg)](https://coveralls.io/github/sfuhrm/geneticalgorithm)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/218f01a59758476fab45aa373c3e0ec9)](https://www.codacy.com/gh/sfuhrm/geneticalgorithm/dashboard?utm_source=github.com&utm_medium=referral&utm_content=sfuhrm/geneticalgorithm&utm_campaign=Badge_Coverage)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm)
 [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
 [![ReleaseDate](https://img.shields.io/github/release-date/sfuhrm/geneticalgorithm)](https://github.com/sfuhrm/geneticalgorithm/releases)
