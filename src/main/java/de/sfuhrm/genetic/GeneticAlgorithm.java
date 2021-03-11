@@ -211,7 +211,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         }
 
         do {
-            double sumOfProbabilities = updateFitnessAndGetSumOfProbabilities(fitnessCalculator, population);
+            double sumOfProbabilities =
+                    updateFitnessAndGetSumOfProbabilities(
+                            fitnessCalculator,
+                            population);
 
             Optional<H> curMax = max(population);
             if (curMax.isPresent()) {
