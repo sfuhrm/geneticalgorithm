@@ -109,7 +109,6 @@ public class GeneticAlgorithmTest {
     }
 
     @Test
-    @Disabled
     public void testFindMaximumMultiThread() {
         GeneticAlgorithm<TestHypothesis> algorithm;
         algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
