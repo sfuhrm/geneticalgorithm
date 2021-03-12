@@ -35,6 +35,9 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithValidArgs() {
         GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100);
+        Assertions.assertEquals(0.3, algorithm.getCrossOverRate(), 0.01);
+        Assertions.assertEquals(0.05, algorithm.getMutationRate(), 0.01);
+        Assertions.assertEquals(100, algorithm.getGenerationSize());
     }
 
     @Test
