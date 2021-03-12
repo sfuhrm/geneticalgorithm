@@ -21,7 +21,7 @@ jobs:
     - name: Create Jacoco Report
       run: mvn clean test jacoco:report
     - name: List files
-      run: bash -c"ls -alR"
+      run: bash -c "ls -alR"
     - name: Upload first Jacoco Report
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
