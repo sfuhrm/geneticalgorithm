@@ -97,17 +97,12 @@ public final class GuessingExample {
         return result;
     }
 
-    /** The last length of the output of
-     * {@linkplain #print(IntGuessingHypothesis)}. */
-    private static int lastLength = 0;
+    /** The count of the current generation. */
+    private static long generation;
     private static void print(final IntGuessingHypothesis h) {
         String str = h.toString();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lastLength; i++) {
-            sb.append(' ');
-        }
-        System.out.printf("\r%s\r%s", sb, str);
-        lastLength = str.length();
+        generation++;
+        System.out.printf("%03d: %s%n", generation, str);
     }
 
     /**
