@@ -202,21 +202,21 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             final Function<H, Boolean> loopCondition,
             final Supplier<H> hypothesisSupplier,
             final Consumer<List<H>> fitnessCalculator) {
-        List<H> population = new ArrayList<>();
-        List<H> selected = new ArrayList<>();
+        List<H> currentGeneration = new ArrayList<>();
+        List<H> nextGeneration = new ArrayList<>();
         Optional<H> max = Optional.empty();
 
         for (int i = 0; i < generationSize; i++) {
-            population.add(hypothesisSupplier.get().randomInit());
+            currentGeneration.add(hypothesisSupplier.get().randomInit());
         }
 
         do {
             double sumOfProbabilities =
                     updateFitnessAndGetSumOfProbabilities(
                             fitnessCalculator,
-                            population);
+                            currentGeneration);
 
-            Optional<H> curMax = max(population);
+            Optional<H> curMax = max(currentGeneration);
             if (curMax.isPresent()) {
                 max = max.map(
                         h -> max(
@@ -225,12 +225,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
                                         h))).orElse(curMax);
             }
 
-            selected.clear();
-            select(population, sumOfProbabilities, selected);
-            crossover(population, sumOfProbabilities, selected);
-            population.clear();
-            population.addAll(selected);
-            mutate(population);
+            nextGeneration.clear();
+            select(currentGeneration, sumOfProbabilities, nextGeneration);
+            crossover(currentGeneration, sumOfProbabilities, nextGeneration);
+            currentGeneration.clear();
+            currentGeneration.addAll(nextGeneration);
+            mutate(currentGeneration);
         } while (max.isPresent() && loopCondition.apply(max.get()));
 
         return max;
