@@ -15,26 +15,32 @@
  */
 package de.sfuhrm.genetic;
 
-import de.sfuhrm.genetic.example.intguessing.IntGuessingHypothesis;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.Verifications;
+
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class GeneticAlgorithmTest {
 
+
+    @Mocked TestHypothesis mockInstance;
+    @Mocked ExecutorService mockExecutor;
+
     @Test
     public void testInitWithValidArgs() {
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100);
+        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100);
     }
 
     @Test
     public void testInitWithTooLowCrossOver() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(-0.1, 0.05, 100);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(-0.1, 0.05, 100);
             }
         );
     }
@@ -42,7 +48,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooHighCrossOver() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(1.1, 0.05, 100);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(1.1, 0.05, 100);
                 }
         );
     }
@@ -50,7 +56,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooLowMutation() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, -0.1, 100);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, -0.1, 100);
                 }
         );
     }
@@ -58,7 +64,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooHighMutation() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 1.1, 100);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 1.1, 100);
                 }
         );
     }
@@ -66,38 +72,71 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooLowGenerationSize() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 1);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 1);
                 }
         );
     }
 
     @Test
     public void testFindMaximumSingleThread() {
-        int numbers = 4;
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
-        Optional<IntGuessingHypothesis> hypothesisOptional =
+        GeneticAlgorithm<TestHypothesis> algorithm;
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
+
+        new Expectations() {{
+            mockInstance.randomInit(); times = 100;
+            mockInstance.calculateFitness(); times = 100; result = 1.0;
+            mockInstance.setFitness(1.0); times = 100;
+            mockInstance.getFitness(); result = 1.0; maxTimes = 1000;
+            mockInstance.setProbability(1.0 / 100.); times = 100;
+            mockInstance.crossOver(mockInstance); times = 15;
+            mockInstance.mutate(); times = 7;
+        }};
+
+        Optional<TestHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
-                        h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),
-                        () -> new IntGuessingHypothesis(numbers));
+                        h -> false,
+                        () -> mockInstance);
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getGenome());
+        Assertions.assertSame(mockInstance, hypothesisOptional.get());
+
+        new Verifications() {{
+            mockInstance.randomInit(); times = 100;
+            mockInstance.getFitness(); minTimes = 200;
+            mockInstance.setProbability(1. / 100.); times = 100;
+        }};
     }
 
     @Test
+    @Disabled
     public void testFindMaximumMultiThread() {
-        int numbers = 4;
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
-        Optional<IntGuessingHypothesis> hypothesisOptional =
+        GeneticAlgorithm<TestHypothesis> algorithm;
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
+
+        new Expectations() {{
+            mockInstance.randomInit(); times = 100;
+            mockInstance.getFitness(); result = 1.0; maxTimes = 1000;
+            mockInstance.setProbability(1.0 / 100.); times = 100;
+            mockInstance.crossOver(mockInstance); times = 15;
+            mockInstance.mutate(); times = 7;
+            mockExecutor.submit((Runnable) any); times = 100;
+        }};
+
+        Optional<TestHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
-                        h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),
-                        () -> new IntGuessingHypothesis(numbers),
-                        executorService);
-        executorService.shutdown();
+                        h -> false,
+                        () -> mockInstance,
+                        mockExecutor);
+
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getGenome());
+        Assertions.assertSame(mockInstance, hypothesisOptional.get());
+
+        new Verifications() {{
+            mockInstance.randomInit(); times = 100;
+            mockInstance.getFitness(); minTimes = 200;
+            mockInstance.setProbability(1. / 100.); times = 100;
+        }};
     }
 }
