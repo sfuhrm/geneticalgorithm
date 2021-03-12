@@ -105,6 +105,9 @@ public final class GuessingExample {
         System.out.printf("%03d: %s%n", generation, str);
     }
 
+    /** Milliseconds in a second. */
+    private static final double MILLIS_PER_SECOND = 1000.;
+
     /**
      * Main method.
      * @param args ignored command line args.
@@ -121,6 +124,8 @@ public final class GuessingExample {
                     guessingExample.getMutationRate(),
                     guessingExample.getGenerationSize());
         int size = guessingExample.getArraySize();
+        long start = System.currentTimeMillis();
+
         Optional<IntGuessingHypothesis> max = algorithm.findMaximum(
                 h -> {
                     print(h);
@@ -128,9 +133,13 @@ public final class GuessingExample {
                 },
                 () -> new IntGuessingHypothesis(size));
         System.out.println();
-        System.out.println("Maximum is "
-                + max
-                + " with fitness "
-                + max.get().calculateFitness());
+        double duration = (System.currentTimeMillis() - start)
+                / MILLIS_PER_SECOND;
+        System.out.printf("Maximum is %s with fitness=%.2f,"
+                        + " speed=%.2f gen/s%n",
+                max,
+                max.get().calculateFitness(),
+                GuessingExample.generation / duration
+                );
     }
 }
