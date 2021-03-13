@@ -104,18 +104,18 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param population the population to select on.
      * @param sumOfProbabilities the
      * sum of probabilities of the population.
-     * @param selectedList the target list to put selected elements to.
+     * @param targetCollection the target list to put selected elements to.
      */
     private void select(final List<H> population,
                           final double sumOfProbabilities,
-                          final Collection<H> selectedList) {
+                          final Collection<H> targetCollection) {
         int selectSize = (int) ((1. - crossOverRate) * population.size());
-        while (selectedList.size() < selectSize) {
+        while (targetCollection.size() < selectSize) {
             H selected = probabilisticSelect(
                     population,
                     sumOfProbabilities
             );
-            selectedList.add(selected);
+            targetCollection.add(selected);
         }
     }
 
@@ -124,12 +124,12 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      * @param population the population to select on.
      * @param sumOfProbabilities the
      * sum of probabilities of the population.
-     * @param selectedSet the target set to put crossed over elements to.
+     * @param targetCollection the target set to put crossed over elements to.
      */
     private void crossover(
             final List<H> population,
             final double sumOfProbabilities,
-            final Collection<H> selectedSet) {
+            final Collection<H> targetCollection) {
         int crossOverSize = (int) ((crossOverRate) * population.size());
         for (int i = 0; i < crossOverSize / 2; i++) {
             H first = probabilisticSelect(population,
@@ -138,7 +138,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             H second = probabilisticSelect(population,
                     sumOfProbabilities
             );
-            selectedSet.addAll(first.crossOver(second));
+            targetCollection.addAll(first.crossOver(second));
         }
     }
 
