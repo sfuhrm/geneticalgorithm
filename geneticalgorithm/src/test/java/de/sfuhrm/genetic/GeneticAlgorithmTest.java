@@ -16,13 +16,13 @@
 package de.sfuhrm.genetic;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
@@ -96,8 +96,8 @@ public class GeneticAlgorithmTest {
             mockInstance.setFitness(1.0); times = 100;
             mockInstance.getFitness(); result = 1.0; maxTimes = 1000;
             mockInstance.setProbability(1.0 / 100.); times = 100;
-            mockInstance.crossOver(mockInstance); times = 15;
-            mockInstance.mutate(); times = 7;
+            mockInstance.crossOver(mockInstance); result = Arrays.asList(mockInstance, mockInstance); times = 15;
+            mockInstance.mutate(); times = 10;
         }};
 
         Optional<TestHypothesis> hypothesisOptional =
@@ -125,9 +125,8 @@ public class GeneticAlgorithmTest {
             mockInstance.randomInit(); times = 100;
             mockInstance.getFitness(); result = 1.0; maxTimes = 1000;
             mockInstance.setProbability(1.0 / 100.); times = 100;
-            mockInstance.crossOver(mockInstance); times = 15;
-            mockInstance.mutate(); times = 7;
-            mockExecutor.submit((Runnable) any); times = 100;
+            mockInstance.crossOver(mockInstance); result = Arrays.asList(mockInstance, mockInstance); times = 15;
+            mockInstance.mutate(); times = 10;
         }};
 
         Optional<TestHypothesis> hypothesisOptional =

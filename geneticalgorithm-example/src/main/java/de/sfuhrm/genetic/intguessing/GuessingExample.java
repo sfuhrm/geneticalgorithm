@@ -23,6 +23,8 @@ import org.kohsuke.args4j.Option;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Example main program for the {@link IntGuessingHypothesis}.
@@ -91,8 +93,17 @@ public final class GuessingExample {
     @Getter
     @Option(name = "-s", usage = "the size of the array to guess the "
             + "elements of",
+            metaVar = "SIZE",
             aliases = "-genome")
     private int arraySize = ARRAY_SIZE_DEFAULT;
+
+    /** The array size for the integers to guess. */
+    @Getter
+    @Option(name = "-t", usage = "the number of CPU threads to "
+            + "use for parallel calculation",
+            metaVar = "COUNT",
+            aliases = "-threads")
+    private int threadCount = Runtime.getRuntime().availableProcessors();
 
     private GuessingExample() {
         // no constructor
@@ -171,6 +182,8 @@ public final class GuessingExample {
         if (guessingExample == null) {
             return;
         }
+        ExecutorService executorService =
+                Executors.newFixedThreadPool(guessingExample.threadCount);
 
         GeneticAlgorithm<IntGuessingHypothesis> algorithm =
             new GeneticAlgorithm<>(
@@ -185,10 +198,12 @@ public final class GuessingExample {
                     print(h);
                     return h.calculateFitness() < h.maximumFitness();
                 },
-                () -> new IntGuessingHypothesis(size));
+                () -> new IntGuessingHypothesis(size),
+                executorService);
         System.out.println();
         double duration = (System.currentTimeMillis() - start)
                 / MILLIS_PER_SECOND;
+        executorService.shutdown();
         System.out.printf("Maximum is %s with fitness=%.2f,"
                         + " speed=%.2f gen/s%n",
                 max,

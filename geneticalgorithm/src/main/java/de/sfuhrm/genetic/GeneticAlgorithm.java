@@ -15,10 +15,11 @@
  */
 package de.sfuhrm.genetic;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -29,10 +30,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 
 /**
  * Generic genetic algorithm implementation.
@@ -62,6 +59,9 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      */
     @Getter @Setter
     private int generationSize;
+
+    /** The computation engine to use. */
+    private final SimpleComputeEngine<H> computeEngine;
 
     /**
      * Constructs a new genetic algorithm.
@@ -97,94 +97,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
-    }
-
-    /** Selects a fraction of {@code 1-crossOverRate} hypothesis
-     * relative to their fitness.
-     * @param population the population to select on.
-     * @param sumOfProbabilities the
-     * sum of probabilities of the population.
-     * @param targetCollection the target list to put selected elements to.
-     */
-    private void select(final List<H> population,
-                          final double sumOfProbabilities,
-                          final Collection<H> targetCollection) {
-        int selectSize = (int) ((1. - crossOverRate) * population.size());
-        while (targetCollection.size() < selectSize) {
-            H selected = probabilisticSelect(
-                    population,
-                    sumOfProbabilities
-            );
-            targetCollection.add(selected);
-        }
-    }
-
-    /** Cross-overs a fraction of {@code crossOverRate} hypothesis
-     * relative to their fitness.
-     * @param population the population to select on.
-     * @param sumOfProbabilities the
-     * sum of probabilities of the population.
-     * @param targetCollection the target set to put crossed over elements to.
-     */
-    private void crossover(
-            final List<H> population,
-            final double sumOfProbabilities,
-            final Collection<H> targetCollection) {
-        int crossOverSize = (int) ((crossOverRate) * population.size());
-        for (int i = 0; i < crossOverSize / 2; i++) {
-            H first = probabilisticSelect(population,
-                    sumOfProbabilities
-            );
-            H second = probabilisticSelect(population,
-                    sumOfProbabilities
-            );
-            targetCollection.addAll(first.crossOver(second));
-        }
-    }
-
-    /** Mutates a fraction of {@code mutationRate} hypothesis.
-     * @param selectedSet the population to mutate on.
-     */
-    private void mutate(final List<H> selectedSet) {
-        int mutationSize = (int) (mutationRate * selectedSet.size());
-        for (int i = 0; i < mutationSize; i++) {
-            int index = RANDOM.nextInt(selectedSet.size());
-            H current = selectedSet.get(index);
-            current.mutate();
-        }
-    }
-
-    /** Probabilistically selects one hypothesis relative to the selection
-     * probability of it.
-     * @param population the population to select from.
-     * @param sumOfProbabilities the
-     * sum of probabilities of the population.
-     * @return the selected element.
-     */
-    private H probabilisticSelect(final List<H> population,
-                                  final double sumOfProbabilities
-    ) {
-        H result = population.get(0);
-        double randomPoint = RANDOM.nextDouble(); // random number
-        // a random point in the sum of probabilities
-        double inflatedPoint = randomPoint * sumOfProbabilities;
-
-        double soFar = 0;
-        for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
-            result = population.get(i);
-            soFar += result.getProbability();
-        }
-        return result;
-    }
-
-    /** Find the maximum fitness element of the given collection.
-     * @param in the population to find the maximum in.
-     * @return the maximum element, if any.
-     */
-    private Optional<H> max(final Collection<H> in) {
-        return in.stream()
-                .max(Comparator.comparingDouble(
-                        AbstractHypothesis::getFitness));
+        this.computeEngine = new SimpleComputeEngine(RANDOM);
     }
 
     /** Perform the genetic operation.
@@ -212,56 +125,41 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
         do {
             double sumOfProbabilities =
-                    updateFitnessAndGetSumOfProbabilities(
-                            fitnessCalculator,
+                    computeEngine.updateFitnessAndGetSumOfProbabilities(
                             currentGeneration);
 
-            Optional<H> curMax = max(currentGeneration);
+            Optional<H> curMax = computeEngine.max(currentGeneration);
             if (curMax.isPresent()) {
-                max = max.map(
-                        h -> max(
-                                Arrays.asList(
-                                        curMax.get(),
-                                        h))).orElse(curMax);
+                if (max.isPresent()) {
+                    if (curMax.get().getFitness() > max.get().getFitness()) {
+                        max = curMax;
+                    }
+                } else {
+                    max = curMax;
+                }
             }
 
             nextGeneration.clear();
-            select(currentGeneration, sumOfProbabilities, nextGeneration);
-            crossover(currentGeneration, sumOfProbabilities, nextGeneration);
+
+            computeEngine.select(currentGeneration,
+                    sumOfProbabilities,
+                    (int) ((1. - crossOverRate) * generationSize),
+                    nextGeneration);
+
+            computeEngine.crossover(currentGeneration, sumOfProbabilities,
+                    (int) ((crossOverRate) * generationSize),
+                    nextGeneration);
+
             currentGeneration.clear();
             currentGeneration.addAll(nextGeneration);
-            mutate(currentGeneration);
+
+            computeEngine.mutate(currentGeneration,
+                    (int) (mutationRate * generationSize));
         } while (max.isPresent() && loopCondition.apply(max.get()));
 
         return max;
     }
 
-    /**
-     * Updates the fitness and probability of the population.
-     * Returns the sum of the probabilities.
-     * @param fitnessCalculator callback to update
-     *          the {@link AbstractHypothesis#getFitness() fitness}
-     *          with.
-     * @param population the population to work on.
-     * @return the sum of probabilities, which should be 1.
-     */
-    private double updateFitnessAndGetSumOfProbabilities(
-            final Consumer<List<H>> fitnessCalculator,
-            final List<H> population) {
-        fitnessCalculator.accept(population);
-
-        double sumFitness = 0.;
-        for (H current : population) {
-            sumFitness += current.getFitness();
-        }
-        double sumOfProbabilities = 0.;
-        for (H current : population) {
-            double probability = current.getFitness() / sumFitness;
-            current.setProbability(probability);
-            sumOfProbabilities += probability;
-        }
-        return sumOfProbabilities;
-    }
 
     /** Perform the genetic optimization.
      * The algorithm will search for an optimal hypothesis until the
