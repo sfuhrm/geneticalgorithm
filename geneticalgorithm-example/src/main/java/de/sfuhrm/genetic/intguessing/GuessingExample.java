@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Example main program for the {@link IntGuessingHypothesis}.
@@ -193,13 +195,25 @@ public final class GuessingExample {
         int size = guessingExample.getArraySize();
         long start = System.currentTimeMillis();
 
-        Optional<IntGuessingHypothesis> max = algorithm.findMaximum(
-                h -> {
-                    print(h);
-                    return h.calculateFitness() < h.maximumFitness();
-                },
-                () -> new IntGuessingHypothesis(size),
-                executorService);
+        Function<IntGuessingHypothesis, Boolean> loopFunction = h -> {
+            print(h);
+            return h.calculateFitness() < h.maximumFitness();
+        };
+        Supplier<IntGuessingHypothesis> hypothesisSupplier =
+                () -> new IntGuessingHypothesis(size);
+
+        Optional<IntGuessingHypothesis> max;
+        if (guessingExample.threadCount == 1) {
+            max = algorithm.findMaximum(
+                    loopFunction,
+                    hypothesisSupplier);
+        } else {
+            max = algorithm.findMaximum(
+                    loopFunction,
+                    hypothesisSupplier,
+                    executorService);
+        }
+
         System.out.println();
         double duration = (System.currentTimeMillis() - start)
                 / MILLIS_PER_SECOND;

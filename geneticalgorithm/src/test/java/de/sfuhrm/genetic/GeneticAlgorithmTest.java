@@ -25,6 +25,7 @@ import mockit.Verifications;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Tests the {@linkplain GeneticAlgorithm} with some mock
@@ -35,7 +36,6 @@ public class GeneticAlgorithmTest {
 
 
     @Mocked TestHypothesis mockInstance;
-    @Mocked ExecutorService mockExecutor;
 
     @Test
     public void testInitWithValidArgs() {
@@ -133,7 +133,7 @@ public class GeneticAlgorithmTest {
                 algorithm.findMaximum(
                         h -> false,
                         () -> mockInstance,
-                        mockExecutor);
+                        Executors.newFixedThreadPool(2));
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");

@@ -89,7 +89,7 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
             final int targetCount,
             final Collection<H> targetCollection) {
         List<Future<List<H>>> futureList = new ArrayList<>(targetCount);
-        for (int i = 0; i < targetCount; i++) {
+        for (int i = 0; i < targetCount / 2; i++) {
             futureList.add(executorService.submit(() -> {
                 H first = probabilisticSelect(population,
                         sumOfProbabilities);
@@ -101,16 +101,16 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
 
         int childCount = 0;
         for (Future<List<H>> future : futureList) {
-            List<H> children = null;
+            List<H> children;
             try {
                 children = future.get();
+                childCount += children.size();
+                targetCollection.addAll(children);
+                if (childCount >= targetCount) {
+                    break;
+                }
             } catch (InterruptedException | ExecutionException e) {
                 handleException(e);
-            }
-            childCount += children.size();
-            targetCollection.addAll(children);
-            if (childCount >= targetCount) {
-                break;
             }
         }
     }

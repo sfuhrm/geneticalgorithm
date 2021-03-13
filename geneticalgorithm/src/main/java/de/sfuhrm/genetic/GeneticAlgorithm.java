@@ -23,13 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Generic genetic algorithm implementation.
@@ -59,9 +55,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      */
     @Getter @Setter
     private int generationSize;
-
-    /** The computation engine to use. */
-    private final SimpleComputeEngine<H> computeEngine;
 
     /**
      * Constructs a new genetic algorithm.
@@ -97,7 +90,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
-        this.computeEngine = new SimpleComputeEngine(RANDOM);
     }
 
     /** Perform the genetic operation.
@@ -105,16 +97,13 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                      maximum is not yet reached. Gets presented
      *                      the best hypothesis as input.
      * @param hypothesisSupplier creation function for new hypothesis.
-     * @param fitnessCalculator a consumer that calculates the fitness.
-     *       Calls {@link AbstractHypothesis#setFitness(double)}
-     *       with the value calculated from
-     *       {@link AbstractHypothesis#calculateFitness()}.
+     * @param computeEngine the compute engine to use.
      * @return the maximum element, if any.
      */
     private Optional<H> innerFindMaximum(
             final Function<H, Boolean> loopCondition,
             final Supplier<H> hypothesisSupplier,
-            final Consumer<List<H>> fitnessCalculator) {
+            final ComputeEngine<H> computeEngine) {
         List<H> currentGeneration = new ArrayList<>(generationSize);
         List<H> nextGeneration = new ArrayList<>(generationSize);
         Optional<H> max = Optional.empty();
@@ -197,24 +186,13 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             @NonNull final Supplier<H> hypothesisSupplier,
             @NonNull final ExecutorService executorService) {
 
-        return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
-            // compute the energy per hypothesis
-            List<Future<?>> futureList = list
-                    .stream()
-                    .map(h -> executorService.submit(
-                            () -> h.setFitness(h.calculateFitness())))
-                    .collect(Collectors.toList());
-
-            futureList.forEach(f -> {
-                try {
-                    f.get();
-                } catch (ExecutionException | InterruptedException e) {
-                    // must not happen
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            });
-        });
+        return innerFindMaximum(
+                loopCondition,
+                hypothesisSupplier,
+                new ExecutorServiceComputeEngine<H>(
+                    new Random(),
+                    executorService
+        ));
     }
 
     /** Perform the genetic optimization.
@@ -232,9 +210,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     public Optional<H> findMaximum(
             @NonNull final Function<H, Boolean> loopCondition,
             @NonNull final Supplier<H> hypothesisSupplier) {
-        return innerFindMaximum(loopCondition, hypothesisSupplier, list -> {
-            // compute the energy per hypothesis
-            list.forEach(h -> h.setFitness(h.calculateFitness()));
-        });
+        return innerFindMaximum(loopCondition, hypothesisSupplier,
+                new SimpleComputeEngine<>(new Random()));
     }
 }
