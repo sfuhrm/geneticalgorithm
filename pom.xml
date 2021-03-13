@@ -4,7 +4,7 @@
 
   <groupId>de.sfuhrm</groupId>
   <artifactId>geneticalgorithm-parent</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>GeneticAlgorithm Parent POM</name>
@@ -30,7 +30,7 @@
   <scm>
     <url>https://github.com/sfuhrm/geneticalgorithm</url>
     <connection>scm:git:https://github.com/sfuhrm/geneticalgorithm.git</connection>
-    <tag>geneticalgorithm-parent-2.0.1</tag>
+    <tag>geneticalgorithm-2.0.0</tag>
   </scm>
 
   <properties>
