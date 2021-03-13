@@ -27,7 +27,7 @@ public class SimpleComputeEngineTest {
 
     @BeforeEach
     public void setup() {
-        instance = new SimpleComputeEngine(mockRandom);
+        instance = new SimpleComputeEngine<>(mockRandom);
     }
 
     @Test

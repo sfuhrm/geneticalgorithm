@@ -34,9 +34,6 @@ import java.util.function.Supplier;
  **/
 public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
-    /** Randomness source for genetic algorithm operations. */
-    private static final Random RANDOM = new Random();
-
     /** The fraction between 0 and 1 at which cross over operations are done.
      * The other part of the population will be filled with selected
      * hypothesis.
@@ -64,7 +61,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                      cross over rate is {@code 0.3}.
      * @param inMutationRate the fraction at which the mutation operator
      *                     is applied to the population, between 0 and 1.
-     *                     A good vlaue for the mutation rate is {@code 0.05}.
+     *                     A good value for the mutation rate is {@code 0.05}.
      * @param inGenerationSize the number of individual hypothesis in the
      *                       population for each generation, greater than 1.
      *                       The generation size choice depends on the
@@ -189,10 +186,10 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         return innerFindMaximum(
                 loopCondition,
                 hypothesisSupplier,
-                new ExecutorServiceComputeEngine<H>(
-                    new Random(),
-                    executorService
-        ));
+                new ExecutorServiceComputeEngine<>(
+                        new Random(),
+                        executorService
+                ));
     }
 
     /** Perform the genetic optimization.
