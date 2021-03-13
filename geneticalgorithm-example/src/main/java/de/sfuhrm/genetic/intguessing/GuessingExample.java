@@ -21,6 +21,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -118,19 +119,42 @@ public final class GuessingExample {
 
     /** The count of the current generation. */
     private static long generation;
+    /** A copy of the previous genome or {@code null}
+     * if no previous genome existed. */
+    private static int[] oldGenome;
     private static void print(final IntGuessingHypothesis h) {
         generation++;
         System.out.printf("%03d: ", generation);
         for (int i = 0; i < h.getGenome().length; i++) {
-            printCell(i, h.getGenome()[i]);
+            int currentCellValue = h.getGenome()[i];
+            int previousCellValue = -1;
+            if (oldGenome != null) {
+                previousCellValue = oldGenome[i];
+            }
+            printCell(i, currentCellValue, previousCellValue);
         }
         System.out.println();
+        oldGenome = Arrays.copyOf(h.getGenome(), h.getGenome().length);
     }
 
-    private static void printCell(final int index, final int cellValue) {
+    private static void printCell(final int index,
+                                  final int currentCellValue,
+                                  final int previousCellValue) {
+        String color = ANSI_WHITE;
+        if (currentCellValue == index
+                && currentCellValue == previousCellValue) {
+            color = ANSI_GREEN;
+        }
+        if (currentCellValue == index
+                && currentCellValue != previousCellValue) {
+            color = ANSI_CYAN;
+        }
+        if (currentCellValue != index) {
+            color = ANSI_RED;
+        }
         System.out.printf("%s[%d]%s",
-                index == cellValue ? ANSI_GREEN : ANSI_RED,
-                cellValue,
+                color,
+                currentCellValue,
                 ANSI_RESET);
     }
 
