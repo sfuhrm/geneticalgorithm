@@ -202,8 +202,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             final Function<H, Boolean> loopCondition,
             final Supplier<H> hypothesisSupplier,
             final Consumer<List<H>> fitnessCalculator) {
-        List<H> currentGeneration = new ArrayList<>();
-        List<H> nextGeneration = new ArrayList<>();
+        List<H> currentGeneration = new ArrayList<>(generationSize);
+        List<H> nextGeneration = new ArrayList<>(generationSize);
         Optional<H> max = Optional.empty();
 
         for (int i = 0; i < generationSize; i++) {
