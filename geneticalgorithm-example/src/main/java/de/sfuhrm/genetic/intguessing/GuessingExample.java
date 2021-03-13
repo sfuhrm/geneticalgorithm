@@ -26,6 +26,7 @@ import java.util.Optional;
 
 /**
  * Example main program for the {@link IntGuessingHypothesis}.
+ * @author Stephan Fuhrmann
  **/
 public final class GuessingExample {
 

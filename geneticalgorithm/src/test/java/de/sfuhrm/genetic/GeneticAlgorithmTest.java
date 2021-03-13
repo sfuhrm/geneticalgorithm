@@ -26,6 +26,11 @@ import mockit.Verifications;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Tests the {@linkplain GeneticAlgorithm} with some mock
+ * hypothesis.
+ * @author Stephan Fuhrmann
+ */
 public class GeneticAlgorithmTest {
 
 
