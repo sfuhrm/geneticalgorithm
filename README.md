@@ -14,6 +14,9 @@ A genetic algorithm library in Java with focus on easy usage and high performanc
 Genetic algorithms can be used to solve optimization problems where there's an evaluation
 function available (also known as cost).
 
+The following example shows the library guessing a sequence of 30 int values
+with a genetic population size of 3000 hypothesis:
+
 ![Guessing an int sequence](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/master/.github/IntGuessingExample.gif
  "Guessing an int sequence")
 
