@@ -28,6 +28,25 @@ import java.util.Optional;
  **/
 public final class GuessingExample {
 
+    /** RESET. */
+    public static final String ANSI_RESET = "\u001B[0m";
+    /** BLACK. */
+    public static final String ANSI_BLACK = "\u001B[30m";
+    /** RED. */
+    public static final String ANSI_RED = "\u001B[31m";
+    /** GREEN. */
+    public static final String ANSI_GREEN = "\u001B[32m";
+    /** YELLOW. */
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    /** BLUE. */
+    public static final String ANSI_BLUE = "\u001B[34m";
+    /** PURPLE. */
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    /** CYAN. */
+    public static final String ANSI_CYAN = "\u001B[36m";
+    /** WHITE. */
+    public static final String ANSI_WHITE = "\u001B[37m";
+
     /** Is command line help wanted? */
     @Option(name = "-h", usage = "help", aliases = "-help", help = true)
     private boolean help;
@@ -100,9 +119,19 @@ public final class GuessingExample {
     /** The count of the current generation. */
     private static long generation;
     private static void print(final IntGuessingHypothesis h) {
-        String str = h.toString();
         generation++;
-        System.out.printf("%03d: %s%n", generation, str);
+        System.out.printf("%03d: ", generation);
+        for (int i = 0; i < h.getGenome().length; i++) {
+            printCell(i, h.getGenome()[i]);
+        }
+        System.out.println();
+    }
+
+    private static void printCell(final int index, final int cellValue) {
+        System.out.printf("%s[%d]%s",
+                index == cellValue ? ANSI_GREEN : ANSI_RED,
+                cellValue,
+                ANSI_RESET);
     }
 
     /** Milliseconds in a second. */
