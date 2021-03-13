@@ -77,9 +77,21 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      *                           sum of probabilities of the population.
      * @return the selected element.
      */
-    abstract H probabilisticSelect(List<H> population,
-                          double sumOfProbabilities
-    );
+    H probabilisticSelect(final List<H> population,
+                          final double sumOfProbabilities
+    ) {
+        H result = population.get(0);
+        double randomPoint = getRandom().nextDouble(); // random number
+        // a random point in the sum of probabilities
+        double inflatedPoint = randomPoint * sumOfProbabilities;
+
+        double soFar = 0;
+        for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
+            result = population.get(i);
+            soFar += result.getProbability();
+        }
+        return result;
+    }
 
     /**
      * Find the maximum fitness element of the given collection.
@@ -87,7 +99,20 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @param in the population to find the maximum in.
      * @return the maximum element, if any.
      */
-    abstract Optional<H> max(List<H> in);
+    Optional<H> max(final List<H> in) {
+        Optional<H> result = Optional.empty();
+        for (int i = 0; i < in.size(); i++) {
+            H current = in.get(i);
+            if (result.isPresent()) {
+                if (current.getFitness() > result.get().getFitness()) {
+                    result = Optional.of(current);
+                }
+            } else {
+                result = Optional.of(current);
+            }
+        }
+        return result;
+    }
 
     /**
      * Updates the fitness and probability of the population.

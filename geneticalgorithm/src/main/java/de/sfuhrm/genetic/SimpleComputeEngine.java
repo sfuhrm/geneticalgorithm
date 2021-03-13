@@ -17,7 +17,6 @@ package de.sfuhrm.genetic;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -36,6 +35,7 @@ class SimpleComputeEngine<H extends AbstractHypothesis<H>>
         super(inRandom);
     }
 
+    @Override
     void select(final List<H> population,
                        final double sumOfProbabilities,
                        final int targetCount,
@@ -49,15 +49,7 @@ class SimpleComputeEngine<H extends AbstractHypothesis<H>>
         }
     }
 
-    /** Cross-overs a fraction of {@code crossOverRate} hypothesis
-     * relative to their fitness.
-     * @param population the population to select on.
-     * @param sumOfProbabilities the
-     * sum of probabilities of the population.
-     * @param targetCount the number of instances to add to
-     *                    the {@code targetCollection}.
-     * @param targetCollection the target set to put crossed over elements to.
-     */
+    @Override
     void crossover(
             final List<H> population,
             final double sumOfProbabilities,
@@ -76,10 +68,7 @@ class SimpleComputeEngine<H extends AbstractHypothesis<H>>
         }
     }
 
-    /** Mutates a fraction of {@code mutationRate} hypothesis.
-     * @param selectedSet the population to mutate on.
-     * @param mutationCount the number of instances to mutate.
-     */
+    @Override
     void mutate(final List<H> selectedSet,
                        final int mutationCount) {
         for (int i = 0; i < mutationCount; i++) {
@@ -89,54 +78,7 @@ class SimpleComputeEngine<H extends AbstractHypothesis<H>>
         }
     }
 
-    /** Probabilistically selects one hypothesis relative to the selection
-     * probability of it.
-     * @param population the population to select from.
-     * @param sumOfProbabilities the
-     * sum of probabilities of the population.
-     * @return the selected element.
-     */
-    H probabilisticSelect(final List<H> population,
-                                 final double sumOfProbabilities
-    ) {
-        H result = population.get(0);
-        double randomPoint = getRandom().nextDouble(); // random number
-        // a random point in the sum of probabilities
-        double inflatedPoint = randomPoint * sumOfProbabilities;
-
-        double soFar = 0;
-        for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
-            result = population.get(i);
-            soFar += result.getProbability();
-        }
-        return result;
-    }
-
-    /** Find the maximum fitness element of the given collection.
-     * @param in the population to find the maximum in.
-     * @return the maximum element, if any.
-     */
-    Optional<H> max(final List<H> in) {
-        Optional<H> result = Optional.empty();
-        for (int i = 0; i < in.size(); i++) {
-            H current = in.get(i);
-            if (result.isPresent()) {
-                if (current.getFitness() > result.get().getFitness()) {
-                    result = Optional.of(current);
-                }
-            } else {
-                result = Optional.of(current);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Updates the fitness and probability of the population.
-     * Returns the sum of the probabilities.
-     * @param population the population to work on.
-     * @return the sum of probabilities, which should be 1.
-     */
+    @Override
     double updateFitnessAndGetSumOfProbabilities(
             final List<H> population) {
         double sumFitness = 0.;
