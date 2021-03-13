@@ -44,23 +44,6 @@ public final class IntGuessingHypothesis extends
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof IntGuessingHypothesis)) {
-            return false;
-        }
-        IntGuessingHypothesis other = (IntGuessingHypothesis) obj;
-        return Arrays.equals(genome, other.genome);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(genome);
-    }
-
-    @Override
     protected IntGuessingHypothesis randomInit() {
         IntStream
                 .range(0, genome.length)

@@ -30,15 +30,6 @@ public class IntGuessingHypothesisTest {
     }
 
     @Test
-    public void testEquals() {
-        IntGuessingHypothesis a = new IntGuessingHypothesis(4);
-        IntGuessingHypothesis b = new IntGuessingHypothesis(4);
-        a.setGenome(new int[] {1,2,3,4});
-        b.setGenome(new int[] {1,2,3,4});
-        assertEquals(a, b);
-    }
-
-    @Test
     public void testFitnessWithGoal() {
         IntGuessingHypothesis a = new IntGuessingHypothesis(4);
         a.setGenome(new int[] {0,1,2,3});
