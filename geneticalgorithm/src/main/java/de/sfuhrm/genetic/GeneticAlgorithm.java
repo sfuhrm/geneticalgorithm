@@ -29,6 +29,9 @@ import java.util.function.Supplier;
 
 /**
  * Generic genetic algorithm implementation.
+ * After initializing the instance the main focus
+ * is on {@linkplain #findMaximum(Function, Supplier) finding the maximum}
+ * in the hypothesis space.
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
