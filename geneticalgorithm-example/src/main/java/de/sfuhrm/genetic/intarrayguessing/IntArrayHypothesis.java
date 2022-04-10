@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.sfuhrm.genetic.intguessing;
+package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.AbstractHypothesis;
 import java.util.Arrays;
@@ -26,8 +26,8 @@ import lombok.Setter;
 /** Hypothesis for a fixed-size int array content.
  * @author Stephan Fuhrmann
  */
-public final class IntGuessingHypothesis extends
-        AbstractHypothesis<IntGuessingHypothesis> {
+public final class IntArrayHypothesis extends
+        AbstractHypothesis<IntArrayHypothesis> {
 
     /** Slot allocation per number. */
     @Getter
@@ -39,12 +39,12 @@ public final class IntGuessingHypothesis extends
      *                     Example: 3 would mean that an int array with
      *                     3 int elements will need to be guessed.
      * */
-    public IntGuessingHypothesis(final int totalNumbers) {
+    public IntArrayHypothesis(final int totalNumbers) {
         genome = new int[totalNumbers];
     }
 
     @Override
-    protected IntGuessingHypothesis randomInit() {
+    protected IntArrayHypothesis randomInit() {
         IntStream
                 .range(0, genome.length)
                 .forEach(
@@ -53,11 +53,11 @@ public final class IntGuessingHypothesis extends
     }
 
     @Override
-    protected List<IntGuessingHypothesis> crossOver(
-            final IntGuessingHypothesis other) {
+    protected List<IntArrayHypothesis> crossOver(
+            final IntArrayHypothesis other) {
         int point = getRANDOM().nextInt(genome.length);
-        IntGuessingHypothesis one = new IntGuessingHypothesis(genome.length);
-        IntGuessingHypothesis two = new IntGuessingHypothesis(genome.length);
+        IntArrayHypothesis one = new IntArrayHypothesis(genome.length);
+        IntArrayHypothesis two = new IntArrayHypothesis(genome.length);
         for (int i = 0; i < genome.length; i++) {
             one.genome[i] = i < point ? genome[i] : other.genome[i];
             two.genome[i] = i >= point ? genome[i] : other.genome[i];

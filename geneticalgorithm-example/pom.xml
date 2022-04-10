@@ -22,7 +22,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>de.sfuhrm.genetic.intguessing.GuessingExample</mainClass>
+              <mainClass>de.sfuhrm.genetic.intarrayguessing.GuessingExample</mainClass>
             </manifest>
           </archive>
         </configuration>

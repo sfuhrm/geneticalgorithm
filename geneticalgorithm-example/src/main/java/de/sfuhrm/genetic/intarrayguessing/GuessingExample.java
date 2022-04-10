@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.sfuhrm.genetic.intguessing;
+package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
 import lombok.Getter;
@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Example main program for the {@link IntGuessingHypothesis}.
+ * Example main program for the {@link IntArrayHypothesis}.
  * @author Stephan Fuhrmann
  **/
 public final class GuessingExample {
@@ -136,7 +136,7 @@ public final class GuessingExample {
     /** A copy of the previous genome or {@code null}
      * if no previous genome existed. */
     private static int[] oldGenome;
-    private static void print(final IntGuessingHypothesis h) {
+    private static void print(final IntArrayHypothesis h) {
         generation++;
         System.out.printf("%03d: ", generation);
         for (int i = 0; i < h.getGenome().length; i++) {
@@ -187,7 +187,7 @@ public final class GuessingExample {
         ExecutorService executorService =
                 Executors.newFixedThreadPool(guessingExample.threadCount);
 
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm =
+        GeneticAlgorithm<IntArrayHypothesis> algorithm =
             new GeneticAlgorithm<>(
                     guessingExample.getCrossOverRate(),
                     guessingExample.getMutationRate(),
@@ -195,14 +195,14 @@ public final class GuessingExample {
         int size = guessingExample.getArraySize();
         long start = System.currentTimeMillis();
 
-        Function<IntGuessingHypothesis, Boolean> loopFunction = h -> {
+        Function<IntArrayHypothesis, Boolean> loopFunction = h -> {
             print(h);
             return h.calculateFitness() < h.maximumFitness();
         };
-        Supplier<IntGuessingHypothesis> hypothesisSupplier =
-                () -> new IntGuessingHypothesis(size);
+        Supplier<IntArrayHypothesis> hypothesisSupplier =
+                () -> new IntArrayHypothesis(size);
 
-        Optional<IntGuessingHypothesis> max;
+        Optional<IntArrayHypothesis> max;
         if (guessingExample.threadCount == 1) {
             max = algorithm.findMaximum(
                     loopFunction,

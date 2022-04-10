@@ -17,4 +17,4 @@
  * Example classes that show the implementation of the genetic algorithm.
  * @author Stephan Fuhrmann
  */
-package de.sfuhrm.genetic.intguessing;
+package de.sfuhrm.genetic.intarrayguessing;

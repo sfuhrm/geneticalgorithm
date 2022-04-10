@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.sfuhrm.genetic.intguessing;
+package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 /**
  * Integration test that checks the convergence of the
- * {@linkplain IntGuessingHypothesis} towards the
+ * {@linkplain IntArrayHypothesis} towards the
  * goal.
  * @see GeneticAlgorithm#findMaximum(Function, Supplier, ExecutorService)
  * @see GeneticAlgorithm#findMaximum(Function, Supplier)
@@ -39,11 +39,11 @@ public class IntegrationTest {
     @Test
     public void testFindMaximumSingleThread() {
         int numbers = 4;
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
-        Optional<IntGuessingHypothesis> hypothesisOptional =
+        GeneticAlgorithm<IntArrayHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
+        Optional<IntArrayHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
                         h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),
-                        () -> new IntGuessingHypothesis(numbers));
+                        () -> new IntArrayHypothesis(numbers));
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
@@ -54,11 +54,11 @@ public class IntegrationTest {
     public void testFindMaximumMultiThread() {
         int numbers = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
-        Optional<IntGuessingHypothesis> hypothesisOptional =
+        GeneticAlgorithm<IntArrayHypothesis> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100);
+        Optional<IntArrayHypothesis> hypothesisOptional =
                 algorithm.findMaximum(
                         h -> !Arrays.equals(h.getGenome(), new int[] {0,1,2,3}),
-                        () -> new IntGuessingHypothesis(numbers),
+                        () -> new IntArrayHypothesis(numbers),
                         executorService);
         executorService.shutdown();
         Assertions.assertNotNull(hypothesisOptional);
