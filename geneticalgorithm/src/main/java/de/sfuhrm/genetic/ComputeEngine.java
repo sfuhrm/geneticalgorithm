@@ -100,18 +100,21 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @return the maximum element, if any.
      */
     Optional<H> max(final List<H> in) {
-        Optional<H> result = Optional.empty();
+        H result = null;
+        double resultFitness = .0;
         for (int i = 0; i < in.size(); i++) {
             H current = in.get(i);
-            if (result.isPresent()) {
-                if (current.getFitness() > result.get().getFitness()) {
-                    result = Optional.of(current);
+            if (null != result) {
+                if (current.getFitness() > resultFitness) {
+                    result = current;
+                    resultFitness = current.getFitness();
                 }
             } else {
-                result = Optional.of(current);
+                result = current;
+                resultFitness = current.getFitness();
             }
         }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     /**
