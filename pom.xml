@@ -239,6 +239,6 @@
 
   <modules>
     <module>geneticalgorithm</module>
-    <module>geneticalgorithm-example</module>
+    <module>geneticalgorithm-example-int-guessing</module>
   </modules>
 </project>
