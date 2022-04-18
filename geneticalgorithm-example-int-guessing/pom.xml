@@ -6,8 +6,8 @@
     <artifactId>geneticalgorithm-parent</artifactId>
     <version>2.1.1-SNAPSHOT</version>
   </parent>
-  <artifactId>geneticalgorithm-example</artifactId>
-  <name>Genetic Algorithm example</name>
+  <artifactId>geneticalgorithm-example-int-guessing</artifactId>
+  <name>Genetic Algorithm example int-guessing</name>
   <packaging>jar</packaging>
   <build>
     <plugins>
