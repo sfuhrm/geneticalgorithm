@@ -59,6 +59,11 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     @Getter @Setter
     private int generationSize;
 
+    /** The number of the current generation.
+     */
+    @Getter
+    private int generationNumber;
+
     /**
      * Constructs a new genetic algorithm.
      * @param inCrossOverRate the fraction at which the cross over
@@ -142,6 +147,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             currentGeneration.add(hypothesisSupplier.get().randomInit());
         }
 
+        generationNumber = 0;
         do {
             double sumOfProbabilities =
                     computeEngine.updateFitnessAndGetSumOfProbabilities(
@@ -174,6 +180,8 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
             computeEngine.mutate(currentGeneration,
                     (int) (mutationRate * generationSize));
+
+            generationNumber++;
         } while (max.isPresent() && loopCondition.apply(max.get()));
 
         return max;

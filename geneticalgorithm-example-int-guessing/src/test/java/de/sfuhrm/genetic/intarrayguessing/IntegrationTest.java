@@ -48,6 +48,7 @@ public class IntegrationTest {
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
         Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getGenome());
+        System.out.printf("Generations: %d%n", algorithm.getGenerationNumber());
     }
 
     @Test
@@ -64,5 +65,6 @@ public class IntegrationTest {
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
         Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getGenome());
+        System.out.printf("Generations: %d%n", algorithm.getGenerationNumber());
     }
 }
