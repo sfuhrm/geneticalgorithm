@@ -37,6 +37,9 @@ import java.util.function.Supplier;
  **/
 public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
 
+    /** The random generator to use. */
+    private final Random random;
+
     /** The fraction between 0 and 1 at which cross over operations are done.
      * The other part of the population will be filled with selected
      * hypothesis.
@@ -75,6 +78,32 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     public GeneticAlgorithm(final double inCrossOverRate,
                             final double inMutationRate,
                             final int inGenerationSize) {
+        this(inCrossOverRate, inMutationRate, inGenerationSize,
+                new Random());
+    }
+
+    /**
+     * Constructs a new genetic algorithm.
+     * @param inCrossOverRate the fraction at which the cross over
+     *                      operator is applied to the population,
+     *                      between 0 and 1. A good value for the
+     *                      cross over rate is {@code 0.3}.
+     * @param inMutationRate the fraction at which the mutation operator
+     *                     is applied to the population, between 0 and 1.
+     *                     A good value for the mutation rate is {@code 0.05}.
+     * @param inGenerationSize the number of individual hypothesis in the
+     *                       population for each generation, greater than 1.
+     *                       The generation size choice depends on the
+     *                       complexity of your problem, but {@code 100} is
+     *                       a good starting point.
+     * @param inRandom the random number generator to use as source of
+     *                 randomness.
+     * @throws IllegalArgumentException if the parameters are illegal.
+     */
+    public GeneticAlgorithm(final double inCrossOverRate,
+                            final double inMutationRate,
+                            final int inGenerationSize,
+                            final Random inRandom) {
         if (inCrossOverRate < 0. || inCrossOverRate > 1.) {
             throw new IllegalArgumentException(
                     "Cross over rate not between 0 and 1: " + inCrossOverRate);
@@ -90,6 +119,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
+        this.random = inRandom;
     }
 
     /** Perform the genetic operation.
@@ -190,7 +220,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
                 loopCondition,
                 hypothesisSupplier,
                 new ExecutorServiceComputeEngine<>(
-                        new Random(),
+                        random,
                         executorService
                 ));
     }
@@ -211,6 +241,6 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
             @NonNull final Function<H, Boolean> loopCondition,
             @NonNull final Supplier<H> hypothesisSupplier) {
         return innerFindMaximum(loopCondition, hypothesisSupplier,
-                new SimpleComputeEngine<>(new Random()));
+                new SimpleComputeEngine<>(random));
     }
 }
