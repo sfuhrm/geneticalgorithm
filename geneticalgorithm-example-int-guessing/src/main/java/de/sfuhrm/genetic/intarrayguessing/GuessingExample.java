@@ -16,6 +16,7 @@
 package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
+import de.sfuhrm.genetic.Handle;
 import lombok.Getter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -25,11 +26,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
- * Example main program for the {@link IntArrayHypothesis}.
+ * Example main program for the {@link IntGuessingDefinition}.
  * @author Stephan Fuhrmann
  **/
 public final class GuessingExample {
@@ -136,11 +135,11 @@ public final class GuessingExample {
     /** A copy of the previous genome or {@code null}
      * if no previous genome existed. */
     private static int[] oldGenome;
-    private static void print(final IntArrayHypothesis h) {
+    static void print(final int[] h) {
         generation++;
         System.out.printf("%03d: ", generation);
-        for (int i = 0; i < h.getGenome().length; i++) {
-            int currentCellValue = h.getGenome()[i];
+        for (int i = 0; i < h.length; i++) {
+            int currentCellValue = h[i];
             int previousCellValue = -1;
             if (oldGenome != null) {
                 previousCellValue = oldGenome[i];
@@ -148,7 +147,7 @@ public final class GuessingExample {
             printCell(i, currentCellValue, previousCellValue);
         }
         System.out.println();
-        oldGenome = Arrays.copyOf(h.getGenome(), h.getGenome().length);
+        oldGenome = Arrays.copyOf(h, h.length);
     }
 
     private static void printCell(final int index,
@@ -187,30 +186,20 @@ public final class GuessingExample {
         ExecutorService executorService =
                 Executors.newFixedThreadPool(guessingExample.threadCount);
 
-        GeneticAlgorithm<IntArrayHypothesis> algorithm =
+        int genomeLength = guessingExample.getArraySize();
+        GeneticAlgorithm<int[]> algorithm =
             new GeneticAlgorithm<>(
                     guessingExample.getCrossOverRate(),
                     guessingExample.getMutationRate(),
-                    guessingExample.getGenerationSize());
-        int size = guessingExample.getArraySize();
+                    guessingExample.getGenerationSize(),
+                    new IntGuessingDefinition(genomeLength));
         long start = System.currentTimeMillis();
 
-        Function<IntArrayHypothesis, Boolean> loopFunction = h -> {
-            print(h);
-            return h.calculateFitness() < h.maximumFitness();
-        };
-        Supplier<IntArrayHypothesis> hypothesisSupplier =
-                () -> new IntArrayHypothesis(size);
-
-        Optional<IntArrayHypothesis> max;
+        Optional<Handle<int[]>> max;
         if (guessingExample.threadCount == 1) {
-            max = algorithm.findMaximum(
-                    loopFunction,
-                    hypothesisSupplier);
+            max = algorithm.findMaximum();
         } else {
             max = algorithm.findMaximum(
-                    loopFunction,
-                    hypothesisSupplier,
                     executorService);
         }
 
@@ -221,7 +210,7 @@ public final class GuessingExample {
         System.out.printf("Maximum is %s with fitness=%.2f,"
                         + " speed=%.2f gen/s%n",
                 max,
-                max.get().calculateFitness(),
+                max.get().getFitness(),
                 GuessingExample.generation / duration
                 );
     }

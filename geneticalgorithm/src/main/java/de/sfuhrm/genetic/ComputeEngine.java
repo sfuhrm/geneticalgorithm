@@ -1,5 +1,6 @@
 package de.sfuhrm.genetic;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -11,18 +12,27 @@ import java.util.Random;
  * genetic hypothesis populations.
  * @param <H> the hypothesis class to compute for.
  * */
-abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
+abstract class ComputeEngine<H> {
 
     /** The shared source of randomness. */
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final Random random;
+
+    /** The algorithm definition to use for hypothesis
+     * creation and manipulation.
+     * */
+    @Getter(AccessLevel.PACKAGE)
+    private final AlgorithmDefinition<H> algorithmDefinition;
 
     /**
      * Creates a new instance.
      * @param inRandom the source of randomness to use.
+     * @param inAlgorithmDefinition the algorithm definition to use.
      * */
-    ComputeEngine(final Random inRandom) {
+    ComputeEngine(final Random inRandom,
+                  final AlgorithmDefinition<H> inAlgorithmDefinition) {
         this.random = inRandom;
+        this.algorithmDefinition = inAlgorithmDefinition;
     }
 
     /**
@@ -37,10 +47,10 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      *                           the {@code targetCollection}.
      * @param targetCollection   the target list to put selected elements to.
      */
-    abstract void select(List<H> population,
+    abstract void select(List<Handle<H>> population,
                 double sumOfProbabilities,
                 int targetCount,
-                Collection<H> targetCollection);
+                Collection<Handle<H>> targetCollection);
 
     /**
      * Cross-overs a fraction of {@code crossOverRate} hypothesis
@@ -54,10 +64,10 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @param targetCollection   the target set to put crossed over elements to.
      */
     abstract void crossover(
-            List<H> population,
+            List<Handle<H>> population,
             double sumOfProbabilities,
             int targetCount,
-            Collection<H> targetCollection);
+            Collection<Handle<H>> targetCollection);
 
     /**
      * Mutates a fraction of {@code mutationRate} hypothesis.
@@ -65,7 +75,7 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @param selectedSet   the population to mutate on.
      * @param mutationCount the number of instances to mutate.
      */
-    abstract void mutate(List<H> selectedSet,
+    abstract void mutate(List<Handle<H>> selectedSet,
                 int mutationCount);
 
     /**
@@ -77,10 +87,10 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      *                           sum of probabilities of the population.
      * @return the selected element.
      */
-    H probabilisticSelect(final List<H> population,
-                          final double sumOfProbabilities
+    Handle<H> probabilisticSelect(final List<Handle<H>> population,
+                                  final double sumOfProbabilities
     ) {
-        H result = population.get(0);
+        Handle<H> result = population.get(0);
         double randomPoint = getRandom().nextDouble(); // random number
         // a random point in the sum of probabilities
         double inflatedPoint = randomPoint * sumOfProbabilities;
@@ -99,11 +109,11 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @param in the population to find the maximum in.
      * @return the maximum element, if any.
      */
-    Optional<H> max(final List<H> in) {
-        H result = null;
+    Optional<Handle<H>> max(final List<Handle<H>> in) {
+        Handle<H> result = null;
         double resultFitness = .0;
         for (int i = 0; i < in.size(); i++) {
-            H current = in.get(i);
+            Handle<H> current = in.get(i);
             if (null != result) {
                 if (current.getFitness() > resultFitness) {
                     result = current;
@@ -125,5 +135,5 @@ abstract class ComputeEngine<H extends AbstractHypothesis<H>> {
      * @return the sum of probabilities, which should be 1.
      */
     abstract double updateFitnessAndGetSumOfProbabilities(
-            List<H> population);
+            List<Handle<H>> population);
 }

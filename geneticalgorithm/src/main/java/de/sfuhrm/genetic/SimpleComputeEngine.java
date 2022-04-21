@@ -24,24 +24,25 @@ import java.util.Random;
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
-class SimpleComputeEngine<H extends AbstractHypothesis<H>>
-        extends ComputeEngine<H> {
+class SimpleComputeEngine<H> extends ComputeEngine<H> {
 
     /**
      * Creates a new instance.
      * @param inRandom the source of randomness. Must not be {@code null}.
+     * @param inAlgorithmDefinition the definition of the algorithm to use.
      */
-    SimpleComputeEngine(final Random inRandom) {
-        super(inRandom);
+    SimpleComputeEngine(final Random inRandom,
+                        final AlgorithmDefinition<H> inAlgorithmDefinition) {
+        super(inRandom, inAlgorithmDefinition);
     }
 
     @Override
-    void select(final List<H> population,
+    void select(final List<Handle<H>> population,
                        final double sumOfProbabilities,
                        final int targetCount,
-                       final Collection<H> targetCollection) {
+                       final Collection<Handle<H>> targetCollection) {
         for (int i = 0; i < targetCount; i++) {
-            H selected = probabilisticSelect(
+            Handle<H> selected = probabilisticSelect(
                     population,
                     sumOfProbabilities
             );
@@ -51,43 +52,58 @@ class SimpleComputeEngine<H extends AbstractHypothesis<H>>
 
     @Override
     void crossover(
-            final List<H> population,
+            final List<Handle<H>> population,
             final double sumOfProbabilities,
             final int targetCount,
-            final Collection<H> targetCollection) {
+            final Collection<Handle<H>> targetCollection) {
+
         for (int i = 0; i < targetCount;) {
-            H first = probabilisticSelect(population,
+            Handle<H> first = probabilisticSelect(population,
                     sumOfProbabilities
             );
-            H second = probabilisticSelect(population,
+            Handle<H> second = probabilisticSelect(population,
                     sumOfProbabilities
             );
-            List<H> children = first.crossOver(second);
-            targetCollection.addAll(children);
-            i += children.size();
+
+            Collection<H> offsprings =
+                    getAlgorithmDefinition().crossOverHypothesis(
+                        first.getHypothesis(),
+                        second.getHypothesis());
+
+            i += offsprings.size();
+
+            for (H offspring : offsprings) {
+                targetCollection.add(new Handle<>(offspring));
+            }
         }
     }
 
     @Override
-    void mutate(final List<H> selectedSet,
+    void mutate(final List<Handle<H>> selectedSet,
                        final int mutationCount) {
         for (int i = 0; i < mutationCount; i++) {
             int index = getRandom().nextInt(selectedSet.size());
-            H current = selectedSet.get(index);
-            current.mutate();
+            Handle<H> current = selectedSet.get(index);
+            getAlgorithmDefinition().mutateHypothesis(current.getHypothesis());
+            current.setHasFitness(false);
         }
     }
 
     @Override
     double updateFitnessAndGetSumOfProbabilities(
-            final List<H> population) {
+            final List<Handle<H>> population) {
         double sumFitness = 0.;
-        for (H current : population) {
-            current.setFitness(current.calculateFitness());
+        for (Handle<H> current : population) {
+            if (!current.isHasFitness()) {
+                current.setFitness(
+                        getAlgorithmDefinition()
+                                .calculateFitness(current.getHypothesis()));
+                current.setHasFitness(true);
+            }
             sumFitness += current.getFitness();
         }
         double sumOfProbabilities = 0.;
-        for (H current : population) {
+        for (Handle<H> current : population) {
             double probability = current.getFitness() / sumFitness;
             current.setProbability(probability);
             sumOfProbabilities += probability;

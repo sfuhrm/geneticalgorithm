@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
-class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
+class ExecutorServiceComputeEngine<H>
         extends ComputeEngine<H> {
 
     /** The executor service to use for multi-threading.
@@ -39,11 +39,13 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
     /**
      * Creates a new instance.
      * @param inRandom the source of randomness. Must not be {@code null}.
+     * @param inDefinition the algorithm definition to use.
      * @param inExecutorService the executor service to use for multi threading.
      */
     ExecutorServiceComputeEngine(final Random inRandom,
+                                 final AlgorithmDefinition inDefinition,
                                  final ExecutorService inExecutorService) {
-        super(inRandom);
+        super(inRandom, inDefinition);
         this.executorService = inExecutorService;
     }
 
@@ -52,11 +54,11 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
     }
 
     @Override
-    void select(final List<H> population,
+    void select(final List<Handle<H>> population,
                        final double sumOfProbabilities,
                        final int targetCount,
-                       final Collection<H> targetCollection) {
-        List<Future<H>> futureList = new ArrayList<>(targetCount);
+                       final Collection<Handle<H>> targetCollection) {
+        List<Future<Handle<H>>> futureList = new ArrayList<>(targetCount);
         for (int i = 0; i < targetCount; i++) {
             futureList.add(executorService.submit(() ->
                 probabilisticSelect(
@@ -65,7 +67,7 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
                 )
             ));
         }
-        for (Future<H> future : futureList) {
+        for (Future<Handle<H>> future : futureList) {
             try {
                 targetCollection.add(future.get());
             } catch (InterruptedException | ExecutionException e) {
@@ -76,24 +78,33 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
 
     @Override
     void crossover(
-            final List<H> population,
+            final List<Handle<H>> population,
             final double sumOfProbabilities,
             final int targetCount,
-            final Collection<H> targetCollection) {
-        List<Future<List<H>>> futureList = new ArrayList<>(targetCount);
+            final Collection<Handle<H>> targetCollection) {
+        List<Future<List<Handle<H>>>> futureList = new ArrayList<>(targetCount);
         for (int i = 0; i < targetCount / 2; i++) {
             futureList.add(executorService.submit(() -> {
-                H first = probabilisticSelect(population,
+                Handle<H> first = probabilisticSelect(population,
                         sumOfProbabilities);
-                H second = probabilisticSelect(population,
+                Handle<H> second = probabilisticSelect(population,
                         sumOfProbabilities);
-                return first.crossOver(second);
+                Collection<H> offsprings = getAlgorithmDefinition()
+                        .crossOverHypothesis(
+                            first.getHypothesis(),
+                            second.getHypothesis());
+                List<Handle<H>> offspringHandles
+                        = new ArrayList<>(offsprings.size());
+                for (H offspring : offsprings) {
+                    offspringHandles.add(new Handle<>(offspring));
+                }
+                return offspringHandles;
             }));
         }
 
         int childCount = 0;
-        for (Future<List<H>> future : futureList) {
-            List<H> children;
+        for (Future<List<Handle<H>>> future : futureList) {
+            List<Handle<H>> children;
             try {
                 children = future.get();
                 childCount += children.size();
@@ -108,15 +119,17 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
     }
 
     @Override
-    void mutate(final List<H> selectedSet,
+    void mutate(final List<Handle<H>> selectedSet,
                        final int mutationCount) {
         List<Future<?>> futureList = new ArrayList<>(mutationCount);
         for (int i = 0; i < mutationCount; i++) {
             futureList.add(executorService.submit(() -> {
                 int index = getRandom().nextInt(selectedSet.size());
-                H current = selectedSet.get(index);
-                current.mutate();
-        }
+                Handle<H> current = selectedSet.get(index);
+                getAlgorithmDefinition()
+                        .mutateHypothesis(current.getHypothesis());
+                current.setHasFitness(false);
+            }
             ));
         }
 
@@ -131,18 +144,25 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
 
     @Override
     double updateFitnessAndGetSumOfProbabilities(
-            final List<H> population) {
+            final List<Handle<H>> population) {
         double sumFitness = 0.;
 
-        List<Future<H>> futureList = new ArrayList<>(population.size());
-        for (H hypothesis : population) {
-            futureList.add(executorService.submit(() -> {
-                hypothesis.setFitness(hypothesis.calculateFitness());
-                return hypothesis;
-            }));
+        List<Future<Handle<H>>> futureList = new ArrayList<>(population.size());
+        for (Handle<H> handle : population) {
+            if (handle.isHasFitness()) {
+                sumFitness += handle.getFitness();
+            } else {
+                futureList.add(executorService.submit(() -> {
+                    handle.setFitness(
+                            getAlgorithmDefinition().calculateFitness(
+                                    handle.getHypothesis()));
+                    handle.setHasFitness(true);
+                    return handle;
+                }));
+            }
         }
 
-        for (Future<H> future : futureList) {
+        for (Future<Handle<H>> future : futureList) {
             try {
                 sumFitness += future.get().getFitness();
             } catch (InterruptedException | ExecutionException e) {
@@ -151,7 +171,7 @@ class ExecutorServiceComputeEngine<H extends AbstractHypothesis<H>>
         }
 
         double sumOfProbabilities = 0.;
-        for (H current : population) {
+        for (Handle<H> current : population) {
             double probability = current.getFitness() / sumFitness;
             current.setProbability(probability);
             sumOfProbabilities += probability;
