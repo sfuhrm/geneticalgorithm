@@ -57,6 +57,10 @@ public final class GuessingExample {
     @Option(name = "-h", usage = "help", aliases = "-help", help = true)
     private boolean help;
 
+    /** Is no output wanted? */
+    @Option(name = "-q", usage = "quiet / no output", aliases = "-quiet")
+    private boolean quiet;
+
     /** The default for the crossover rate for the CLI. */
     private static final double CROSS_OVER_RATE_DEFAULT = 0.5;
 
@@ -196,7 +200,10 @@ public final class GuessingExample {
         long start = System.currentTimeMillis();
 
         Function<IntArrayHypothesis, Boolean> loopFunction = h -> {
-            print(h);
+            generation++;
+            if (!guessingExample.quiet) {
+                print(h);
+            }
             return h.calculateFitness() < h.maximumFitness();
         };
         Supplier<IntArrayHypothesis> hypothesisSupplier =
