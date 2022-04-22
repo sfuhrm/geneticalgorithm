@@ -35,6 +35,12 @@ abstract class ComputeEngine<H> {
         this.algorithmDefinition = inAlgorithmDefinition;
     }
 
+    /** Create a specific number of random hypothesis.
+     * @param count the number of hypothesis to create.
+     * @return a list of hypothesis handles just created.
+     * */
+    abstract List<Handle<H>> createRandomHypothesisHandles(int count);
+
     /**
      * Selects a fraction of {@code 1-crossOverRate} hypothesis
      * relative to their fitness. Adds the results to the
@@ -89,6 +95,30 @@ abstract class ComputeEngine<H> {
      */
     Handle<H> probabilisticSelect(final List<Handle<H>> population,
                                   final double sumOfProbabilities
+    ) {
+        return innerProbabilisticSelectSimplifiedStochastic(
+                population, sumOfProbabilities);
+    }
+
+    private Handle<H> innerProbabilisticSelectRealStochastic(
+            final List<Handle<H>> population,
+            final double sumOfProbabilities
+    ) {
+        Handle<H> result = population.get(0);
+        for (int i = 0; i < population.size(); i++) {
+            double randomPoint = getRandom().nextDouble(); // random number
+            int index = getRandom().nextInt(population.size());
+            result = population.get(index);
+            if (randomPoint < result.getProbability()) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private Handle<H> innerProbabilisticSelectSimplifiedStochastic(
+            final List<Handle<H>> population,
+            final double sumOfProbabilities
     ) {
         Handle<H> result = population.get(0);
         double randomPoint = getRandom().nextDouble(); // random number

@@ -15,6 +15,7 @@
  */
 package de.sfuhrm.genetic;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +35,17 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
     SimpleComputeEngine(final Random inRandom,
                         final AlgorithmDefinition<H> inAlgorithmDefinition) {
         super(inRandom, inAlgorithmDefinition);
+    }
+
+    @Override
+    List<Handle<H>> createRandomHypothesisHandles(final int count) {
+        List<Handle<H>> result = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            result.add(
+                    new Handle<>(
+                            getAlgorithmDefinition().newRandomHypothesis()));
+        }
+        return result;
     }
 
     @Override

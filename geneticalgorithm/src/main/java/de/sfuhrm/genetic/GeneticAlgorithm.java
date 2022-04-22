@@ -143,15 +143,11 @@ public class GeneticAlgorithm<H> {
      */
     private Optional<Handle<H>> innerFindMaximum(
             final ComputeEngine<H> computeEngine) {
-        List<Handle<H>> currentGeneration = new ArrayList<>(generationSize);
+        List<Handle<H>> currentGeneration =
+                computeEngine.createRandomHypothesisHandles(
+                    generationSize);
         List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
         Optional<Handle<H>> max = Optional.empty();
-
-        for (int i = 0; i < generationSize; i++) {
-            currentGeneration.add(
-                    new Handle<>(
-                            algorithmDefinition.newRandomHypothesis()));
-        }
 
         generationNumber = 0;
         do {

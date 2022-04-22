@@ -54,6 +54,26 @@ class ExecutorServiceComputeEngine<H>
     }
 
     @Override
+    List<Handle<H>> createRandomHypothesisHandles(final int count) {
+        List<Handle<H>> result = new ArrayList<>(count);
+        List<Future<Handle<H>>> futureList = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            futureList.add(executorService.submit(() ->
+                    new Handle<>(getAlgorithmDefinition().newRandomHypothesis())
+            ));
+        }
+        for (Future<Handle<H>> future : futureList) {
+            try {
+                result.add(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                handleException(e);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     void select(final List<Handle<H>> population,
                        final double sumOfProbabilities,
                        final int targetCount,

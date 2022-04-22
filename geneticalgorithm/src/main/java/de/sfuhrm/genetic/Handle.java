@@ -28,7 +28,10 @@ import lombok.Setter;
  */
 public class Handle<T> {
 
-    /** Is the fitness calculated? */
+    /** Is the fitness calculated? This flag is used
+     * for lazy calculation.
+     * @see AlgorithmDefinition#calculateFitness(Object)
+     * */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private boolean hasFitness;
 
