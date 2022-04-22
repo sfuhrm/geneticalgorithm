@@ -184,11 +184,11 @@ public class GeneticAlgorithm<H> {
                     (int) ((crossOverRate) * generationSize),
                     nextGeneration);
 
+            computeEngine.mutate(nextGeneration,
+                    (int) (mutationRate * generationSize));
+
             currentGeneration.clear();
             currentGeneration.addAll(nextGeneration);
-
-            computeEngine.mutate(currentGeneration,
-                    (int) (mutationRate * generationSize));
 
             generationNumber++;
         } while (allTimeMax.isPresent()
