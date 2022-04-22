@@ -137,6 +137,23 @@ public class GeneticAlgorithm<H> {
         inAlgorithmDefinition.initialize(random);
     }
 
+    private static <H> Optional<Handle<H>> max(
+            final Handle<H> a,
+            final Handle<H> b) {
+        if (a == null) {
+            return Optional.ofNullable(b);
+        }
+        if (b == null) {
+            return Optional.ofNullable(a);
+        }
+
+        if (a.getFitness() > b.getFitness()) {
+            return Optional.of(a);
+        } else {
+            return Optional.of(b);
+        }
+    }
+
     /** Perform the genetic operation.
      * @param computeEngine the compute engine to use.
      * @return the maximum element, if any.
@@ -147,7 +164,7 @@ public class GeneticAlgorithm<H> {
                 computeEngine.createRandomHypothesisHandles(
                     generationSize);
         List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
-        Optional<Handle<H>> max = Optional.empty();
+        Optional<Handle<H>> allTimeMax = Optional.empty();
 
         generationNumber = 0;
         do {
@@ -155,15 +172,7 @@ public class GeneticAlgorithm<H> {
                     currentGeneration);
 
             Optional<Handle<H>> curMax = computeEngine.max(currentGeneration);
-            if (curMax.isPresent()) {
-                if (max.isPresent()) {
-                    if (curMax.get().getFitness() > max.get().getFitness()) {
-                        max = curMax;
-                    }
-                } else {
-                    max = curMax;
-                }
-            }
+            allTimeMax = max(curMax.orElse(null), allTimeMax.orElse(null));
 
             nextGeneration.clear();
 
@@ -182,10 +191,10 @@ public class GeneticAlgorithm<H> {
                     (int) (mutationRate * generationSize));
 
             generationNumber++;
-        } while (max.isPresent()
-                && algorithmDefinition.loop(max.get().getHypothesis()));
+        } while (allTimeMax.isPresent()
+                && algorithmDefinition.loop(allTimeMax.get().getHypothesis()));
 
-        return max;
+        return allTimeMax;
     }
 
 
