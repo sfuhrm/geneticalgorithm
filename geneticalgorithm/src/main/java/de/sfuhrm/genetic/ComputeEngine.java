@@ -47,14 +47,11 @@ abstract class ComputeEngine<H> {
      * {@code targetCollection}.
      *
      * @param population         the population to select on.
-     * @param sumOfProbabilities the
-     *                           sum of probabilities of the population.
      * @param targetCount        the number of instances to add to
      *                           the {@code targetCollection}.
      * @param targetCollection   the target list to put selected elements to.
      */
     abstract void select(List<Handle<H>> population,
-                double sumOfProbabilities,
                 int targetCount,
                 Collection<Handle<H>> targetCollection);
 
@@ -63,15 +60,12 @@ abstract class ComputeEngine<H> {
      * relative to their fitness.
      *
      * @param population         the population to select on.
-     * @param sumOfProbabilities the
-     *                           sum of probabilities of the population.
      * @param targetCount        the number of instances to add to
      *                           the {@code targetCollection}.
      * @param targetCollection   the target set to put crossed over elements to.
      */
     abstract void crossover(
             List<Handle<H>> population,
-            double sumOfProbabilities,
             int targetCount,
             Collection<Handle<H>> targetCollection);
 
@@ -89,20 +83,16 @@ abstract class ComputeEngine<H> {
      * probability of it.
      *
      * @param population         the population to select from.
-     * @param sumOfProbabilities the
-     *                           sum of probabilities of the population.
      * @return the selected element.
      */
-    Handle<H> probabilisticSelect(final List<Handle<H>> population,
-                                  final double sumOfProbabilities
+    Handle<H> probabilisticSelect(final List<Handle<H>> population
     ) {
         return innerProbabilisticSelectSimplifiedStochastic(
-                population, sumOfProbabilities);
+                population);
     }
 
     private Handle<H> innerProbabilisticSelectRealStochastic(
-            final List<Handle<H>> population,
-            final double sumOfProbabilities
+            final List<Handle<H>> population
     ) {
         Handle<H> result = population.get(0);
         for (int i = 0; i < population.size(); i++) {
@@ -117,13 +107,12 @@ abstract class ComputeEngine<H> {
     }
 
     private Handle<H> innerProbabilisticSelectSimplifiedStochastic(
-            final List<Handle<H>> population,
-            final double sumOfProbabilities
+            final List<Handle<H>> population
     ) {
         Handle<H> result = population.get(0);
         double randomPoint = getRandom().nextDouble(); // random number
         // a random point in the sum of probabilities
-        double inflatedPoint = randomPoint * sumOfProbabilities;
+        double inflatedPoint = randomPoint;
 
         double soFar = 0;
         for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
@@ -159,11 +148,9 @@ abstract class ComputeEngine<H> {
 
     /**
      * Updates the fitness and probability of the population.
-     * Returns the sum of the probabilities.
      *
      * @param population the population to work on.
-     * @return the sum of probabilities, which should be 1.
      */
-    abstract double updateFitnessAndGetSumOfProbabilities(
+    abstract void updateFitness(
             List<Handle<H>> population);
 }

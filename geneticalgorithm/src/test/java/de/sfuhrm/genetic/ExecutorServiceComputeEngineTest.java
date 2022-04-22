@@ -54,7 +54,7 @@ public class ExecutorServiceComputeEngineTest {
         }};
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
-        Handle<TestHypothesis> result = instance.probabilisticSelect(population, 1);
+        Handle<TestHypothesis> result = instance.probabilisticSelect(population);
 
         Assertions.assertSame(mockHandle, result);
 
@@ -71,7 +71,7 @@ public class ExecutorServiceComputeEngineTest {
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
-        instance.select(population, 1, 3, target);
+        instance.select(population,  3, target);
 
         Assertions.assertEquals(3, target.size());
 
@@ -93,7 +93,7 @@ public class ExecutorServiceComputeEngineTest {
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
-        instance.crossover(population, 1, 2, target);
+        instance.crossover(population,  2, target);
 
         Assertions.assertEquals(2, target.size());
         for (Handle<TestHypothesis> handle : target) {
@@ -132,7 +132,7 @@ public class ExecutorServiceComputeEngineTest {
         }};
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
-        instance.updateFitnessAndGetSumOfProbabilities(population);
+        instance.updateFitness(population);
 
         new Verifications() {{
         }};

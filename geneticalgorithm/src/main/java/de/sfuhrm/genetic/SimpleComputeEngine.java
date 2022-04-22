@@ -50,13 +50,11 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
 
     @Override
     void select(final List<Handle<H>> population,
-                       final double sumOfProbabilities,
                        final int targetCount,
                        final Collection<Handle<H>> targetCollection) {
         for (int i = 0; i < targetCount; i++) {
             Handle<H> selected = probabilisticSelect(
-                    population,
-                    sumOfProbabilities
+                    population
             );
             targetCollection.add(selected);
         }
@@ -65,17 +63,12 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
     @Override
     void crossover(
             final List<Handle<H>> population,
-            final double sumOfProbabilities,
             final int targetCount,
             final Collection<Handle<H>> targetCollection) {
 
         for (int i = 0; i < targetCount;) {
-            Handle<H> first = probabilisticSelect(population,
-                    sumOfProbabilities
-            );
-            Handle<H> second = probabilisticSelect(population,
-                    sumOfProbabilities
-            );
+            Handle<H> first = probabilisticSelect(population);
+            Handle<H> second = probabilisticSelect(population);
 
             Collection<H> offsprings =
                     getAlgorithmDefinition().crossOverHypothesis(
@@ -102,7 +95,7 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
     }
 
     @Override
-    double updateFitnessAndGetSumOfProbabilities(
+    void updateFitness(
             final List<Handle<H>> population) {
         double sumFitness = 0.;
         for (Handle<H> current : population) {
@@ -114,12 +107,9 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
             }
             sumFitness += current.getFitness();
         }
-        double sumOfProbabilities = 0.;
         for (Handle<H> current : population) {
             double probability = current.getFitness() / sumFitness;
             current.setProbability(probability);
-            sumOfProbabilities += probability;
         }
-        return sumOfProbabilities;
     }
 }

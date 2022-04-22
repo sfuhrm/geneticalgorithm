@@ -151,9 +151,8 @@ public class GeneticAlgorithm<H> {
 
         generationNumber = 0;
         do {
-            double sumOfProbabilities =
-                    computeEngine.updateFitnessAndGetSumOfProbabilities(
-                            currentGeneration);
+            computeEngine.updateFitness(
+                    currentGeneration);
 
             Optional<Handle<H>> curMax = computeEngine.max(currentGeneration);
             if (curMax.isPresent()) {
@@ -169,11 +168,10 @@ public class GeneticAlgorithm<H> {
             nextGeneration.clear();
 
             computeEngine.select(currentGeneration,
-                    sumOfProbabilities,
                     (int) ((1. - crossOverRate) * generationSize),
                     nextGeneration);
 
-            computeEngine.crossover(currentGeneration, sumOfProbabilities,
+            computeEngine.crossover(currentGeneration,
                     (int) ((crossOverRate) * generationSize),
                     nextGeneration);
 

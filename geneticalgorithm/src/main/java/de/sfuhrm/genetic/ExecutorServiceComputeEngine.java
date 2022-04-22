@@ -75,15 +75,13 @@ class ExecutorServiceComputeEngine<H>
 
     @Override
     void select(final List<Handle<H>> population,
-                       final double sumOfProbabilities,
                        final int targetCount,
                        final Collection<Handle<H>> targetCollection) {
         List<Future<Handle<H>>> futureList = new ArrayList<>(targetCount);
         for (int i = 0; i < targetCount; i++) {
             futureList.add(executorService.submit(() ->
                 probabilisticSelect(
-                        population,
-                        sumOfProbabilities
+                        population
                 )
             ));
         }
@@ -99,16 +97,13 @@ class ExecutorServiceComputeEngine<H>
     @Override
     void crossover(
             final List<Handle<H>> population,
-            final double sumOfProbabilities,
             final int targetCount,
             final Collection<Handle<H>> targetCollection) {
         List<Future<List<Handle<H>>>> futureList = new ArrayList<>(targetCount);
         for (int i = 0; i < targetCount / 2; i++) {
             futureList.add(executorService.submit(() -> {
-                Handle<H> first = probabilisticSelect(population,
-                        sumOfProbabilities);
-                Handle<H> second = probabilisticSelect(population,
-                        sumOfProbabilities);
+                Handle<H> first = probabilisticSelect(population);
+                Handle<H> second = probabilisticSelect(population);
                 Collection<H> offsprings = getAlgorithmDefinition()
                         .crossOverHypothesis(
                             first.getHypothesis(),
@@ -163,7 +158,7 @@ class ExecutorServiceComputeEngine<H>
     }
 
     @Override
-    double updateFitnessAndGetSumOfProbabilities(
+    void updateFitness(
             final List<Handle<H>> population) {
         double sumFitness = 0.;
 
@@ -190,12 +185,9 @@ class ExecutorServiceComputeEngine<H>
             }
         }
 
-        double sumOfProbabilities = 0.;
         for (Handle<H> current : population) {
             double probability = current.getFitness() / sumFitness;
             current.setProbability(probability);
-            sumOfProbabilities += probability;
         }
-        return sumOfProbabilities;
     }
 }
