@@ -56,6 +56,10 @@ public final class GuessingExample {
     @Option(name = "-h", usage = "help", aliases = "-help", help = true)
     private boolean help;
 
+    /** Is no output wanted? */
+    @Option(name = "-q", usage = "quiet / no output", aliases = "-quiet")
+    private boolean quiet;
+
     /** The default for the crossover rate for the CLI. */
     private static final double CROSS_OVER_RATE_DEFAULT = 0.5;
 
@@ -130,14 +134,12 @@ public final class GuessingExample {
         return result;
     }
 
-    /** The count of the current generation. */
-    private static long generation;
+
     /** A copy of the previous genome or {@code null}
      * if no previous genome existed. */
     private static int[] oldGenome;
     static void print(final int[] h) {
-        generation++;
-        System.out.printf("%03d: ", generation);
+        System.out.printf("%03d: ", IntGuessingDefinition.getGeneration());
         for (int i = 0; i < h.length; i++) {
             int currentCellValue = h[i];
             int previousCellValue = -1;
@@ -192,7 +194,8 @@ public final class GuessingExample {
                     guessingExample.getCrossOverRate(),
                     guessingExample.getMutationRate(),
                     guessingExample.getGenerationSize(),
-                    new IntGuessingDefinition(genomeLength));
+                    new IntGuessingDefinition(genomeLength,
+                            !guessingExample.quiet));
         long start = System.currentTimeMillis();
 
         Optional<Handle<int[]>> max;
@@ -211,7 +214,7 @@ public final class GuessingExample {
                         + " speed=%.2f gen/s%n",
                 max,
                 max.get().getFitness(),
-                GuessingExample.generation / duration
+                IntGuessingDefinition.getGeneration() / duration
                 );
     }
 }

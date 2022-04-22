@@ -28,13 +28,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntGuessingDefinitionTest {
     @Test
     public void initialize() {
-        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4);
+        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4, true);
         intGuessingDefinition.initialize(new Random(0));
     }
 
     @Test
     public void newRandomHypothesis() {
-        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4);
+        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4, true);
         intGuessingDefinition.initialize(new Random(0));
         int[] instance = intGuessingDefinition.newRandomHypothesis();
         assertEquals(4, instance.length);
@@ -42,7 +42,7 @@ public class IntGuessingDefinitionTest {
 
     @Test
     public void mutateHypothesis() {
-        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4);
+        IntGuessingDefinition intGuessingDefinition = new IntGuessingDefinition(4, true);
         intGuessingDefinition.initialize(new Random(0));
         int[] instance = new int[4];
         intGuessingDefinition.mutateHypothesis(instance);

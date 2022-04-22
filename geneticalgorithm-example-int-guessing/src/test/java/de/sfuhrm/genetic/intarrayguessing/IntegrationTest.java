@@ -38,7 +38,7 @@ public class IntegrationTest {
     @Test
     public void testFindMaximumSingleThread() {
         int numbers = 4;
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers), new Random(0));
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers, true), new Random(0));
         Optional<Handle<int[]>> hypothesisOptional =
                 algorithm.findMaximum();
 
@@ -52,7 +52,7 @@ public class IntegrationTest {
     public void testFindMaximumMultiThread() {
         int numbers = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers), new Random(0));
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers, true), new Random(0));
         Optional<Handle<int[]>> hypothesisOptional =
                 algorithm.findMaximum(
                         executorService);

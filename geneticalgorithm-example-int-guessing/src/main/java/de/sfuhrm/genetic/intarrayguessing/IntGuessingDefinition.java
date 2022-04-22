@@ -16,6 +16,7 @@
 package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.AlgorithmDefinition;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,10 +33,14 @@ public final class IntGuessingDefinition implements
     private Random random;
 
     /** The length of the genome / array length. */
-    private int genomeLength;
+    private final int genomeLength;
 
-    IntGuessingDefinition(final int inLength) {
+    /** Output current max hypothesis. */
+    private final boolean verbose;
+
+    IntGuessingDefinition(final int inLength, final boolean inVerbose) {
         this.genomeLength = inLength;
+        this.verbose = inVerbose;
     }
 
     @Override
@@ -87,9 +92,16 @@ public final class IntGuessingDefinition implements
         return Math.exp(fitness);
     }
 
+    /** The count of the current generation. */
+    @Getter
+    private static long generation;
+
     @Override
     public boolean loop(final int[] hypothesis) {
-        GuessingExample.print(hypothesis);
+        generation++;
+        if (verbose) {
+            GuessingExample.print(hypothesis);
+        }
         for (int i = 0; i < hypothesis.length; i++) {
             if (hypothesis[i] != i) {
                 return true;
