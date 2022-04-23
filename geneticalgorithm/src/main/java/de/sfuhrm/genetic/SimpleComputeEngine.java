@@ -22,6 +22,7 @@ import java.util.Random;
 
 /**
  * Generic genetic algorithm implementation.
+ * This implementation uses just the main thread.
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
