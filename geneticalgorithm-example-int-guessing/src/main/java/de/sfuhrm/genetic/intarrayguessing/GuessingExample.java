@@ -212,7 +212,7 @@ public final class GuessingExample {
         executorService.shutdown();
         System.out.printf("Maximum is %s with fitness=%.2f,"
                         + " speed=%.2f gen/s%n",
-                max,
+                Arrays.toString(max.get().getHypothesis()),
                 max.get().getFitness(),
                 IntGuessingDefinition.getGeneration() / duration
                 );
