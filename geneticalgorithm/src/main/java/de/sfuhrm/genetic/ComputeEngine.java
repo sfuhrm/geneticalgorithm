@@ -104,6 +104,7 @@ abstract class ComputeEngine<H> {
      */
     Handle<H> probabilisticSelect(final List<Handle<H>> population
     ) {
+        // TODO measure how well this performs
         return innerProbabilisticSelectSimplifiedStochastic(
                 population);
     }

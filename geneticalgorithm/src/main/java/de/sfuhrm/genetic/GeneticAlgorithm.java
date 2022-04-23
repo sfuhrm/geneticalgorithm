@@ -174,6 +174,8 @@ public class GeneticAlgorithm<H> {
      * individuals from the {@code currentGeneration} input.
      * @since 3.0.0
      * */
+    // TODO ComputeEngine is package private
+    // TODO Handle has package private c'tor
     public List<Handle<H>> calculateNextGeneration(
             final List<Handle<H>> currentGeneration,
             final ComputeEngine<H> computeEngine) {
