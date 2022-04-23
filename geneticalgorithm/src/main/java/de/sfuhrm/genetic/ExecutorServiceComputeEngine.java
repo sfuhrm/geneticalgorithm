@@ -43,7 +43,7 @@ class ExecutorServiceComputeEngine<H>
      * @param inExecutorService the executor service to use for multi threading.
      */
     ExecutorServiceComputeEngine(final Random inRandom,
-                                 final AlgorithmDefinition inDefinition,
+                                 final AlgorithmDefinition<H> inDefinition,
                                  final ExecutorService inExecutorService) {
         super(inRandom, inDefinition);
         this.executorService = inExecutorService;

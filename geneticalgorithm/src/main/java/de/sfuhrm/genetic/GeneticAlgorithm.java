@@ -78,10 +78,10 @@ public class GeneticAlgorithm<H> {
 
     /**
      * Constructs a new genetic algorithm.
-     * @param inCrossOverRate the fraction at which the cross over
+     * @param inCrossOverRate the fraction at which the cross-over
      *                      operator is applied to the population,
      *                      between 0 and 1. A good value for the
-     *                      cross over rate is {@code 0.3}.
+     *                      cross-over rate is {@code 0.3}.
      * @param inMutationRate the fraction at which the mutation operator
      *                     is applied to the population, between 0 and 1.
      *                     A good value for the mutation rate is {@code 0.05}.
@@ -105,10 +105,10 @@ public class GeneticAlgorithm<H> {
 
     /**
      * Constructs a new genetic algorithm.
-     * @param inCrossOverRate the fraction at which the cross over
+     * @param inCrossOverRate the fraction at which the cross-over
      *                      operator is applied to the population,
      *                      between 0 and 1. A good value for the
-     *                      cross over rate is {@code 0.3}.
+     *                      cross-over rate is {@code 0.3}.
      * @param inMutationRate the fraction at which the mutation operator
      *                     is applied to the population, between 0 and 1.
      *                     A good value for the mutation rate is {@code 0.05}.
@@ -155,7 +155,7 @@ public class GeneticAlgorithm<H> {
             return Optional.ofNullable(b);
         }
         if (b == null) {
-            return Optional.ofNullable(a);
+            return Optional.of(a);
         }
 
         if (a.getFitness() > b.getFitness()) {
@@ -247,7 +247,7 @@ public class GeneticAlgorithm<H> {
             @NonNull final ExecutorService executorService) {
 
         return innerFindMaximum(
-                new ExecutorServiceComputeEngine<H>(
+                new ExecutorServiceComputeEngine<>(
                         random,
                         algorithmDefinition,
                         executorService
@@ -256,7 +256,7 @@ public class GeneticAlgorithm<H> {
 
     /** Perform the genetic optimization.
      * For a discussion on the usage, see
-     * {@link #findMaximum()}}.
+     * {@link #findMaximum(ExecutorService)} .
      * @return the maximum element, if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
@@ -264,6 +264,6 @@ public class GeneticAlgorithm<H> {
      */
     public Optional<Handle<H>> findMaximum() {
         return innerFindMaximum(
-                new SimpleComputeEngine<H>(random, algorithmDefinition));
+                new SimpleComputeEngine<>(random, algorithmDefinition));
     }
 }

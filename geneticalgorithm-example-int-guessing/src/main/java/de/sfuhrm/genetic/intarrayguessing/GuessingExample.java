@@ -63,7 +63,7 @@ public final class GuessingExample {
     /** The default for the crossover rate for the CLI. */
     private static final double CROSS_OVER_RATE_DEFAULT = 0.5;
 
-    /** The cross over rate (0..1). */
+    /** The cross-over rate (0..1). */
     @Getter
     @Option(name = "-x", usage = "cross over rate (0..1)",
             metaVar = "RATE",

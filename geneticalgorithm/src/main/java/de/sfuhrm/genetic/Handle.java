@@ -50,7 +50,7 @@ public class Handle<T> {
 
     /** Reference to the hypothesis.
      * */
-    @Getter @Setter(AccessLevel.PACKAGE)
+    @Getter
     private final T hypothesis;
 
     /** Creates an instance.

@@ -97,7 +97,7 @@ public class ExecutorServiceComputeEngineTest {
 
         Assertions.assertEquals(2, target.size());
         for (Handle<TestHypothesis> handle : target) {
-            Assertions.assertEquals(false, handle.isHasFitness());
+            Assertions.assertFalse(handle.isHasFitness());
             Assertions.assertSame(mockHypothesis, handle.getHypothesis());
         }
 
@@ -115,7 +115,7 @@ public class ExecutorServiceComputeEngineTest {
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.mutate(population, 1);
 
-        Assertions.assertEquals(false, mockHandle.isHasFitness());
+        Assertions.assertFalse(mockHandle.isHasFitness());
         new Verifications() {{
             mockHandle.setHasFitness(false);
         }};

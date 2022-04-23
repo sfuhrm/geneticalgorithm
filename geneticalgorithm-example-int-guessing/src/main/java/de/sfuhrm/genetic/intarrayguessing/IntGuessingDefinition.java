@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-/** Definition for a int guessing scenario.
+/** Definition for an int guessing scenario.
  * @author Stephan Fuhrmann
  */
 public final class IntGuessingDefinition implements
