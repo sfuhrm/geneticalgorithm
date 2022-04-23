@@ -11,14 +11,23 @@ Genetic Algorithm in Java
 ## Purpose
 
 A genetic algorithm library in Java with focus on easy usage and high performance.
-Genetic algorithms can be used to solve optimization problems where there's an evaluation
-function available (also known as cost).
+Genetic algorithms are
+meta heuristics inspired by the process of natural selection
+that belongs to the larger class of evolutionary algorithms.
+Genetic algorithms can solve optimization problems when there's only
+an evaluation function available (also known as fitness function).
 
-The following example shows the library guessing a sequence of 30 int values
-with a genetic population size of 3000 hypothesis:
+## Illustration: Integer guessing
+
+The following illustration shows the library guessing a sequence of
+30 int values with a genetic population size of 3000 hypothesis.
+At the beginning many components of the population are wrong (=red).
+With almost every generation (=line) the population improves
+in fitness and more and more components turn from wrong (=red)
+to correct (=green).
 
 ![Guessing an int sequence](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/master/.github/IntGuessingExample.gif
- "Guessing an int sequence")
+"Guessing an int sequence")
 
 ## Requirements
 
@@ -26,6 +35,8 @@ The library uses Java 8 functions and will only work with Java 8 and above.
 There are no libraries needed besides those build-in the JDK.
 
 ## Usage
+
+TODO rework
 
 Usage is done in the following steps:
 1. Implement your own subclass of
@@ -47,6 +58,8 @@ documentation online.
 
 ## Example
 
+TODO rework
+
 There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/master/src/test/java/de/sfuhrm/genetic/example/intguessing/GuessingExample.java) that implements the challenge to guess
 a sequence of integer numbers. Each correct digit will increase
 the fitness score by one.
@@ -64,9 +77,10 @@ Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calc
 System.out.println("Maximum is "+max);
 ```
 
-## Including it in your projects
+## Including genetic algorithm in your projects
 
-The recommended way of including the library into your project is using maven:
+The recommended way of including the library into your project is using 
+Apache Maven:
 
 ---------------------------------------
 
@@ -79,6 +93,11 @@ The recommended way of including the library into your project is using maven:
 ```
 
 ---------------------------------------
+
+## Algorithm reference
+The algorithm is based on the book
+_Machine learning. Tom M. Mitchell. Published by McGraw-Hill_
+(ISBN 0-07-115467-1).
 
 ## License
 
