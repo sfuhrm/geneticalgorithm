@@ -24,21 +24,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
- * Generic genetic algorithm implementation.
- * After initializing the instance the main focus
- * is on {@linkplain #findMaximum(Function, Supplier) finding the maximum}
- * in the hypothesis space.
+ * Central entry class for generic algorithm implementations.
+ * There are two approaches you can take:
+ *
+ * <ol>
+ *     <li>High-level approach: Call one of the {@link #findMaximum()} or
+ *     {@link #findMaximum(ExecutorService)} methods. They
+ *     will iterate multiple generations until the
+ *     {@link AlgorithmDefinition#loop(Object) finish-condition}
+ *     is met.</li>
+ *     <li>Low-Level approach: Iterate yourself and calculate
+ *     each generation yourself using the {@link #calculateNextGeneration(List, ComputeEngine)}
+ *     method. This way you can do your own analysis on the state of the
+ *     population.</li>
+ * </ol>
+ *
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
-public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
+public class GeneticAlgorithm<H> {
 
     /** The random generator to use. */
     private final Random random;
+
+    /** The algorithm definition to work with. */
+    private final AlgorithmDefinition<H> algorithmDefinition;
 
     /** The fraction between 0 and 1 at which cross over operations are done.
      * The other part of the population will be filled with selected
@@ -78,12 +90,16 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                       The generation size choice depends on the
      *                       complexity of your problem, but {@code 100} is
      *                       a good starting point.
+     * @param inAlgorithmDefinition the algorithm definition to work with.
      * @throws IllegalArgumentException if the parameters are illegal.
      */
     public GeneticAlgorithm(final double inCrossOverRate,
                             final double inMutationRate,
-                            final int inGenerationSize) {
+                            final int inGenerationSize,
+                            final AlgorithmDefinition<H> inAlgorithmDefinition
+                            ) {
         this(inCrossOverRate, inMutationRate, inGenerationSize,
+                inAlgorithmDefinition,
                 new Random());
     }
 
@@ -101,6 +117,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *                       The generation size choice depends on the
      *                       complexity of your problem, but {@code 100} is
      *                       a good starting point.
+     * @param inAlgorithmDefinition the algorithm definition to work with.
      * @param inRandom the random number generator to use as source of
      *                 randomness.
      * @throws IllegalArgumentException if the parameters are illegal.
@@ -108,6 +125,7 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
     public GeneticAlgorithm(final double inCrossOverRate,
                             final double inMutationRate,
                             final int inGenerationSize,
+                            final AlgorithmDefinition<H> inAlgorithmDefinition,
                             final Random inRandom) {
         if (inCrossOverRate < 0. || inCrossOverRate > 1.) {
             throw new IllegalArgumentException(
@@ -125,66 +143,87 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
         this.random = inRandom;
+        this.algorithmDefinition = inAlgorithmDefinition;
+
+        inAlgorithmDefinition.initialize(random);
+    }
+
+    private static <H> Optional<Handle<H>> max(
+            final Handle<H> a,
+            final Handle<H> b) {
+        if (a == null) {
+            return Optional.ofNullable(b);
+        }
+        if (b == null) {
+            return Optional.ofNullable(a);
+        }
+
+        if (a.getFitness() > b.getFitness()) {
+            return Optional.of(a);
+        } else {
+            return Optional.of(b);
+        }
+    }
+
+    /** Calculate one generation step.
+     * Takes a current generation and calculates the
+     * next generation out of it.
+     * @param currentGeneration the current generation of hypothesis handles.
+     * @param computeEngine the compute engine to use for computation.
+     * @return the population of the next generation. This will contain some
+     * individuals from the {@code currentGeneration} input.
+     * @since 3.0.0
+     * */
+    public List<Handle<H>> calculateNextGeneration(
+            final List<Handle<H>> currentGeneration,
+            final ComputeEngine<H> computeEngine) {
+        List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
+
+        computeEngine.updateFitness(
+                currentGeneration);
+
+        computeEngine.select(currentGeneration,
+                (int) ((1. - crossOverRate) * generationSize),
+                nextGeneration);
+
+        computeEngine.crossover(currentGeneration,
+                (int) ((crossOverRate) * generationSize),
+                nextGeneration);
+
+        computeEngine.mutate(nextGeneration,
+                (int) (mutationRate * generationSize));
+
+        generationNumber++;
+
+        return nextGeneration;
     }
 
     /** Perform the genetic operation.
-     * @param loopCondition the abort condition that stays true while the
-     *                      maximum is not yet reached. Gets presented
-     *                      the best hypothesis as input.
-     * @param hypothesisSupplier creation function for new hypothesis.
      * @param computeEngine the compute engine to use.
      * @return the maximum element, if any.
      */
-    private Optional<H> innerFindMaximum(
-            final Function<H, Boolean> loopCondition,
-            final Supplier<H> hypothesisSupplier,
+    private Optional<Handle<H>> innerFindMaximum(
             final ComputeEngine<H> computeEngine) {
-        List<H> currentGeneration = new ArrayList<>(generationSize);
-        List<H> nextGeneration = new ArrayList<>(generationSize);
-        Optional<H> max = Optional.empty();
-
-        for (int i = 0; i < generationSize; i++) {
-            currentGeneration.add(hypothesisSupplier.get().randomInit());
-        }
+        List<Handle<H>> currentGeneration =
+                computeEngine.createRandomHypothesisHandles(
+                    generationSize);
+        Optional<Handle<H>> allTimeMax = Optional.empty();
 
         generationNumber = 0;
         do {
-            double sumOfProbabilities =
-                    computeEngine.updateFitnessAndGetSumOfProbabilities(
-                            currentGeneration);
 
-            Optional<H> curMax = computeEngine.max(currentGeneration);
-            if (curMax.isPresent()) {
-                if (max.isPresent()) {
-                    if (curMax.get().getFitness() > max.get().getFitness()) {
-                        max = curMax;
-                    }
-                } else {
-                    max = curMax;
-                }
-            }
+            List<Handle<H>> nextGeneration =
+                    calculateNextGeneration(currentGeneration,
+                            computeEngine);
 
-            nextGeneration.clear();
+            Optional<Handle<H>> curMax = computeEngine.max(nextGeneration);
+            allTimeMax = max(curMax.orElse(null), allTimeMax.orElse(null));
 
-            computeEngine.select(currentGeneration,
-                    sumOfProbabilities,
-                    (int) ((1. - crossOverRate) * generationSize),
-                    nextGeneration);
+            currentGeneration = nextGeneration;
+        } while (allTimeMax.isPresent()
+                && algorithmDefinition.loop(allTimeMax.get().getHypothesis()));
 
-            computeEngine.crossover(currentGeneration, sumOfProbabilities,
-                    (int) ((crossOverRate) * generationSize),
-                    nextGeneration);
-
-            currentGeneration.clear();
-            currentGeneration.addAll(nextGeneration);
-
-            computeEngine.mutate(currentGeneration,
-                    (int) (mutationRate * generationSize));
-
-            generationNumber++;
-        } while (max.isPresent() && loopCondition.apply(max.get()));
-
-        return max;
+        return allTimeMax;
     }
 
 
@@ -202,53 +241,38 @@ public class GeneticAlgorithm<H extends AbstractHypothesis<H>> {
      *     problem</li>
      * </ul>
      *
-     * @param loopCondition the abort condition that stays true while the
-     *                      maximum is not yet reached. Gets presented
-     *                      the best hypothesis as input after every
-     *                      generation of the genetic algorithm.
-     * @param hypothesisSupplier creation function for new hypothesis.
-     *     This will usually be {@code YourHypothesis::new}.
      * @param executorService the executor service to use when calculating the
      *     fitness. Can be obtained using a call like
      * {@code Executors.newFixedThreadPool(
      * Runtime.getRuntime().availableProcessors() * 2)}.
      * @return the maximum
-     *     {@link AbstractHypothesis#calculateFitness() fitness} element,
+     *     {@link AlgorithmDefinition#calculateFitness(Object)} element,
      *     if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
      * @see java.util.concurrent.Executors
      */
-    public Optional<H> findMaximum(
-            @NonNull final Function<H, Boolean> loopCondition,
-            @NonNull final Supplier<H> hypothesisSupplier,
+    public Optional<Handle<H>> findMaximum(
             @NonNull final ExecutorService executorService) {
 
         return innerFindMaximum(
-                loopCondition,
-                hypothesisSupplier,
-                new ExecutorServiceComputeEngine<>(
+                new ExecutorServiceComputeEngine<H>(
                         random,
+                        algorithmDefinition,
                         executorService
                 ));
     }
 
     /** Perform the genetic optimization.
      * For a discussion on the usage, see
-     * {@link #findMaximum(Function, Supplier, ExecutorService)}.
-     * @param loopCondition the abort condition that stays true while the
-     *                      maximum is not yet reached. Gets presented
-     *                      the best hypothesis as input.
-     * @param hypothesisSupplier creation function for new hypothesis.
+     * {@link #findMaximum()}}.
      * @return the maximum element, if any.
      * @throws NullPointerException
      * if one of the parameters is {@code null}.
-     * @see #findMaximum(Function, Supplier, ExecutorService)
+     * @see #findMaximum(ExecutorService)
      */
-    public Optional<H> findMaximum(
-            @NonNull final Function<H, Boolean> loopCondition,
-            @NonNull final Supplier<H> hypothesisSupplier) {
-        return innerFindMaximum(loopCondition, hypothesisSupplier,
-                new SimpleComputeEngine<>(random));
+    public Optional<Handle<H>> findMaximum() {
+        return innerFindMaximum(
+                new SimpleComputeEngine<H>(random, algorithmDefinition));
     }
 }

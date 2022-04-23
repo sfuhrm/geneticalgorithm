@@ -20,7 +20,13 @@ import java.util.concurrent.Executors;
  */
 public class ExecutorServiceComputeEngineTest {
     @Mocked
-    TestHypothesis mockInstance;
+    TestHypothesis mockHypothesis;
+
+    @Mocked
+    Handle<TestHypothesis> mockHandle;
+
+    @Mocked
+    AlgorithmDefinition<TestHypothesis> mockDefinition;
 
     @Mocked
     Random mockRandom;
@@ -32,25 +38,25 @@ public class ExecutorServiceComputeEngineTest {
     @BeforeEach
     public void setup() {
         executorService = Executors.newSingleThreadExecutor();
-        instance = new ExecutorServiceComputeEngine<>(mockRandom, executorService);
+        instance = new ExecutorServiceComputeEngine<>(mockRandom, mockDefinition, executorService);
     }
 
     @Test
     public void init() {
-        new ExecutorServiceComputeEngine<>(mockRandom, executorService);
+        new ExecutorServiceComputeEngine<>(mockRandom, mockDefinition, executorService);
     }
 
     @Test
     public void probabilisticSelect() {
         new Expectations() {{
-            mockInstance.getProbability(); result = .5; maxTimes = 1000;
+            mockHandle.getProbability(); result = .5; maxTimes = 1000;
             mockRandom.nextDouble(); result = 0.6;
         }};
 
-        List<TestHypothesis> population = Arrays.asList(mockInstance, mockInstance);
-        TestHypothesis result = instance.probabilisticSelect(population, 1);
+        List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
+        Handle<TestHypothesis> result = instance.probabilisticSelect(population);
 
-        Assertions.assertSame(mockInstance, result);
+        Assertions.assertSame(mockHandle, result);
 
         new Verifications() {{
         }};
@@ -59,18 +65,18 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void select() {
         new Expectations() {{
-            mockInstance.getProbability(); result = .5; maxTimes = 1000;
+            mockHandle.getProbability(); result = .5; maxTimes = 1000;
             mockRandom.nextDouble(); result = 0.6;
         }};
 
-        List<TestHypothesis> population = Arrays.asList(mockInstance, mockInstance);
-        List<TestHypothesis> target = new ArrayList<>();
-        instance.select(population, 1, 3, target);
+        List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
+        List<Handle<TestHypothesis>> target = new ArrayList<>();
+        instance.select(population,  3, target);
 
         Assertions.assertEquals(3, target.size());
 
-        for (TestHypothesis hypothesis : target) {
-            Assertions.assertSame(mockInstance, hypothesis);
+        for (Handle<TestHypothesis> hypothesis : target) {
+            Assertions.assertSame(mockHandle, hypothesis);
         }
 
         new Verifications() {{
@@ -80,18 +86,19 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void crossover() {
         new Expectations() {{
-            mockInstance.getProbability(); result = .5; maxTimes = 1000;
-            mockInstance.crossOver((TestHypothesis) any); result = Arrays.asList(mockInstance, mockInstance);
+            mockHandle.getProbability(); result = .5; maxTimes = 1000;
+            mockDefinition.crossOverHypothesis((TestHypothesis) any, (TestHypothesis) any); result = Arrays.asList(mockHypothesis, mockHypothesis);
             mockRandom.nextDouble(); result = 0.6;
         }};
 
-        List<TestHypothesis> population = Arrays.asList(mockInstance, mockInstance);
-        List<TestHypothesis> target = new ArrayList<>();
-        instance.crossover(population, 1, 2, target);
+        List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
+        List<Handle<TestHypothesis>> target = new ArrayList<>();
+        instance.crossover(population,  2, target);
 
         Assertions.assertEquals(2, target.size());
-        for (TestHypothesis hypothesis : target) {
-            Assertions.assertSame(mockInstance, hypothesis);
+        for (Handle<TestHypothesis> handle : target) {
+            Assertions.assertEquals(false, handle.isHasFitness());
+            Assertions.assertSame(mockHypothesis, handle.getHypothesis());
         }
 
         new Verifications() {{
@@ -101,29 +108,31 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void mutate() {
         new Expectations() {{
-            mockInstance.mutate(); times = 1;
+            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1;
             mockRandom.nextInt(anyInt); result = 0;
         }};
 
-        List<TestHypothesis> population = Arrays.asList(mockInstance, mockInstance);
+        List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.mutate(population, 1);
 
+        Assertions.assertEquals(false, mockHandle.isHasFitness());
         new Verifications() {{
+            mockHandle.setHasFitness(false);
         }};
     }
 
     @Test
     public void updateFitnessAndGetSumOfProbabilities() {
         new Expectations() {{
-            mockInstance.calculateFitness(); result = 0.3; times = 2;
-            mockInstance.setFitness(0.3); times = 2;
-            mockInstance.getFitness(); result = 0.3; times = 4;
+            mockDefinition.calculateFitness((TestHypothesis) any); result = 0.3; times = 2;
+            mockHandle.setFitness(0.3); times = 2;
+            mockHandle.getFitness(); result = 0.3; times = 4;
             mockRandom.nextDouble(); times = 0;
             mockRandom.nextInt(anyInt); times = 0;
         }};
 
-        List<TestHypothesis> population = Arrays.asList(mockInstance, mockInstance);
-        instance.updateFitnessAndGetSumOfProbabilities(population);
+        List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
+        instance.updateFitness(population);
 
         new Verifications() {{
         }};

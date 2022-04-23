@@ -15,7 +15,7 @@
  */
 /**
  * Base classes for a genetic algorithm.
- * The {@link de.sfuhrm.genetic.AbstractHypothesis} class must be
+ * The {@link de.sfuhrm.genetic.Handle} class must be
  * derived and implemented to model your problem.
  * The {@link de.sfuhrm.genetic.GeneticAlgorithm} class is the
  * genetic algorithm implementation which is able to calculate the
