@@ -73,7 +73,7 @@ public final class IntGuessingDefinition implements
         int[] offspringTwo = new int[first.length];
         for (int i = 0; i < first.length; i++) {
             offspringOne[i] = i < point ? first[i] : second[i];
-            offspringTwo[i] = i >= point ? second[i] : second[i];
+            offspringTwo[i] = i >= point ? second[i] : first[i];
         }
         return Arrays.asList(offspringOne, offspringTwo);
     }
