@@ -54,6 +54,48 @@ class ExecutorServiceComputeEngine<H>
     }
 
     @Override
+    List<Handle<H>> calculateNextGeneration(
+            final List<Handle<H>> currentGeneration,
+            final int generationSize,
+            final double crossOverRate,
+            final double mutationRate) {
+        List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
+
+        updateFitness(
+                currentGeneration);
+
+        Future<List<Handle<H>>> selectionFuture = executorService.submit(() -> {
+            int selectionSize = (int) ((1. - crossOverRate) * generationSize);
+            List<Handle<H>> result = new ArrayList<>(selectionSize);
+            select(currentGeneration,
+                    selectionSize,
+                    result);
+            return result;
+        });
+
+        Future<List<Handle<H>>> crossOverFuture = executorService.submit(() -> {
+            int crossOverSize = (int) ((crossOverRate) * generationSize);
+            List<Handle<H>> result = new ArrayList<>(crossOverSize);
+            crossover(currentGeneration,
+                    crossOverSize,
+                    result);
+            return result;
+        });
+
+        try {
+            nextGeneration.addAll(selectionFuture.get());
+            nextGeneration.addAll(crossOverFuture.get());
+        } catch (InterruptedException | ExecutionException e) {
+            handleException(e);
+        }
+
+        mutate(nextGeneration,
+                (int) (mutationRate * generationSize));
+
+        return nextGeneration;
+    }
+
+    @Override
     List<Handle<H>> createRandomHypothesisHandles(final int count) {
         List<Handle<H>> result = new ArrayList<>(count);
         List<Future<Handle<H>>> futureList = new ArrayList<>(count);

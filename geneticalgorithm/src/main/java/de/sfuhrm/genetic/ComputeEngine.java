@@ -41,6 +41,23 @@ abstract class ComputeEngine<H> {
      * */
     abstract List<Handle<H>> createRandomHypothesisHandles(int count);
 
+    /** Calculate one generation step.
+     * Takes a current generation and calculates the
+     * next generation out of it.
+     * @param currentGeneration the current generation of hypothesis handles.
+     * @param generationSize the target size of the next generation.
+     * @param crossOverRate the rate to use the cross over with.
+     * @param mutationRate the rate to mutate the population with.
+     * @return the population of the next generation. This will contain some
+     * individuals from the {@code currentGeneration} input.
+     * @since 3.0.0
+     */
+     abstract List<Handle<H>> calculateNextGeneration(
+            List<Handle<H>> currentGeneration,
+            int generationSize,
+            double crossOverRate,
+            double mutationRate);
+
     /**
      * Selects a fraction of {@code 1-crossOverRate} hypothesis
      * relative to their fitness. Adds the results to the

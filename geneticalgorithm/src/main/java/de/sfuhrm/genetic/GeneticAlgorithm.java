@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -36,7 +35,8 @@ import java.util.concurrent.ExecutorService;
  *     {@link AlgorithmDefinition#loop(Object) finish-condition}
  *     is met.</li>
  *     <li>Low-Level approach: Iterate yourself and calculate
- *     each generation yourself using the {@link #calculateNextGeneration(List, ComputeEngine)}
+ *     each generation yourself using the
+ *     {@link #calculateNextGeneration(List, ComputeEngine)}
  *     method. This way you can do your own analysis on the state of the
  *     population.</li>
  * </ol>
@@ -177,21 +177,12 @@ public class GeneticAlgorithm<H> {
     public List<Handle<H>> calculateNextGeneration(
             final List<Handle<H>> currentGeneration,
             final ComputeEngine<H> computeEngine) {
-        List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
 
-        computeEngine.updateFitness(
-                currentGeneration);
-
-        computeEngine.select(currentGeneration,
-                (int) ((1. - crossOverRate) * generationSize),
-                nextGeneration);
-
-        computeEngine.crossover(currentGeneration,
-                (int) ((crossOverRate) * generationSize),
-                nextGeneration);
-
-        computeEngine.mutate(nextGeneration,
-                (int) (mutationRate * generationSize));
+        List<Handle<H>> nextGeneration = computeEngine.calculateNextGeneration(
+                currentGeneration,
+                generationSize,
+                crossOverRate,
+                mutationRate);
 
         generationNumber++;
 

@@ -39,6 +39,31 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
     }
 
     @Override
+    List<Handle<H>> calculateNextGeneration(
+            final List<Handle<H>> currentGeneration,
+            final int generationSize,
+            final double crossOverRate,
+            final double mutationRate) {
+        List<Handle<H>> nextGeneration = new ArrayList<>(generationSize);
+
+        updateFitness(
+                currentGeneration);
+
+        select(currentGeneration,
+                (int) ((1. - crossOverRate) * generationSize),
+                nextGeneration);
+
+        crossover(currentGeneration,
+                (int) ((crossOverRate) * generationSize),
+                nextGeneration);
+
+        mutate(nextGeneration,
+                (int) (mutationRate * generationSize));
+
+        return nextGeneration;
+    }
+
+    @Override
     List<Handle<H>> createRandomHypothesisHandles(final int count) {
         List<Handle<H>> result = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
