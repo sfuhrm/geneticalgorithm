@@ -1,0 +1,23 @@
+
+  
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ master, test ]
+  pull_request:
+    branches: [ master, test ]
+
+jobs:
+  maven_version:
+    uses: sfuhrm/github_workflows/.github/workflows/maven-expression.yml@main
+    with:
+      java_version: 17
+      expression: project.version
+  call-workflow-passing-data:
+    needs: maven_version
+    uses: sfuhrm/github_workflows/.github/workflows/maven.yml@main
+    with:
+      java_version: "[\"8\", \"11\", \"17\"]"
+      artifact_name: build
+      artifact_path: geneticalgorithm/target/geneticalgorithm-${{ needs.maven_version.outputs.expression_value }}.jar
