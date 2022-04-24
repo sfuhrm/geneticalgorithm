@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -137,13 +138,15 @@ public class GeneticAlgorithm<H> {
         }
         if (inGenerationSize < 2) {
             throw new IllegalArgumentException(
-                    "Generation size is < 2: " + inMutationRate);
+                    "Generation size is < 2: " + inGenerationSize);
         }
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
-        this.random = inRandom;
-        this.algorithmDefinition = inAlgorithmDefinition;
+        this.random = Objects.requireNonNull(inRandom,
+                "inRandom is null");
+        this.algorithmDefinition = Objects.requireNonNull(inAlgorithmDefinition,
+                "inAlgorithmDefinition is null");
 
         inAlgorithmDefinition.initialize(random);
     }
