@@ -19,8 +19,8 @@ an evaluation function available (also known as fitness function).
 
 ## Illustration: Integer guessing
 
-The following illustration shows the library guessing a sequence of
-30 int values with a genetic population size of 3000 hypothesis.
+The following illustration shows the library [guessing a sequence of
+30 int values](https://github.com/sfuhrm/geneticalgorithm/blob/master/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/GuessingExample.java) with a genetic population size of 3000 hypothesis.
 At the beginning many components of the population are wrong (=red).
 With almost every generation (=line) the population improves
 in fitness and more and more components turn from wrong (=red)
@@ -28,6 +28,8 @@ to correct (=green).
 
 ![Guessing an int sequence](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/master/.github/IntGuessingExample.gif
 "Guessing an int sequence")
+
+See [sample code](https://github.com/sfuhrm/geneticalgorithm/blob/master/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/GuessingExample.java).
 
 ## Requirements
 
