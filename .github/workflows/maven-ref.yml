@@ -18,6 +18,6 @@ jobs:
     needs: maven_version
     uses: sfuhrm/github_workflows/.github/workflows/maven.yml@main
     with:
-      java_version: "[\"9\", \"11\", \"17\"]"
+      java_version: "[\"11\", \"17\", \"18\"]"
       artifact_name: build
       artifact_path: geneticalgorithm/target/geneticalgorithm-${{ needs.maven_version.outputs.expression_value }}.jar
