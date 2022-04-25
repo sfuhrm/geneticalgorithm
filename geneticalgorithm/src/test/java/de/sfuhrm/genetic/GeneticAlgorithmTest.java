@@ -122,7 +122,6 @@ public class GeneticAlgorithmTest {
     @Test
     public void testFindMaximumMultiThread() {
         GeneticAlgorithm<TestHypothesis> algorithm;
-        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition);
 
         new Expectations() {{
             mockDefinition.newRandomHypothesis(); times = 100;
@@ -132,7 +131,7 @@ public class GeneticAlgorithmTest {
             mockDefinition.crossOverHypothesis(mockHypothesis, mockHypothesis); result = Arrays.asList(mockHypothesis, mockHypothesis); times = 15;
             mockDefinition.mutateHypothesis((TestHypothesis) any); times = 10;
         }};
-
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition);
         Optional<Handle<TestHypothesis>> hypothesisOptional =
                 algorithm.findMaximum(
                         Executors.newFixedThreadPool(2));
