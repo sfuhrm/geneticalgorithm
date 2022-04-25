@@ -21,8 +21,11 @@ import mockit.Verifications;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.Executors;
 
 /**
@@ -39,9 +42,17 @@ public class GeneticAlgorithmTest {
     @Mocked
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
+    @Mocked
+    ExecutorServiceComputeEngine mockedExecutorServiceComputeEngine;
+
     @Test
     public void testInitWithValidArgs() {
-        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition);
+        Random r = new Random();
+        new Expectations() {{
+            mockDefinition.initialize(r);
+        }};
+
+        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, r);
         Assertions.assertEquals(0.3, algorithm.getCrossOverRate(), 0.01);
         Assertions.assertEquals(0.05, algorithm.getMutationRate(), 0.01);
         Assertions.assertEquals(100, algorithm.getGenerationSize());
@@ -123,13 +134,14 @@ public class GeneticAlgorithmTest {
     public void testFindMaximumMultiThread() {
         GeneticAlgorithm<TestHypothesis> algorithm;
 
+        List<Handle<TestHypothesis>> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(mockHandle);
+        }
         new Expectations() {{
-            mockDefinition.newRandomHypothesis(); times = 100;
-            mockHandle.getFitness(); result = 1.0; maxTimes = 1000;
-            mockHandle.setProbability(1.0 / 100.); times = 100;
-            mockHandle.getHypothesis(); result = mockHypothesis;
-            mockDefinition.crossOverHypothesis(mockHypothesis, mockHypothesis); result = Arrays.asList(mockHypothesis, mockHypothesis); times = 15;
-            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 10;
+            mockedExecutorServiceComputeEngine.createRandomHypothesisHandles(100); result = list;
+            mockedExecutorServiceComputeEngine.calculateNextGeneration((List) any, anyInt, anyDouble, anyDouble); result = list;
+            mockedExecutorServiceComputeEngine.max((List) any); result = mockHandle;
         }};
         algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition);
         Optional<Handle<TestHypothesis>> hypothesisOptional =
@@ -141,9 +153,7 @@ public class GeneticAlgorithmTest {
         Assertions.assertSame(mockHandle.getHypothesis(), hypothesisOptional.get().getHypothesis());
 
         new Verifications() {{
-            mockDefinition.newRandomHypothesis(); times = 100;
-            mockHandle.getFitness(); minTimes = 200;
-            mockHandle.setProbability(1. / 100.); times = 100;
+            mockedExecutorServiceComputeEngine.calculateNextGeneration(list, 100, 0.3, 0.1); times = 1;
         }};
     }
 }
