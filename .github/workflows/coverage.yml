@@ -29,7 +29,7 @@ jobs:
     - name: Upload second Jacoco Report
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-      run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Java  -r geneticalgorithm-example/target/site/jacoco/jacoco.xml --partial
+      run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Java  -r geneticalgorithm-example-int-guessing/target/site/jacoco/jacoco.xml --partial
     - name: Final Jacoco Report
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
