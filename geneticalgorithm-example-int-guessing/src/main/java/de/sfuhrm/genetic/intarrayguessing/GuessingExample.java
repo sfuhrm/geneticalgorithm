@@ -16,7 +16,6 @@
 package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
-import de.sfuhrm.genetic.Handle;
 import lombok.Getter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -24,6 +23,7 @@ import org.kohsuke.args4j.Option;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -189,22 +189,21 @@ public final class GuessingExample {
                 Executors.newFixedThreadPool(guessingExample.threadCount);
 
         int genomeLength = guessingExample.getArraySize();
+        IntGuessingDefinition algorithmDefinition =
+                new IntGuessingDefinition(genomeLength,
+                !guessingExample.quiet);
         GeneticAlgorithm<int[]> algorithm =
             new GeneticAlgorithm<>(
                     guessingExample.getCrossOverRate(),
                     guessingExample.getMutationRate(),
                     guessingExample.getGenerationSize(),
-                    new IntGuessingDefinition(genomeLength,
-                            !guessingExample.quiet));
+                    algorithmDefinition,
+                    executorService,
+                    new Random());
         long start = System.currentTimeMillis();
 
-        Optional<Handle<int[]>> max;
-        if (guessingExample.threadCount == 1) {
-            max = algorithm.findMaximum();
-        } else {
-            max = algorithm.findMaximum(
-                    executorService);
-        }
+        Optional<int[]> max;
+        max = algorithm.findMaximum();
 
         System.out.println();
         double duration = (System.currentTimeMillis() - start)
@@ -212,8 +211,8 @@ public final class GuessingExample {
         executorService.shutdown();
         System.out.printf("Maximum is %s with fitness=%.2f,"
                         + " speed=%.2f gen/s%n",
-                Arrays.toString(max.get().getHypothesis()),
-                max.get().getFitness(),
+                Arrays.toString(max.get()),
+                algorithmDefinition.calculateFitness(max.get()),
                 IntGuessingDefinition.getGeneration() / duration
                 );
     }

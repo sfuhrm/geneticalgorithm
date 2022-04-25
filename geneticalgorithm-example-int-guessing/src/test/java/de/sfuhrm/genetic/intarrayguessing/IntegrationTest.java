@@ -29,7 +29,6 @@ import java.util.concurrent.Executors;
  * Integration test that checks the convergence of the
  * {@linkplain IntGuessingDefinition} towards the
  * goal.
- * @see GeneticAlgorithm#findMaximum(ExecutorService)
  * @see GeneticAlgorithm#findMaximum()
  * @author Stephan Fuhrmann
  */
@@ -38,13 +37,19 @@ public class IntegrationTest {
     @Test
     public void testFindMaximumSingleThread() {
         int numbers = 4;
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers, true), new Random(0));
-        Optional<Handle<int[]>> hypothesisOptional =
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(
+                0.3,
+                0.1,
+                100,
+                new IntGuessingDefinition(numbers, true),
+                null,
+                new Random(0));
+        Optional<int[]> hypothesisOptional =
                 algorithm.findMaximum();
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getHypothesis());
+        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get());
         System.out.printf("Generations: %d%n", algorithm.getGenerationNumber());
     }
 
@@ -52,14 +57,19 @@ public class IntegrationTest {
     public void testFindMaximumMultiThread() {
         int numbers = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, new IntGuessingDefinition(numbers, true), new Random(0));
-        Optional<Handle<int[]>> hypothesisOptional =
-                algorithm.findMaximum(
-                        executorService);
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(
+                0.3,
+                0.1,
+                100,
+                new IntGuessingDefinition(numbers, true),
+                executorService,
+                new Random(0));
+        Optional<int[]> hypothesisOptional =
+                algorithm.findMaximum();
         executorService.shutdown();
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get().getHypothesis());
+        Assertions.assertArrayEquals(new int[] {0,1,2,3}, hypothesisOptional.get());
         System.out.printf("Generations: %d%n", algorithm.getGenerationNumber());
     }
 }

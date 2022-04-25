@@ -49,9 +49,9 @@ public interface AlgorithmDefinition<T> {
      * better performance of this hypothesis. The winner hypothesis will
      * be the one with a high fitness function result.
      * If calculating the fitness function is expensive, consider
-     * using he {@linkplain
-     * GeneticAlgorithm#findMaximum(ExecutorService)}
-     * parallel approach to have a higher throughput.
+     * using the {@linkplain
+     * GeneticAlgorithm} with an executor service
+     * to have a higher throughput.
      * @param hypothesis the hypothesis to calculate the fitness for.
      * @return a fitness where a bigger number means more fitness. Please
      * be advised that negative numbers will be problematic for the algorithm.

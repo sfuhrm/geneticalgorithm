@@ -19,6 +19,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -45,14 +47,20 @@ public class GeneticAlgorithmTest {
     @Mocked
     ExecutorServiceComputeEngine mockedExecutorServiceComputeEngine;
 
+    Random r;
+
+    @BeforeEach
+    public void init() {
+        r = new Random(0);
+    }
+
     @Test
     public void testInitWithValidArgs() {
-        Random r = new Random();
         new Expectations() {{
             mockDefinition.initialize(r);
         }};
 
-        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, r);
+        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, null, r);
         Assertions.assertEquals(0.3, algorithm.getCrossOverRate(), 0.01);
         Assertions.assertEquals(0.05, algorithm.getMutationRate(), 0.01);
         Assertions.assertEquals(100, algorithm.getGenerationSize());
@@ -61,7 +69,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooLowCrossOver() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(-0.1, 0.05, 100, mockDefinition);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(-0.1, 0.05, 100, mockDefinition, null, r);
             }
         );
     }
@@ -69,7 +77,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooHighCrossOver() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(1.1, 0.05, 100, mockDefinition);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(1.1, 0.05, 100, mockDefinition, null, r);
                 }
         );
     }
@@ -77,7 +85,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooLowMutation() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, -0.1, 100, mockDefinition);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, -0.1, 100, mockDefinition, null, r);
                 }
         );
     }
@@ -85,7 +93,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooHighMutation() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 1.1, 100, mockDefinition);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 1.1, 100, mockDefinition, null, r);
                 }
         );
     }
@@ -93,7 +101,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testInitWithTooLowGenerationSize() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 1, mockDefinition);
+                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 1, mockDefinition, null, r);
                 }
         );
     }
@@ -101,7 +109,7 @@ public class GeneticAlgorithmTest {
     @Test
     public void testFindMaximumSingleThread() {
         GeneticAlgorithm<TestHypothesis> algorithm;
-        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition);
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, null, r);
 
         new Expectations() {{
             mockDefinition.newRandomHypothesis(); times = 100;
@@ -116,12 +124,12 @@ public class GeneticAlgorithmTest {
             mockDefinition.mutateHypothesis((TestHypothesis) any); times = 10;
         }};
 
-        Optional<Handle<TestHypothesis>> hypothesisOptional =
+        Optional<TestHypothesis> hypothesisOptional =
                 algorithm.findMaximum();
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertSame(mockHypothesis, hypothesisOptional.get().getHypothesis());
+        Assertions.assertSame(mockHypothesis, hypothesisOptional.get());
 
         new Verifications() {{
             mockDefinition.newRandomHypothesis(); times = 100;
@@ -143,14 +151,16 @@ public class GeneticAlgorithmTest {
             mockedExecutorServiceComputeEngine.calculateNextGeneration((List) any, anyInt, anyDouble, anyDouble); result = list;
             mockedExecutorServiceComputeEngine.max((List) any); result = mockHandle;
         }};
-        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition);
-        Optional<Handle<TestHypothesis>> hypothesisOptional =
-                algorithm.findMaximum(
-                        Executors.newFixedThreadPool(2));
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, executorService, r);
+        Optional<TestHypothesis> hypothesisOptional =
+                algorithm.findMaximum();
+        executorService.shutdown();
 
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertSame(mockHandle.getHypothesis(), hypothesisOptional.get().getHypothesis());
+        Assertions.assertSame(mockHandle.getHypothesis(), hypothesisOptional.get());
 
         new Verifications() {{
             mockedExecutorServiceComputeEngine.calculateNextGeneration(list, 100, 0.3, 0.1); times = 1;

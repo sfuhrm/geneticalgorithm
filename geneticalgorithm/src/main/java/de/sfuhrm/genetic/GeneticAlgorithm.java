@@ -16,7 +16,6 @@
 package de.sfuhrm.genetic;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;
@@ -24,20 +23,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * Central entry class for generic algorithm implementations.
  * There are two approaches you can take:
  *
  * <ol>
- *     <li>High-level approach: Call one of the {@link #findMaximum()} or
- *     {@link #findMaximum(ExecutorService)} methods. They
- *     will iterate multiple generations until the
+ *     <li>High-level approach: Call the of the {@link #findMaximum()}
+ *     method. It will iterate multiple generations until the
  *     {@link AlgorithmDefinition#loop(Object) finish-condition}
  *     is met.</li>
  *     <li>Low-Level approach: Iterate yourself and calculate
  *     each generation yourself using the
- *     {@link #calculateNextGeneration(List, ComputeEngine)}
+ *     {@link #calculateNextGeneration(List)}
  *     method. This way you can do your own analysis on the state of the
  *     population.</li>
  * </ol>
@@ -49,6 +48,9 @@ public class GeneticAlgorithm<H> {
 
     /** The random generator to use. */
     private final Random random;
+
+    /** The compute engine to use. */
+    private final ComputeEngine<H> computeEngine;
 
     /** The algorithm definition to work with. */
     private final AlgorithmDefinition<H> algorithmDefinition;
@@ -87,38 +89,17 @@ public class GeneticAlgorithm<H> {
      *                     is applied to the population, between 0 and 1.
      *                     A good value for the mutation rate is {@code 0.05}.
      * @param inGenerationSize the number of individual hypothesis in the
-     *                       population for each generation, greater than 1.
+     *                       population for each generation,
+     *                       greater than 1.
      *                       The generation size choice depends on the
      *                       complexity of your problem, but {@code 100} is
      *                       a good starting point.
      * @param inAlgorithmDefinition the algorithm definition to work with.
-     * @throws IllegalArgumentException if the parameters are illegal.
-     */
-    public GeneticAlgorithm(final double inCrossOverRate,
-                            final double inMutationRate,
-                            final int inGenerationSize,
-                            final AlgorithmDefinition<H> inAlgorithmDefinition
-                            ) {
-        this(inCrossOverRate, inMutationRate, inGenerationSize,
-                inAlgorithmDefinition,
-                new Random());
-    }
-
-    /**
-     * Constructs a new genetic algorithm.
-     * @param inCrossOverRate the fraction at which the cross-over
-     *                      operator is applied to the population,
-     *                      between 0 and 1. A good value for the
-     *                      cross-over rate is {@code 0.3}.
-     * @param inMutationRate the fraction at which the mutation operator
-     *                     is applied to the population, between 0 and 1.
-     *                     A good value for the mutation rate is {@code 0.05}.
-     * @param inGenerationSize the number of individual hypothesis in the
-     *                       population for each generation, greater than 1.
-     *                       The generation size choice depends on the
-     *                       complexity of your problem, but {@code 100} is
-     *                       a good starting point.
-     * @param inAlgorithmDefinition the algorithm definition to work with.
+     * @param inExecutorService the optional executor service to use.
+     *                          You must call yourself
+     *                          {@link ExecutorService#shutdown()}
+     *                          when you are done
+     *                          with it.
      * @param inRandom the random number generator to use as source of
      *                 randomness.
      * @throws IllegalArgumentException if the parameters are illegal.
@@ -127,6 +108,7 @@ public class GeneticAlgorithm<H> {
                             final double inMutationRate,
                             final int inGenerationSize,
                             final AlgorithmDefinition<H> inAlgorithmDefinition,
+                            final ExecutorService inExecutorService,
                             final Random inRandom) {
         if (inCrossOverRate < 0. || inCrossOverRate > 1.) {
             throw new IllegalArgumentException(
@@ -149,6 +131,17 @@ public class GeneticAlgorithm<H> {
                 "inAlgorithmDefinition is null");
 
         inAlgorithmDefinition.initialize(random);
+
+        if (inExecutorService != null) {
+            computeEngine = new ExecutorServiceComputeEngine<>(
+                    random,
+                    algorithmDefinition,
+                    inExecutorService);
+        } else {
+            computeEngine = new SimpleComputeEngine<>(
+                    random,
+                    algorithmDefinition);
+        }
     }
 
     private static <H> Optional<Handle<H>> max(
@@ -172,16 +165,36 @@ public class GeneticAlgorithm<H> {
      * Takes a current generation and calculates the
      * next generation out of it.
      * @param currentGeneration the current generation of hypothesis handles.
-     * @param computeEngine the compute engine to use for computation.
      * @return the population of the next generation. This will contain some
      * individuals from the {@code currentGeneration} input.
      * @since 3.0.0
      * */
-    // TODO ComputeEngine is package private
-    // TODO Handle has package private c'tor
-    public List<Handle<H>> calculateNextGeneration(
-            final List<Handle<H>> currentGeneration,
-            final ComputeEngine<H> computeEngine) {
+    public List<H> calculateNextGeneration(
+            final List<H> currentGeneration) {
+
+        List<Handle<H>> nextGeneration =
+                innerCalculateNextGeneration(
+                currentGeneration
+                        .stream()
+                        .map(Handle::new)
+                        .collect(Collectors.toList()));
+
+        return nextGeneration
+                .stream()
+                .map(Handle::getHypothesis)
+                .collect(Collectors.toList());
+    }
+
+    /** Calculate one generation step.
+     * Takes a current generation and calculates the
+     * next generation out of it.
+     * @param currentGeneration the current generation of hypothesis handles.
+     * @return the population of the next generation. This will contain some
+     * individuals from the {@code currentGeneration} input.
+     * @since 3.0.0
+     * */
+    private List<Handle<H>> innerCalculateNextGeneration(
+            final List<Handle<H>> currentGeneration) {
 
         List<Handle<H>> nextGeneration = computeEngine.calculateNextGeneration(
                 currentGeneration,
@@ -195,11 +208,9 @@ public class GeneticAlgorithm<H> {
     }
 
     /** Perform the genetic operation.
-     * @param computeEngine the compute engine to use.
      * @return the maximum element, if any.
      */
-    private Optional<Handle<H>> innerFindMaximum(
-            final ComputeEngine<H> computeEngine) {
+    private Optional<H> innerFindMaximum() {
         List<Handle<H>> currentGeneration =
                 computeEngine.createRandomHypothesisHandles(
                     generationSize);
@@ -209,8 +220,7 @@ public class GeneticAlgorithm<H> {
         do {
 
             List<Handle<H>> nextGeneration =
-                    calculateNextGeneration(currentGeneration,
-                            computeEngine);
+                    innerCalculateNextGeneration(currentGeneration);
 
             Optional<Handle<H>> curMax = computeEngine.max(nextGeneration);
             allTimeMax = max(curMax.orElse(null), allTimeMax.orElse(null));
@@ -219,7 +229,7 @@ public class GeneticAlgorithm<H> {
         } while (allTimeMax.isPresent()
                 && algorithmDefinition.loop(allTimeMax.get().getHypothesis()));
 
-        return allTimeMax;
+        return allTimeMax.map(h -> h.getHypothesis());
     }
 
 
@@ -237,10 +247,6 @@ public class GeneticAlgorithm<H> {
      *     problem</li>
      * </ul>
      *
-     * @param executorService the executor service to use when calculating the
-     *     fitness. Can be obtained using a call like
-     * {@code Executors.newFixedThreadPool(
-     * Runtime.getRuntime().availableProcessors() * 2)}.
      * @return the maximum
      *     {@link AlgorithmDefinition#calculateFitness(Object)} element,
      *     if any.
@@ -248,27 +254,7 @@ public class GeneticAlgorithm<H> {
      * if one of the parameters is {@code null}.
      * @see java.util.concurrent.Executors
      */
-    public Optional<Handle<H>> findMaximum(
-            @NonNull final ExecutorService executorService) {
-
-        return innerFindMaximum(
-                new ExecutorServiceComputeEngine<>(
-                        random,
-                        algorithmDefinition,
-                        executorService
-                ));
-    }
-
-    /** Perform the genetic optimization.
-     * For a discussion on the usage, see
-     * {@link #findMaximum(ExecutorService)} .
-     * @return the maximum element, if any.
-     * @throws NullPointerException
-     * if one of the parameters is {@code null}.
-     * @see #findMaximum(ExecutorService)
-     */
-    public Optional<Handle<H>> findMaximum() {
-        return innerFindMaximum(
-                new SimpleComputeEngine<>(random, algorithmDefinition));
+    public Optional<H> findMaximum() {
+        return innerFindMaximum();
     }
 }
