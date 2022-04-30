@@ -17,7 +17,6 @@ package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
 import de.sfuhrm.genetic.GeneticAlgorithmBuilder;
-import de.sfuhrm.genetic.Handle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
