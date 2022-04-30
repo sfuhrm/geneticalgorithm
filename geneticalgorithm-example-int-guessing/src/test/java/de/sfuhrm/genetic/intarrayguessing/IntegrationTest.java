@@ -16,6 +16,7 @@
 package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
+import de.sfuhrm.genetic.GeneticAlgorithmBuilder;
 import de.sfuhrm.genetic.Handle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -37,13 +38,15 @@ public class IntegrationTest {
     @Test
     public void testFindMaximumSingleThread() {
         int numbers = 4;
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(
-                0.3,
-                0.1,
-                100,
-                new IntGuessingDefinition(numbers, true),
-                null,
-                new Random(0));
+
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithmBuilder<>(
+                new IntGuessingDefinition(numbers, true))
+                .withCrossOverRate(0.3)
+                .withMutationRate(0.1)
+                .withGenerationSize(100)
+                .withRandom(new Random(0))
+                .build();
+
         Optional<int[]> hypothesisOptional =
                 algorithm.findMaximum();
 
@@ -57,13 +60,17 @@ public class IntegrationTest {
     public void testFindMaximumMultiThread() {
         int numbers = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(8);
-        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithm<>(
-                0.3,
-                0.1,
-                100,
-                new IntGuessingDefinition(numbers, true),
-                executorService,
-                new Random(0));
+
+
+        GeneticAlgorithm<int[]> algorithm = new GeneticAlgorithmBuilder<>(
+                new IntGuessingDefinition(numbers, true))
+                .withCrossOverRate(0.3)
+                .withMutationRate(0.1)
+                .withGenerationSize(100)
+                .withRandom(new Random(0))
+                .withExecutorService(executorService)
+                .build();
+
         Optional<int[]> hypothesisOptional =
                 algorithm.findMaximum();
         executorService.shutdown();

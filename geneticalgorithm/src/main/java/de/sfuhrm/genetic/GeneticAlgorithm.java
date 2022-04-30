@@ -16,13 +16,13 @@
 package de.sfuhrm.genetic;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -95,33 +95,17 @@ public class GeneticAlgorithm<H> {
      *                       complexity of your problem, but {@code 100} is
      *                       a good starting point.
      * @param inAlgorithmDefinition the algorithm definition to work with.
-     * @param inExecutorService the optional executor service to use.
-     *                          You must call yourself
-     *                          {@link ExecutorService#shutdown()}
-     *                          when you are done
-     *                          with it.
+     * @param inComputeEngine the compute engine to use.
      * @param inRandom the random number generator to use as source of
      *                 randomness.
      * @throws IllegalArgumentException if the parameters are illegal.
      */
-    public GeneticAlgorithm(final double inCrossOverRate,
-                            final double inMutationRate,
-                            final int inGenerationSize,
-                            final AlgorithmDefinition<H> inAlgorithmDefinition,
-                            final ExecutorService inExecutorService,
-                            final Random inRandom) {
-        if (inCrossOverRate < 0. || inCrossOverRate > 1.) {
-            throw new IllegalArgumentException(
-                    "Cross over rate not between 0 and 1: " + inCrossOverRate);
-        }
-        if (inMutationRate < 0. || inMutationRate > 1.) {
-            throw new IllegalArgumentException(
-                    "Mutation rate not between 0 and 1: " + inMutationRate);
-        }
-        if (inGenerationSize < 2) {
-            throw new IllegalArgumentException(
-                    "Generation size is < 2: " + inGenerationSize);
-        }
+    GeneticAlgorithm(final double inCrossOverRate,
+                final double inMutationRate,
+                final int inGenerationSize,
+                @NonNull final AlgorithmDefinition<H> inAlgorithmDefinition,
+                @NonNull final ComputeEngine inComputeEngine,
+                @NonNull final Random inRandom) {
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
@@ -132,16 +116,7 @@ public class GeneticAlgorithm<H> {
 
         inAlgorithmDefinition.initialize(random);
 
-        if (inExecutorService != null) {
-            computeEngine = new ExecutorServiceComputeEngine<>(
-                    random,
-                    algorithmDefinition,
-                    inExecutorService);
-        } else {
-            computeEngine = new SimpleComputeEngine<>(
-                    random,
-                    algorithmDefinition);
-        }
+        computeEngine = inComputeEngine;
     }
 
     private static <H> Optional<Handle<H>> max(

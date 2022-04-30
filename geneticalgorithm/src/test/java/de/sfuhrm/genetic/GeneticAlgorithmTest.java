@@ -37,7 +37,6 @@ import java.util.concurrent.Executors;
  */
 public class GeneticAlgorithmTest {
 
-
     @Mocked TestHypothesis mockHypothesis;
     @Mocked Handle<TestHypothesis> mockHandle;
 
@@ -45,7 +44,7 @@ public class GeneticAlgorithmTest {
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
     @Mocked
-    ExecutorServiceComputeEngine mockedExecutorServiceComputeEngine;
+    SimpleComputeEngine<TestHypothesis> mockedComputeEngine;
 
     Random r;
 
@@ -60,68 +59,26 @@ public class GeneticAlgorithmTest {
             mockDefinition.initialize(r);
         }};
 
-        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, null, r);
+        GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, mockedComputeEngine, r);
         Assertions.assertEquals(0.3, algorithm.getCrossOverRate(), 0.01);
         Assertions.assertEquals(0.05, algorithm.getMutationRate(), 0.01);
         Assertions.assertEquals(100, algorithm.getGenerationSize());
     }
 
     @Test
-    public void testInitWithTooLowCrossOver() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(-0.1, 0.05, 100, mockDefinition, null, r);
-            }
-        );
-    }
-
-    @Test
-    public void testInitWithTooHighCrossOver() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(1.1, 0.05, 100, mockDefinition, null, r);
-                }
-        );
-    }
-
-    @Test
-    public void testInitWithTooLowMutation() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, -0.1, 100, mockDefinition, null, r);
-                }
-        );
-    }
-
-    @Test
-    public void testInitWithTooHighMutation() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 1.1, 100, mockDefinition, null, r);
-                }
-        );
-    }
-
-    @Test
-    public void testInitWithTooLowGenerationSize() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                    GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.1, 1, mockDefinition, null, r);
-                }
-        );
-    }
-
-    @Test
-    public void testFindMaximumSingleThread() {
+    public void findMaximum() {
         GeneticAlgorithm<TestHypothesis> algorithm;
-        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, null, r);
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, mockedComputeEngine, r);
 
+        List<Handle<TestHypothesis>> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(mockHandle);
+        }
         new Expectations() {{
-            mockDefinition.newRandomHypothesis(); times = 100;
-            mockDefinition.calculateFitness((TestHypothesis) any); times = 100; result = 1.0;
-            mockHandle.getHypothesis(); result = mockHypothesis;
-            mockHandle.setFitness(1.0); times = 100;
-            mockHandle.getFitness(); result = 1.0; maxTimes = 1000;
-            mockHandle.setProbability(1.0 / 100.); times = 100;
-            mockDefinition.crossOverHypothesis((TestHypothesis) mockHypothesis, (TestHypothesis) mockHypothesis);
-            result = Arrays.asList(mockHypothesis, mockHypothesis); times = 15;
-
-            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 10;
+            mockedComputeEngine.createRandomHypothesisHandles(100);
+            mockedComputeEngine.calculateNextGeneration((List) any, 100, 0.3, 0.1); result = list;
+            mockedComputeEngine.max((List) any); result = Optional.of(mockHandle);
+            mockDefinition.loop((TestHypothesis) any); times = 1; result = false;
         }};
 
         Optional<TestHypothesis> hypothesisOptional =
@@ -130,40 +87,30 @@ public class GeneticAlgorithmTest {
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
         Assertions.assertSame(mockHypothesis, hypothesisOptional.get());
-
-        new Verifications() {{
-            mockDefinition.newRandomHypothesis(); times = 100;
-            mockHandle.getFitness(); minTimes = 200;
-            mockHandle.setProbability(1. / 100.); times = 100;
-        }};
     }
 
     @Test
-    public void testFindMaximumMultiThread() {
+    public void calculateNextGeneration() {
         GeneticAlgorithm<TestHypothesis> algorithm;
+        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, mockedComputeEngine, r);
 
-        List<Handle<TestHypothesis>> list = new ArrayList<>();
+        List<TestHypothesis> hypothesisList = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            list.add(mockHandle);
+            hypothesisList.add(mockHypothesis);
+        }
+        List<Handle<TestHypothesis>> handleList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            handleList.add(mockHandle);
         }
         new Expectations() {{
-            mockedExecutorServiceComputeEngine.createRandomHypothesisHandles(100); result = list;
-            mockedExecutorServiceComputeEngine.calculateNextGeneration((List) any, anyInt, anyDouble, anyDouble); result = list;
-            mockedExecutorServiceComputeEngine.max((List) any); result = mockHandle;
+            mockedComputeEngine.createRandomHypothesisHandles(anyInt); times = 0;
+            mockedComputeEngine.calculateNextGeneration((List) any, 100, 0.3, 0.1); result = handleList;
         }};
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        algorithm = new GeneticAlgorithm<>(0.3, 0.1, 100, mockDefinition, executorService, r);
-        Optional<TestHypothesis> hypothesisOptional =
-                algorithm.findMaximum();
-        executorService.shutdown();
+        List<TestHypothesis> nextGeneration =
+                algorithm.calculateNextGeneration(hypothesisList);
 
-        Assertions.assertNotNull(hypothesisOptional);
-        Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
-        Assertions.assertSame(mockHandle.getHypothesis(), hypothesisOptional.get());
-
-        new Verifications() {{
-            mockedExecutorServiceComputeEngine.calculateNextGeneration(list, 100, 0.3, 0.1); times = 1;
-        }};
+        Assertions.assertNotNull(nextGeneration);
+        Assertions.assertEquals(100, nextGeneration.size());
     }
 }

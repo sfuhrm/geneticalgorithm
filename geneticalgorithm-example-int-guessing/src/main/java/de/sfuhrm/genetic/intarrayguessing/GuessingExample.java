@@ -16,6 +16,7 @@
 package de.sfuhrm.genetic.intarrayguessing;
 
 import de.sfuhrm.genetic.GeneticAlgorithm;
+import de.sfuhrm.genetic.GeneticAlgorithmBuilder;
 import lombok.Getter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -23,7 +24,6 @@ import org.kohsuke.args4j.Option;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -192,14 +192,17 @@ public final class GuessingExample {
         IntGuessingDefinition algorithmDefinition =
                 new IntGuessingDefinition(genomeLength,
                 !guessingExample.quiet);
+        GeneticAlgorithmBuilder<int[]> builder =
+                new GeneticAlgorithmBuilder<int[]>(algorithmDefinition)
+                        .withCrossOverRate(guessingExample.crossOverRate)
+                        .withMutationRate(guessingExample.mutationRate)
+                        .withGenerationSize(guessingExample.generationSize);
+        if (guessingExample.threadCount != 1) {
+            builder.withExecutorService(executorService);
+        }
+
         GeneticAlgorithm<int[]> algorithm =
-            new GeneticAlgorithm<>(
-                    guessingExample.getCrossOverRate(),
-                    guessingExample.getMutationRate(),
-                    guessingExample.getGenerationSize(),
-                    algorithmDefinition,
-                    executorService,
-                    new Random());
+                builder.build();
         long start = System.currentTimeMillis();
 
         Optional<int[]> max;
