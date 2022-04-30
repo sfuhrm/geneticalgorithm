@@ -39,7 +39,7 @@ The process of using the library is summarized in the following picture:
 
 An overview of the classes is given in the following class diagram:
 ![Class diagram of GeneticAlgorithm](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/master/doc/uml/class-geneticalgorithm/class_geneticalgorithm.png
-"Class diagram of GeneticAlgorithm)
+"Class diagram of GeneticAlgorithm")
 
 There is a [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
 documentation online.
