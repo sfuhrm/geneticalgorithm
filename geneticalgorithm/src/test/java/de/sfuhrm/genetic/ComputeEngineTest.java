@@ -46,6 +46,45 @@ public class ComputeEngineTest {
     }
 
     @Test
+    public void probabilisticSelectWithSingleElementList() {
+        new Expectations() {{
+            mockRandom.nextDouble(); result = 0.05; times = 1;
+            mockHandleOne.getProbability(); result = 1.; times = 1;
+        }};
+        Handle<TestHypothesis> result = instance.probabilisticSelect(
+                Collections.singletonList(mockHandleOne));
+
+        Assertions.assertEquals(mockHandleOne, result);
+    }
+
+    @Test
+    public void probabilisticSelectWithTwoElementList() {
+        new Expectations() {{
+            mockRandom.nextDouble(); result = 0.05; times = 1;
+            mockHandleOne.getProbability(); result = .0; times = 1;
+            mockHandleTwo.getProbability(); result = 1.; times = 1;
+        }};
+        Handle<TestHypothesis> result = instance.probabilisticSelect(
+                Arrays.asList(mockHandleOne, mockHandleTwo));
+
+        Assertions.assertEquals(mockHandleTwo, result);
+    }
+
+    @Test
+    public void probabilisticSelectWithThreeElementList() {
+        new Expectations() {{
+            mockRandom.nextDouble(); result = 0.35; times = 1;
+            mockHandleOne.getProbability(); result = .0; times = 1;
+            mockHandleTwo.getProbability(); result = .1; times = 1;
+            mockHandleThree.getProbability(); result = .9; times = 1;
+        }};
+        Handle<TestHypothesis> result = instance.probabilisticSelect(
+                Arrays.asList(mockHandleOne, mockHandleTwo, mockHandleThree));
+
+        Assertions.assertEquals(mockHandleThree, result);
+    }
+
+    @Test
     public void maxWithEmptyList() {
         new Expectations() {{
             mockHandleOne.getFitness(); result = .5; times = 0;
