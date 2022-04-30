@@ -1,6 +1,6 @@
 @startuml activity_process_steps_for_geneticalgorithm
 
-title Steps for using GeneticAlgorithm
+title Using GeneticAlgorithm
 
 start
 repeat

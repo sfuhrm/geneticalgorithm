@@ -4,8 +4,15 @@ import java.util.Collection;
 import java.util.Random;
 
 /**
- * A definition of a genetic algorithm instance.
- * @param <T> the hypothesis class to use.
+ * Hypothesis creation, manipulation and
+ * evaluation callbacks
+ * for the genetic algorithm.
+ * An instance of this interface is needed
+ * to initialize a {@link GeneticAlgorithm} instance,
+ * for example using the
+ * {@link GeneticAlgorithmBuilder#GeneticAlgorithmBuilder(AlgorithmDefinition)}
+ * constructor.
+ * @param <T> the hypothesis class to use, can be any Java class.
  * @since 3.0.0
  */
 public interface AlgorithmDefinition<T> {

@@ -31,53 +31,24 @@ to correct (=green).
 
 See [sample code](https://github.com/sfuhrm/geneticalgorithm/blob/master/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/GuessingExample.java).
 
-## Requirements
+## Using the library
 
-The library uses Java 8 functions and will only work with Java 8 and above.
-There are no libraries needed besides those build-in the JDK.
-
-## Usage
-
-TODO rework
-
-Usage is done in the following steps:
-1. Implement your own subclass of
-  [AbstractHypothesis](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/AbstractHypothesis.html).
-  The constructor can rely on the randInit() method to initialize the hypothesis.
-2. Instantiate the [GeneticAlgorithm](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm/latest/de/sfuhrm/genetic/GeneticAlgorithm.html)
-  class with the desired parameters. Good starting values for
-  cross-over rate is `0.3` and for mutation rate is `0.05`.
-3. Call one of the [GeneticAlgorithm.findMaximum()](https://javadoc.io/static/de.sfuhrm/geneticalgorithm/1.2.2/de/sfuhrm/genetic/GeneticAlgorithm.html#findMaximum(java.util.function.Function,java.util.function.Supplier))
-  methods with an appropriate loop condition function and hypothesis creation function.
-  There are multiple variants: One variant for simple usage, and one variant that
-  uses an ExecutorService to calculate the fitness in parallel threads.
-  The loop condition stays true while you want to loop.
-  The hypothesis creation function will usually just create a new instance of your
-  `Abstracthypothesis` subclass.
+The process of using the library is summarized in the following picture:
+![Steps for using GeneticAlgorithm](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/master/doc/uml/activity-process-steps-for-geneticalgorithm/activity_process_steps_for_geneticalgorithm.png
+"Steps for using GeneticAlgorithm")
 
 There is a [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
 documentation online.
 
 ## Example
 
-TODO rework
+There is a stand-alone Java application in the Maven subproject
+geneticalgorithm-example-int-guessing. This example tries to
+guess one sequence of integer numbers. One example is to
+guess the sequence [0, 1, 2, 3, 4].
 
-There is a simple [example](https://github.com/sfuhrm/geneticalgorithm/blob/master/src/test/java/de/sfuhrm/genetic/example/intguessing/GuessingExample.java) that implements the challenge to guess
-a sequence of integer numbers. Each correct digit will increase
-the fitness score by one.
-
-The example usage is shown here:
-
-```java
-GeneticAlgorithm<IntGuessingHypothesis> algorithm = new GeneticAlgorithm<>(
-        0.5,
-        0.02,
-        150);
-int size = 9;
-Optional<IntGuessingHypothesis> max = algorithm.findMaximum(h -> Math.abs(h.calculateFitness()) < size, 
-                () -> new IntGuessingHypothesis(size));
-System.out.println("Maximum is "+max);
-```
+Please see the example code in
+[GuessingExample.java](https://github.com/sfuhrm/geneticalgorithm/blob/master/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/GuessingExample.java).
 
 ## Including genetic algorithm in your projects
 
@@ -90,11 +61,16 @@ Apache Maven:
 <dependency>
     <groupId>de.sfuhrm</groupId>
     <artifactId>geneticalgorithm</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
 ---------------------------------------
+
+## Requirements
+
+The library uses Java 8 functions and will only work with Java 8 and above.
+There are no libraries needed besides those build-in the JDK.
 
 ## Algorithm reference
 The algorithm is based on the book
