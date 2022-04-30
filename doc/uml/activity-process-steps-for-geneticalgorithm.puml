@@ -1,0 +1,18 @@
+@startuml activity_process_steps_for_geneticalgorithm
+
+title Steps for using GeneticAlgorithm
+
+start
+repeat
+  :Decide on genome representation and fitness function;
+  :Implement ""AlgorithmDefinition"";
+  :Decide on mutation-rate, cross-over-rate, population size;
+  :Create ""GeneticAlgorithm"" instance using ""GeneticAlgorithmBuilder"";
+  :Call ""GeneticAlgorithm.findMaximum()"" once
+  or ""GeneticAlgorithm.calculateNextGeneration()""
+  in a loop;
+repeat while (parameters or algorithm need improvement?)
+:Use the hypothesis;
+stop
+
+@enduml
