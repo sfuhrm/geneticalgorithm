@@ -27,6 +27,11 @@
     </developer>
   </developers>
 
+  <organization>
+    <name>Stephan Fuhrmann</name>
+    <url>https://sfuhrm.de/</url>
+  </organization>
+
   <scm>
     <url>https://github.com/sfuhrm/geneticalgorithm</url>
     <connection>scm:git:https://github.com/sfuhrm/geneticalgorithm.git</connection>
