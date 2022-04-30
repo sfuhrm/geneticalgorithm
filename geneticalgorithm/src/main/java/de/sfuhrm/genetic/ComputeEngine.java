@@ -152,9 +152,10 @@ abstract class ComputeEngine<H> {
         for (int i = 0; i < in.size(); i++) {
             Handle<H> current = in.get(i);
             if (null != result) {
-                if (current.getFitness() > resultFitness) {
+                double currentFitness = current.getFitness();
+                if (currentFitness > resultFitness) {
                     result = current;
-                    resultFitness = current.getFitness();
+                    resultFitness = currentFitness;
                 }
             } else {
                 result = current;
