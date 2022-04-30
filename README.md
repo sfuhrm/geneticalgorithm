@@ -42,7 +42,7 @@ An overview of the classes is given in the following class diagram:
 "Class diagram of GeneticAlgorithm")
 
 There is a [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
-documentation online.
+documentation online for a more detailed discussion on the classes.
 
 ## Example
 

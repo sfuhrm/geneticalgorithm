@@ -218,10 +218,12 @@ public final class GuessingExample {
                 / MILLIS_PER_SECOND;
         executorService.shutdown();
         System.out.printf("Maximum is %s with fitness=%.2f,"
-                        + " speed=%.2f gen/s%n",
+                        + " speed=%.2f gen/s,"
+                        + " generations=%d%n",
                 Arrays.toString(max.get()),
                 algorithmDefinition.calculateFitness(max.get()),
-                IntGuessingDefinition.getGeneration() / duration
+                IntGuessingDefinition.getGeneration() / duration,
+                IntGuessingDefinition.getGeneration()
                 );
     }
 }
