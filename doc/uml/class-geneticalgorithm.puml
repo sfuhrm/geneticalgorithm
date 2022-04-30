@@ -1,0 +1,46 @@
+@startuml class_geneticalgorithm
+title GeneticAlgorithm Class Diagram
+skinparam monochrome true
+skinparam backgroundColor transparent
+skinparam classBackgroundColor transparent
+skinparam style strictuml
+
+class Hypothesis {
+
+}
+note left
+Hypothesis is referenced
+with the generic type ""H"" in the
+model.
+end note
+
+interface AlgorithmDefinition {
+  calculateFitness(H hypothesis) : double
+  crossOverHypothesis(H first, H second) : Collection<H>
+  initialize(Random rnd) : void
+  loop(H hypothesis) : boolean
+  mutateHypothesis(H hypothesis) : void
+  newRandomHypothesis() : H
+}
+
+class GeneticAlgorithm {
+  findMaximum() : Optional<H>
+  calculateNextGeneration​(List<H> currentGeneration) : List<H>
+}
+
+class GeneticAlgorithmBuilder {
+  GeneticAlgorithmBuilder(AlgorithmDefinition algorithmDefinition)
+  build() : GeneticAlgorithm<H>
+  withCrossOverRate(double rate) : GeneticAlgorithmBuilder<H>
+  withExecutorService(ExecutoreService service) : GeneticAlgorithmBuilder<H>
+  withGenerationSize(int size) : GeneticAlgorithmBuilder<H>
+  withMutationRate(double rate) : GeneticAlgorithmBuilder<H>
+  withRandom(Random rnd) : GeneticAlgorithmBuilder<H>
+}
+
+GeneticAlgorithmBuilder --> GeneticAlgorithm : builds
+AlgorithmDefinition <-- GeneticAlgorithmBuilder : requires
+AlgorithmDefinition <-- GeneticAlgorithm : uses
+AlgorithmDefinition --> Hypothesis : creates, changes, evaluates hypothesis ""H""
+
+@enduml
