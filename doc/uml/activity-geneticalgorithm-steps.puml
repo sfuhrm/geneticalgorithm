@@ -1,0 +1,18 @@
+@startuml activity_process_steps_for_geneticalgorithm
+
+title The GeneticAlgorithm approach
+
+start
+repeat
+  :Randomly select ""S"" hypothesis of the
+  current for the next generation;
+  :Cross-over ""C"" randomly selected hypothesis of the
+  current for the next generation;
+  :Mutate ""M"" hypothesis out of the
+  ""S+C"" in the next generation;
+  :Switch next to current generation;
+repeat while (continue heuristic search?)
+:Use the hypothesis in the current generation;
+stop
+
+@enduml
