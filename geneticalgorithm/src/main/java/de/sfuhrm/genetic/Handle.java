@@ -27,7 +27,7 @@ import lombok.Setter;
  * @author Stephan Fuhrmann
  * @since 3.0.0
  */
-public class Handle<T> {
+class Handle<T> {
 
     /** Is the fitness calculated? This flag is used
      * for lazy calculation.
