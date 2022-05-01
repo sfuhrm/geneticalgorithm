@@ -26,7 +26,8 @@ import lombok.NonNull;
 import lombok.Setter;
 
 /** Hypothesis handle class. This is a wrapper around the
- * real hypothesis.
+ * hypothesis that caches the fitness and probability
+ * values.
  *
  * @param <T> the type of the hypothesis.
  * @author Stephan Fuhrmann
