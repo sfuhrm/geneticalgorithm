@@ -218,7 +218,6 @@ class ExecutorServiceComputeEngine<H>
                     handle.setFitness(
                             getAlgorithmDefinition().calculateFitness(
                                     handle.getHypothesis()));
-                    handle.setHasFitness(true);
                     return handle;
                 }));
             }

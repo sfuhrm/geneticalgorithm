@@ -39,13 +39,13 @@ class Handle<T> {
      * for lazy evaluation.
      * @see AlgorithmDefinition#calculateFitness(Object)
      * */
-    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
+    @Getter(AccessLevel.PACKAGE)
     private boolean hasFitness;
 
     /** Fitness of this hypothesis.
      * @see AlgorithmDefinition#calculateFitness(Object)
      * */
-    @Getter @Setter(AccessLevel.PACKAGE)
+    @Getter
     private double fitness;
 
     /** Selection probability based on {@linkplain #fitness}
@@ -65,5 +65,15 @@ class Handle<T> {
     Handle(@NonNull final T inputHypothesis) {
         this.hypothesis = inputHypothesis;
         this.hasFitness = false;
+    }
+
+    /** Sets the fitness to the specified value.
+     * Updates {@linkplain #fitness} and
+     * {@linkplain #hasFitness}.
+     * @param set the fitness value to be set.
+     * */
+    void setFitness(final double set) {
+        this.fitness = set;
+        this.hasFitness = true;
     }
 }

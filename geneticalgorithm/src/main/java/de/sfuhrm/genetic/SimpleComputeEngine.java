@@ -134,7 +134,6 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
                 current.setFitness(
                         getAlgorithmDefinition()
                                 .calculateFitness(current.getHypothesis()));
-                current.setHasFitness(true);
             }
             sumFitness += current.getFitness();
         }
