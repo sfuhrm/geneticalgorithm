@@ -128,7 +128,7 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void mutate() {
         new Expectations() {{
-            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1;
+            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1; result = mockHypothesis;
             mockRandom.nextInt(anyInt); result = 0;
         }};
 
@@ -136,9 +136,6 @@ public class ExecutorServiceComputeEngineTest {
         instance.mutate(population, 1);
 
         Assertions.assertFalse(mockHandle.isHasFitness());
-        new Verifications() {{
-            mockHandle.setHasFitness(false);
-        }};
     }
 
     @Test

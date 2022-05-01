@@ -25,25 +25,37 @@ import java.util.Random;
 
 /**
  * Hypothesis creation, manipulation and
- * evaluation callbacks
- * for the genetic algorithm.
+ * evaluation callbacks for the genetic algorithm.
  * An instance of this interface is needed
- * to initialize a {@link GeneticAlgorithm} instance,
- * for example using the
+ * to initialize a {@link GeneticAlgorithm} instance
+ * using the
  * {@link GeneticAlgorithmBuilder#GeneticAlgorithmBuilder(AlgorithmDefinition)}
  * constructor.
+ *
+ * The hypothesis can be implemented as
+ * immutable classes.
+ *
  * @param <T> the hypothesis class to use, can be any Java class.
+ *           The class can be immutable.
  * @since 3.0.0
  */
 public interface AlgorithmDefinition<T> {
 
-    /** Initializes an instance.
-     * @param r the source of randomness that can be used.
+    /** Initializes an instance of the algorithm definition.
+     * This method will be called only once.
+     * The source of randomness is passed in to use resources
+     * thoughtfully. Besides that, using the same
+     * random number generator will create more predictable
+     * results for unit tests.
+     * @param r the non-null source of randomness that can be used.
      * */
     void initialize(Random r);
 
-    /** Randomly create a hypothesis.
-     * @return returns {@code this} hypothesis after a random initialization.
+    /** Randomly create a hypothesis. The created
+     * hypothesis will be required to be able to
+     * be passed in to each of the other
+     * methods in this implementation afterwards.
+     * @return a new random hypothesis after initialization.
      */
     T newRandomHypothesis();
 
@@ -52,11 +64,15 @@ public interface AlgorithmDefinition<T> {
      * of the genome of the hypothesis. Example: If a hypothesis consists
      * of the vector {@code (a,b,c)}, then a possible mutation result
      * could be {@code (a,d,c)} or {@code (d,b,c)}.
+     *
+     * Implementations will need to create a copy of the
+     * input and flip one bit.
      * @param instance the hypothesis to mutate.
+     * @return the mutated version of the hypothesis.
      * @see #crossOverHypothesis(Object, Object)  the
      * other genetic operator on this instance.
      */
-    void mutateHypothesis(T instance);
+    T mutateHypothesis(T instance);
 
     /** Calculates two-element crossover offspring of two parent
      * hypothesis. The two offsprings are a combination of
@@ -64,6 +80,11 @@ public interface AlgorithmDefinition<T> {
      * if the parents are the vectors {@code (a,b)} and {@code (c,d)},
      * possible cross over children could be
      * {@code (a,d)} and {@code (c,b)}.
+     *
+     * Implementations will need to find a random cross-over point,
+     * and then create one or more offsprings by recombining
+     * the parents.
+     *
      * @param first the first hypothesis to cross-over with.
      * @param second the second hypothesis to cross-over with.
      * @return the collection of offsprings.
@@ -72,12 +93,12 @@ public interface AlgorithmDefinition<T> {
      */
     Collection<T> crossOverHypothesis(T first, T second);
 
-    /** Calculates the fitness of a hypothesis. A bigger result means a
+    /** Calculates the fitness of a hypothesis. A bigger fitness means a
      * better performance of this hypothesis. The winner hypothesis will
-     * be the one with a high fitness function result.
+     * be the one with the highest fitness function result.
      * If calculating the fitness function is expensive, consider
      * using the {@linkplain
-     * GeneticAlgorithm} with an executor service
+     * GeneticAlgorithmBuilder#withExecutorService(ExecutorService)}
      * to have a higher throughput.
      * @param hypothesis the hypothesis to calculate the fitness for.
      * @return a fitness where a bigger number means more fitness. Please

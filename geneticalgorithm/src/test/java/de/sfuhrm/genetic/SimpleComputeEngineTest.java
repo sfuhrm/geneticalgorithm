@@ -123,7 +123,7 @@ public class SimpleComputeEngineTest {
     @Test
     public void mutate() {
         new Expectations() {{
-            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1;
+            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1; result = mockInstance;
             mockRandom.nextInt(anyInt); result = 0;
         }};
 

@@ -188,9 +188,9 @@ class ExecutorServiceComputeEngine<H>
             futureList.add(executorService.submit(() -> {
                 int index = getRandom().nextInt(selectedSet.size());
                 Handle<H> current = selectedSet.get(index);
-                getAlgorithmDefinition()
+                H mutated = getAlgorithmDefinition()
                         .mutateHypothesis(current.getHypothesis());
-                current.setHasFitness(false);
+                selectedSet.set(index, new Handle<H>(mutated));
             }
             ));
         }

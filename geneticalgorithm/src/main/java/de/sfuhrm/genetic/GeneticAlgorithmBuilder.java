@@ -48,14 +48,14 @@ public class GeneticAlgorithmBuilder<H> {
     /** The random generator to use. */
     private Random random;
 
-    /** The default cross-over rate (0.3).
+    /** The default cross-over rate ({@value #CROSS_OVER_RATE_DEFAULT}).
      * */
     public static final double CROSS_OVER_RATE_DEFAULT = 0.3;
 
-    /** The default mutation-rate (0.05). */
+    /** The default mutation-rate ({@value #MUTATION_RATE_DEFAULT}). */
     public static final double MUTATION_RATE_DEFAULT = 0.05;
 
-    /** The default generation size (100).
+    /** The default generation size ({@value #GENERATION_SIZE_DEFAULT}).
      * */
     public static final int GENERATION_SIZE_DEFAULT = 100;
 

@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Generic genetic algorithm implementation.
- * This implementation uses just the main thread.
+ * Single-threaded genetic algorithm implementation.
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
  **/
@@ -120,8 +119,9 @@ class SimpleComputeEngine<H> extends ComputeEngine<H> {
         for (int i = 0; i < mutationCount; i++) {
             int index = getRandom().nextInt(selectedSet.size());
             Handle<H> current = selectedSet.get(index);
-            getAlgorithmDefinition().mutateHypothesis(current.getHypothesis());
-            current.setHasFitness(false);
+            H mutated = getAlgorithmDefinition()
+                    .mutateHypothesis(current.getHypothesis());
+            selectedSet.set(index, new Handle<>(mutated));
         }
     }
 

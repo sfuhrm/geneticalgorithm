@@ -65,9 +65,11 @@ public final class IntGuessingDefinition implements
     }
 
     @Override
-    public void mutateHypothesis(final int[] instance) {
+    public int[] mutateHypothesis(final int[] instance) {
         int point = random.nextInt(instance.length);
-        instance[point] = random.nextInt(instance.length);
+        int[] copy = Arrays.copyOf(instance, instance.length);
+        copy[point] = random.nextInt(instance.length);
+        return copy;
     }
 
     @Override
