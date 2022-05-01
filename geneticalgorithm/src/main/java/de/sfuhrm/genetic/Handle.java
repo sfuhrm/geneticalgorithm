@@ -34,21 +34,21 @@ import lombok.Setter;
  */
 class Handle<T> {
 
-    /** Is the fitness calculated? This flag is used
-     * for lazy calculation.
+    /** Is the {@linkplain #fitness} calculated? This flag is used
+     * for lazy evaluation.
      * @see AlgorithmDefinition#calculateFitness(Object)
      * */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private boolean hasFitness;
 
     /** Fitness of this hypothesis.
-     * Used by {@linkplain GeneticAlgorithm} internally.
+     * @see AlgorithmDefinition#calculateFitness(Object)
      * */
     @Getter @Setter(AccessLevel.PACKAGE)
     private double fitness;
 
-    /** Selection probability based on energy of this hypothesis.
-     * Used by {@linkplain GeneticAlgorithm} internally.
+    /** Selection probability based on {@linkplain #fitness}
+     * of this hypothesis.
      * */
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private double probability;
