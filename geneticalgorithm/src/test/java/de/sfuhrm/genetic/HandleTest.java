@@ -20,17 +20,8 @@ package de.sfuhrm.genetic;
  * #L%
  */
 
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Random;
 
 /**
  * Test for the {@linkplain ComputeEngine}.

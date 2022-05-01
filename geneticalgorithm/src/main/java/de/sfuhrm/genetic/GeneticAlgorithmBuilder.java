@@ -190,7 +190,7 @@ public class GeneticAlgorithmBuilder<H> {
             );
         }
 
-        return new GeneticAlgorithm(
+        return new GeneticAlgorithm<>(
             crossOverRate,
             mutationRate,
             generationSize,

@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
- * Compute engine that uses an {@linkplain ExecutorService} for multi-threaded
+ * Compute engine that uses an {@linkplain ExecutorService} for multithreaded
  * execution.
  * @param <H> The hypothesis class to use.
  * @author Stephan Fuhrmann
@@ -190,7 +190,7 @@ class ExecutorServiceComputeEngine<H>
                 Handle<H> current = selectedSet.get(index);
                 H mutated = getAlgorithmDefinition()
                         .mutateHypothesis(current.getHypothesis());
-                selectedSet.set(index, new Handle<H>(mutated));
+                selectedSet.set(index, new Handle<>(mutated));
             }
             ));
         }

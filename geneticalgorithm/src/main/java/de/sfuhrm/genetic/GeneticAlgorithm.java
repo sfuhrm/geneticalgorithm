@@ -51,9 +51,6 @@ import java.util.stream.Collectors;
  **/
 public class GeneticAlgorithm<H> {
 
-    /** The random generator to use. */
-    private final Random random;
-
     /** The compute engine to use. */
     private final ComputeEngine<H> computeEngine;
 
@@ -109,17 +106,15 @@ public class GeneticAlgorithm<H> {
                 final double inMutationRate,
                 final int inGenerationSize,
                 @NonNull final AlgorithmDefinition<H> inAlgorithmDefinition,
-                @NonNull final ComputeEngine inComputeEngine,
+                @NonNull final ComputeEngine<H> inComputeEngine,
                 @NonNull final Random inRandom) {
         this.crossOverRate = inCrossOverRate;
         this.mutationRate = inMutationRate;
         this.generationSize = inGenerationSize;
-        this.random = Objects.requireNonNull(inRandom,
-                "inRandom is null");
         this.algorithmDefinition = Objects.requireNonNull(inAlgorithmDefinition,
                 "inAlgorithmDefinition is null");
 
-        inAlgorithmDefinition.initialize(random);
+        inAlgorithmDefinition.initialize(inRandom);
 
         computeEngine = inComputeEngine;
     }
@@ -209,7 +204,7 @@ public class GeneticAlgorithm<H> {
         } while (allTimeMax.isPresent()
                 && algorithmDefinition.loop(allTimeMax.get().getHypothesis()));
 
-        return allTimeMax.map(h -> h.getHypothesis());
+        return allTimeMax.map(Handle::getHypothesis);
     }
 
 

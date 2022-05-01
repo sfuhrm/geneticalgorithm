@@ -78,7 +78,7 @@ public class GeneticAlgorithmBuilderTest {
     @Test
     public void buildWithRandom() {
         new Expectations() {{
-            mockDefinition.initialize((Random) r);
+            mockDefinition.initialize(r);
         }};
 
         GeneticAlgorithm<TestHypothesis> geneticAlgorithm =

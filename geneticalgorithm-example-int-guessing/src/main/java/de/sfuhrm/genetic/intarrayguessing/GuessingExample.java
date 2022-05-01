@@ -198,7 +198,7 @@ public final class GuessingExample {
                 new IntGuessingDefinition(genomeLength,
                 !guessingExample.quiet);
         GeneticAlgorithmBuilder<int[]> builder =
-                new GeneticAlgorithmBuilder<int[]>(algorithmDefinition)
+                new GeneticAlgorithmBuilder<>(algorithmDefinition)
                         .withCrossOverRate(guessingExample.crossOverRate)
                         .withMutationRate(guessingExample.mutationRate)
                         .withGenerationSize(guessingExample.generationSize);
@@ -220,7 +220,7 @@ public final class GuessingExample {
         System.out.printf("Maximum is %s with fitness=%.2f,"
                         + " speed=%.2f gen/s,"
                         + " generations=%d%n",
-                Arrays.toString(max.get()),
+                max.map(Arrays::toString).orElse("(empty)"),
                 algorithmDefinition.calculateFitness(max.get()),
                 IntGuessingDefinition.getGeneration() / duration,
                 IntGuessingDefinition.getGeneration()

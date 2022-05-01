@@ -81,8 +81,8 @@ public class GeneticAlgorithmTest {
         }
         new Expectations() {{
             mockedComputeEngine.createRandomHypothesisHandles(100);
-            mockedComputeEngine.calculateNextGeneration((List) any, 100, 0.3, 0.1); result = list;
-            mockedComputeEngine.max((List) any); result = Optional.of(mockHandle);
+            mockedComputeEngine.calculateNextGeneration((List<Handle<TestHypothesis>>) any, 100, 0.3, 0.1); result = list;
+            mockedComputeEngine.max((List<Handle<TestHypothesis>>) any); result = Optional.of(mockHandle);
             mockDefinition.loop((TestHypothesis) any); times = 1; result = false;
         }};
 
@@ -109,7 +109,7 @@ public class GeneticAlgorithmTest {
         }
         new Expectations() {{
             mockedComputeEngine.createRandomHypothesisHandles(anyInt); times = 0;
-            mockedComputeEngine.calculateNextGeneration((List) any, 100, 0.3, 0.1); result = handleList;
+            mockedComputeEngine.calculateNextGeneration((List<Handle<TestHypothesis>>) any, 100, 0.3, 0.1); result = handleList;
         }};
 
         List<TestHypothesis> nextGeneration =

@@ -138,7 +138,7 @@ public class SimpleComputeEngineTest {
     public void updateFitnessAndGetSumOfProbabilities() {
         new Expectations() {{
             mockDefinition.calculateFitness((TestHypothesis) any); result = 0.3; times = 2;
-            mockHandle.isHasFitness(); result = false;;
+            mockHandle.isHasFitness(); result = false;
             mockHandle.setFitness(0.3); times = 2;
             mockHandle.getFitness(); result = 0.3; times = 4;
             mockHandle.getHypothesis(); result = mockInstance;

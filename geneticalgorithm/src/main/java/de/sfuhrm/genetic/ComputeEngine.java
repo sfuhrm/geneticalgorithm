@@ -66,7 +66,7 @@ abstract class ComputeEngine<H> {
      * next generation out of it.
      * @param currentGeneration the current generation of hypothesis handles.
      * @param generationSize the target size of the next generation.
-     * @param crossOverRate the rate to use the cross over with.
+     * @param crossOverRate the rate to use the cross-over with.
      * @param mutationRate the rate to mutate the population with.
      * @return the population of the next generation. This will contain some
      * individuals from the {@code currentGeneration} input.
@@ -148,12 +148,11 @@ abstract class ComputeEngine<H> {
             final List<Handle<H>> population
     ) {
         Handle<H> result = population.get(0);
-        double randomPoint = getRandom().nextDouble(); // random number
         // a random point in the sum of probabilities
-        double inflatedPoint = randomPoint;
+        double randomPoint = getRandom().nextDouble(); // random number
 
         double soFar = 0;
-        for (int i = 0; i < population.size() && soFar < inflatedPoint; i++) {
+        for (int i = 0; i < population.size() && soFar < randomPoint; i++) {
             result = population.get(i);
             soFar += result.getProbability();
         }
