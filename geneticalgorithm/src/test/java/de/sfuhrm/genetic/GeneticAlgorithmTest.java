@@ -22,18 +22,14 @@ package de.sfuhrm.genetic;
 
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.Verifications;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Tests the {@linkplain GeneticAlgorithm} with some mock
