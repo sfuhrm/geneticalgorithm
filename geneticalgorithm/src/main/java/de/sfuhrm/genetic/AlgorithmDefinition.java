@@ -32,11 +32,12 @@ import java.util.Random;
  * {@link GeneticAlgorithmBuilder#GeneticAlgorithmBuilder(AlgorithmDefinition)}
  * constructor.
  *
- * The hypothesis can be implemented as
- * immutable classes.
+ * The hypothesis should be implemented as an
+ * immutable classes since the package caches
+ * the fitness of the hypothesis.
  *
  * @param <T> the hypothesis class to use, can be any Java class.
- *           The class can be immutable.
+ *           The class should be immutable.
  * @since 3.0.0
  */
 public interface AlgorithmDefinition<T> {
@@ -67,7 +68,8 @@ public interface AlgorithmDefinition<T> {
      *
      * Implementations will need to create a copy of the
      * input and flip one bit.
-     * @param instance the hypothesis to mutate.
+     * @param instance the hypothesis to mutate. The instance needs
+     *                 to stay unmodified.
      * @return the mutated version of the hypothesis.
      * @see #crossOverHypothesis(Object, Object)  the
      * other genetic operator on this instance.
@@ -85,8 +87,10 @@ public interface AlgorithmDefinition<T> {
      * and then create one or more offsprings by recombining
      * the parents.
      *
-     * @param first the first hypothesis to cross-over with.
-     * @param second the second hypothesis to cross-over with.
+     * @param first the first hypothesis to cross-over with. Needs
+     *                 to stay unmodified.
+     * @param second the second hypothesis to cross-over with. Needs
+     *                 to stay unmodified.
      * @return the collection of offsprings.
      * @see #mutateHypothesis(Object)
      * the other genetic operator on this instance.
@@ -119,6 +123,7 @@ public interface AlgorithmDefinition<T> {
      * </ul>
      * @param hypothesis the current best hypothesis to consider when
      *                   choosing to continue searching or not.
+     *                   Needs to stay unmofified.
      * @return {@code true} if the search should go on,
      * {@code false} to stop searching.
      * @see GeneticAlgorithm#findMaximum()
