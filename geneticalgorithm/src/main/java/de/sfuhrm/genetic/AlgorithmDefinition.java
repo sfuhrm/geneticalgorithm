@@ -107,11 +107,21 @@ public interface AlgorithmDefinition<T> {
     double calculateFitness(T hypothesis);
 
     /** Checks whether we still need to continue the search.
-     * Presents the best hypothesis to the definition.
+     * Helps in the decision whether {@linkplain GeneticAlgorithm#findMaximum()}
+     * should continue searching or not.
+     * Good implementations for the {@code loopCondition} are:
+     * <ul>
+     *     <li>a maximum number of generations</li>
+     *     <li>a maximum amount of time, for example
+     *     10 seconds of optimization</li>
+     *     <li>a check whether the supplied hypothesis solves the
+     *     problem</li>
+     * </ul>
      * @param hypothesis the current best hypothesis to consider when
      *                   choosing to continue searching or not.
-     * @return {@code true} if the search will go on,
+     * @return {@code true} if the search should go on,
      * {@code false} to stop searching.
+     * @see GeneticAlgorithm#findMaximum()
      */
     boolean loop(T hypothesis);
 }

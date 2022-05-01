@@ -209,25 +209,14 @@ public class GeneticAlgorithm<H> {
 
 
     /** Perform the genetic optimization.
-     * The algorithm will search for an optimal hypothesis until the
-     * {@code loopCondition} returns {@code false}.
+     * The algorithm will search for an optimal hypothesis until
+     * {@link AlgorithmDefinition#loop(Object)} returns {@code false}.
      * New hypothesis are created using the {@code hypothesisSupplier}.
-     *
-     * Good implementations for the {@code loopCondition} are:
-     * <ul>
-     *     <li>a maximum number of generations</li>
-     *     <li>a maximum amount of time, for example
-     *     10 seconds of optimization</li>
-     *     <li>a check whether the supplied hypothesis solves the
-     *     problem</li>
-     * </ul>
      *
      * @return the maximum
      *     {@link AlgorithmDefinition#calculateFitness(Object)} element,
      *     if any.
-     * @throws NullPointerException
-     * if one of the parameters is {@code null}.
-     * @see java.util.concurrent.Executors
+     * @see AlgorithmDefinition#loop(Object)
      */
     public Optional<H> findMaximum() {
         return innerFindMaximum();
