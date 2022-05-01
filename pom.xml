@@ -7,7 +7,7 @@
   <version>3.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>GeneticAlgorithm Parent POM</name>
+  <name>Genetic Algorithm Parent POM</name>
   <description>Classes for implementing genetic algorithms</description>
   <url>https://github.com/sfuhrm/geneticalgorithm</url>
   <licenses>
