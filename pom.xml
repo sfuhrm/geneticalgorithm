@@ -33,8 +33,8 @@
   </organization>
 
   <scm>
-    <url>https://github.com/sfuhrm/geneticalgorithm</url>
-    <connection>scm:git:https://github.com/sfuhrm/geneticalgorithm.git</connection>
+    <url>git@github.com:sfuhrm/geneticalgorithm.git</url>
+    <connection>scm:git:git@github.com:sfuhrm/geneticalgorithm.git</connection>
     <tag>geneticalgorithm-2.0.0</tag>
   </scm>
 
