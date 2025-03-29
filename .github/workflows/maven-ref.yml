@@ -12,12 +12,12 @@ jobs:
   maven_version:
     uses: sfuhrm/github_workflows/.github/workflows/maven-expression.yml@main
     with:
-      java_version: 17
+      java_version: 21
       expression: project.version
   call-workflow-passing-data:
     needs: maven_version
     uses: sfuhrm/github_workflows/.github/workflows/maven.yml@main
     with:
-      java_version: "[\"11\", \"17\", \"18\"]"
+      java_version: "[\"11\", \"17\", \"21\"]"
       artifact_name: build
       artifact_path: geneticalgorithm/target/geneticalgorithm-${{ needs.maven_version.outputs.expression_value }}.jar
