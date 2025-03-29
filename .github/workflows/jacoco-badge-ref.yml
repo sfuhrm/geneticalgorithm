@@ -22,5 +22,3 @@ jobs:
       artifact_name: jacoco-report
       artifact_path: ./geneticalgorithm/target/site/jacoco
       jacoco_csv_path: ./geneticalgorithm/target/site/jacoco/jacoco.csv
-      committer_email: s@sfuhrm.de
-      committer_user: "Jacoco Badge Action"
