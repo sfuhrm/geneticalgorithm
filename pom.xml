@@ -43,7 +43,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <jmockit.version>1.49</jmockit.version>
-    <jacoco.version>0.8.8</jacoco.version>
   </properties>
 
   <dependencies>
@@ -163,16 +162,16 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
+        <version>0.8.12</version>
         <executions>
           <execution>
-            <id>default-prepare-agent</id>
             <goals>
               <goal>prepare-agent</goal>
             </goals>
           </execution>
           <execution>
-            <id>default-report</id>
+            <id>generate-code-coverage-report</id>
+            <phase>test</phase>
             <goals>
               <goal>report</goal>
             </goals>

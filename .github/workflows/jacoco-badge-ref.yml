@@ -1,0 +1,26 @@
+
+
+name: Jacoco Badge Generator
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  maven_version:
+    uses: sfuhrm/github_workflows/.github/workflows/maven-expression.yml@main
+    with:
+      java_version: 21
+      expression: project.version
+  call-workflow-passing-data:
+    needs: maven_version
+    uses: sfuhrm/github_workflows/.github/workflows/jacoco-badge.yml@main
+    with:
+      java_version: 21
+      artifact_name: jacoco-report
+      artifact_path: ./geneticalgorithm/target/site/jacoco
+      jacoco_csv_path: ./geneticalgorithm/target/site/jacoco/jacoco.csv
+      committer_email: s@sfuhrm.de
+      committer_user: "Jacoco Badge Action"
