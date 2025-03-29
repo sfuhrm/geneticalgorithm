@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.032" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.039" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -11,7 +11,7 @@
     <property name="java.vm.specification.version" value="21"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/opt/hostedtoolcache/Java_Adopt_jdk/21.0.6-7.0.LTS/x64/lib"/>
-    <property name="sun.java.command" value="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire/surefirebooter15345074753801066123.jar /home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire 2025-03-29T19-07-48_941-jvmRun1 surefire11759627012884915195tmp surefire_118301820143376041017tmp"/>
+    <property name="sun.java.command" value="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire/surefirebooter6443203566793414658.jar /home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire 2025-03-29T19-13-26_352-jvmRun1 surefire3621293894341020391tmp surefire_12109406738578244807tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/test-classes:/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/classes:/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm/target/classes:/home/runner/.m2/repository/args4j/args4j/2.33/args4j-2.33.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/runner/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/runner/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/runner/.m2/repository/org/jmockit/jmockit/1.49/jmockit-1.49.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/runner/.m2/repository/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -26,7 +26,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire/surefirebooter15345074753801066123.jar"/>
+    <property name="surefire.real.class.path" value="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/target/surefire/surefirebooter6443203566793414658.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.6+7-LTS"/>
     <property name="user.name" value="runner"/>
@@ -54,6 +54,6 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testFindMaximumMultiThread" classname="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.024"/>
-  <testcase name="testFindMaximumSingleThread" classname="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.005"/>
+  <testcase name="testFindMaximumMultiThread" classname="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.035"/>
+  <testcase name="testFindMaximumSingleThread" classname="de.sfuhrm.genetic.intarrayguessing.IntegrationTest" time="0.004"/>
 </testsuite>

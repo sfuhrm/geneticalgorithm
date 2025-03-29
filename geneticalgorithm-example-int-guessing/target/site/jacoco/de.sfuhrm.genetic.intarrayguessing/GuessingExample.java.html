@@ -161,16 +161,16 @@ public final class GuessingExample {
                                   final int currentCellValue,
                                   final int previousCellValue) {
 <span class="fc" id="L163">        String color = ANSI_WHITE;</span>
-<span class="pc bpc" id="L164" title="1 of 4 branches missed.">        if (currentCellValue == index</span>
+<span class="fc bfc" id="L164" title="All 4 branches covered.">        if (currentCellValue == index</span>
                 &amp;&amp; currentCellValue == previousCellValue) {
 <span class="fc" id="L166">            color = ANSI_GREEN;</span>
         }
-<span class="pc bpc" id="L168" title="1 of 4 branches missed.">        if (currentCellValue == index</span>
+<span class="fc bfc" id="L168" title="All 4 branches covered.">        if (currentCellValue == index</span>
                 &amp;&amp; currentCellValue != previousCellValue) {
 <span class="fc" id="L170">            color = ANSI_CYAN;</span>
         }
-<span class="pc bpc" id="L172" title="1 of 2 branches missed.">        if (currentCellValue != index) {</span>
-<span class="nc" id="L173">            color = ANSI_RED;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        if (currentCellValue != index) {</span>
+<span class="fc" id="L173">            color = ANSI_RED;</span>
         }
 <span class="fc" id="L175">        System.out.printf(&quot;%s[%d]%s&quot;,</span>
                 color,

@@ -1,3 +1,3 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Genetic Algorithm example int-guessing,de.sfuhrm.genetic.intarrayguessing,IntGuessingDefinition,2,174,2,14,1,36,2,14,0,8
-Genetic Algorithm example int-guessing,de.sfuhrm.genetic.intarrayguessing,GuessingExample,153,84,11,11,46,19,10,6,3,2
+Genetic Algorithm example int-guessing,de.sfuhrm.genetic.intarrayguessing,IntGuessingDefinition,0,176,1,15,0,37,1,15,0,8
+Genetic Algorithm example int-guessing,de.sfuhrm.genetic.intarrayguessing,GuessingExample,151,86,8,14,45,20,7,9,3,2
