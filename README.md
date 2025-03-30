@@ -82,7 +82,7 @@ _Machine learning. Tom M. Mitchell. Published by McGraw-Hill_
 
 ## License
 
-  Copyright 2016-2022 Stephan Fuhrmann
+  Copyright 2016-2025 Stephan Fuhrmann
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
