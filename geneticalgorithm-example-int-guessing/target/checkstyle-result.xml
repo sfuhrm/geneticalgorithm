@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="8.29">
-<file name="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/IntGuessingDefinition.java">
-</file>
-<file name="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/GuessingExample.java">
-</file>
-<file name="/home/runner/work/geneticalgorithm/geneticalgorithm/geneticalgorithm-example-int-guessing/src/main/java/de/sfuhrm/genetic/intarrayguessing/package-info.java">
-</file>
-</checkstyle>

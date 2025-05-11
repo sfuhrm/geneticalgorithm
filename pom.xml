@@ -200,23 +200,16 @@
   <profiles>
     <profile>
       <id>release</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.7.0</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.7.0</version>
             <extensions>true</extensions>
             <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
             </configuration>
           </plugin>
           <plugin>
@@ -224,7 +217,7 @@
             <artifactId>maven-gpg-plugin</artifactId>
             <version>3.2.7</version>
             <configuration>
-              <keyname>0AC5A45E91FA93DA25380017B0D87B063EAD41F1</keyname>
+              <keyname>9C3D5D0E75C71CE338930BF073FA841FE7DCB91F</keyname>
             </configuration>
             <executions>
               <execution>
