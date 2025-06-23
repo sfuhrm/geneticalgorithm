@@ -42,7 +42,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <jmockit.version>1.49</jmockit.version>
+    <jmockit.version>1.50</jmockit.version>
   </properties>
 
   <dependencies>
