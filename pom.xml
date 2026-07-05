@@ -4,7 +4,7 @@
 
   <groupId>de.sfuhrm</groupId>
   <artifactId>geneticalgorithm-parent</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Genetic Algorithm Parent POM</name>
