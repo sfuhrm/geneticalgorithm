@@ -20,12 +20,12 @@ package de.sfuhrm.genetic;
  * #L%
  */
 
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.Verifications;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,21 +34,26 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
 /**
  * Test for the {@linkplain SimpleComputeEngine}.
  * @author Stephan Fuhrmann
  */
+@ExtendWith(MockitoExtension.class)
 public class ExecutorServiceComputeEngineTest {
-    @Mocked
+    @Mock
     TestHypothesis mockHypothesis;
 
-    @Mocked
+    @Mock
     Handle<TestHypothesis> mockHandle;
 
-    @Mocked
+    @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mocked
+    @Mock
     Random mockRandom;
 
     ExecutorService executorService;
@@ -68,26 +73,19 @@ public class ExecutorServiceComputeEngineTest {
 
     @Test
     public void probabilisticSelect() {
-        new Expectations() {{
-            mockHandle.getProbability(); result = .5; maxTimes = 1000;
-            mockRandom.nextDouble(); result = 0.6;
-        }};
+        when(mockHandle.getProbability()).thenReturn(.5);
+        when(mockRandom.nextDouble()).thenReturn(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         Handle<TestHypothesis> result = instance.probabilisticSelect(population);
 
         Assertions.assertSame(mockHandle, result);
-
-        new Verifications() {{
-        }};
     }
 
     @Test
     public void select() {
-        new Expectations() {{
-            mockHandle.getProbability(); result = .5; maxTimes = 1000;
-            mockRandom.nextDouble(); result = 0.6;
-        }};
+        when(mockHandle.getProbability()).thenReturn(.5);
+        when(mockRandom.nextDouble()).thenReturn(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
@@ -98,18 +96,13 @@ public class ExecutorServiceComputeEngineTest {
         for (Handle<TestHypothesis> hypothesis : target) {
             Assertions.assertSame(mockHandle, hypothesis);
         }
-
-        new Verifications() {{
-        }};
     }
 
     @Test
     public void crossover() {
-        new Expectations() {{
-            mockHandle.getProbability(); result = .5; maxTimes = 1000;
-            mockDefinition.crossOverHypothesis((TestHypothesis) any, (TestHypothesis) any); result = Arrays.asList(mockHypothesis, mockHypothesis);
-            mockRandom.nextDouble(); result = 0.6;
-        }};
+        when(mockHandle.getProbability()).thenReturn(.5);
+        when(mockDefinition.crossOverHypothesis(any(), any())).thenReturn(Arrays.asList(mockHypothesis, mockHypothesis));
+        when(mockRandom.nextDouble()).thenReturn(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
@@ -120,17 +113,12 @@ public class ExecutorServiceComputeEngineTest {
             Assertions.assertFalse(handle.isHasFitness());
             Assertions.assertSame(mockHypothesis, handle.getHypothesis());
         }
-
-        new Verifications() {{
-        }};
     }
 
     @Test
     public void mutate() {
-        new Expectations() {{
-            mockDefinition.mutateHypothesis((TestHypothesis) any); times = 1; result = mockHypothesis;
-            mockRandom.nextInt(anyInt); result = 0;
-        }};
+        when(mockDefinition.mutateHypothesis(any())).thenReturn(mockHypothesis);
+        when(mockRandom.nextInt(anyInt())).thenReturn(0);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.mutate(population, 1);
@@ -140,18 +128,16 @@ public class ExecutorServiceComputeEngineTest {
 
     @Test
     public void updateFitnessAndGetSumOfProbabilities() {
-        new Expectations() {{
-            mockDefinition.calculateFitness((TestHypothesis) any); result = 0.3; times = 2;
-            mockHandle.setFitness(0.3); times = 2;
-            mockHandle.getFitness(); result = 0.3; times = 4;
-            mockRandom.nextDouble(); times = 0;
-            mockRandom.nextInt(anyInt); times = 0;
-        }};
+        when(mockDefinition.calculateFitness(any())).thenReturn(0.3);
+        when(mockHandle.getFitness()).thenReturn(0.3);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.updateFitness(population);
 
-        new Verifications() {{
-        }};
+        verify(mockDefinition, times(2)).calculateFitness(any());
+        verify(mockHandle, times(2)).setFitness(0.3);
+        verify(mockHandle, times(4)).getFitness();
+        verify(mockRandom, never()).nextDouble();
+        verify(mockRandom, never()).nextInt(anyInt());
     }
 }

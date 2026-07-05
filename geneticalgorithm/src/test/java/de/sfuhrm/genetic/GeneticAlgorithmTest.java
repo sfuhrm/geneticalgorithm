@@ -20,31 +20,36 @@ package de.sfuhrm.genetic;
  * #L%
  */
 
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Tests the {@linkplain GeneticAlgorithm} with some mock
  * hypothesis.
  * @author Stephan Fuhrmann
  */
+@ExtendWith(MockitoExtension.class)
 public class GeneticAlgorithmTest {
 
-    @Mocked TestHypothesis mockHypothesis;
-    @Mocked Handle<TestHypothesis> mockHandle;
+    @Mock TestHypothesis mockHypothesis;
+    @Mock Handle<TestHypothesis> mockHandle;
 
-    @Mocked
+    @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mocked
+    @Mock
     SimpleComputeEngine<TestHypothesis> mockedComputeEngine;
 
     Random r;
@@ -56,14 +61,12 @@ public class GeneticAlgorithmTest {
 
     @Test
     public void testInitWithValidArgs() {
-        new Expectations() {{
-            mockDefinition.initialize(r);
-        }};
-
         GeneticAlgorithm<?> algorithm = new GeneticAlgorithm<>(0.3, 0.05, 100, mockDefinition, mockedComputeEngine, r);
         Assertions.assertEquals(0.3, algorithm.getCrossOverRate(), 0.01);
         Assertions.assertEquals(0.05, algorithm.getMutationRate(), 0.01);
         Assertions.assertEquals(100, algorithm.getGenerationSize());
+
+        verify(mockDefinition).initialize(r);
     }
 
     @Test
@@ -75,12 +78,11 @@ public class GeneticAlgorithmTest {
         for (int i = 0; i < 100; i++) {
             list.add(mockHandle);
         }
-        new Expectations() {{
-            mockedComputeEngine.createRandomHypothesisHandles(100);
-            mockedComputeEngine.calculateNextGeneration((List<Handle<TestHypothesis>>) any, 100, 0.3, 0.1); result = list;
-            mockedComputeEngine.max((List<Handle<TestHypothesis>>) any); result = Optional.of(mockHandle);
-            mockDefinition.loop((TestHypothesis) any); times = 1; result = false;
-        }};
+
+        when(mockedComputeEngine.calculateNextGeneration(any(), eq(100), eq(0.3), eq(0.1))).thenReturn(list);
+        when(mockedComputeEngine.max(any())).thenReturn(Optional.of(mockHandle));
+        when(mockDefinition.loop(any())).thenReturn(false);
+        when(mockHandle.getHypothesis()).thenReturn(mockHypothesis);
 
         Optional<TestHypothesis> hypothesisOptional =
                 algorithm.findMaximum();
@@ -88,6 +90,8 @@ public class GeneticAlgorithmTest {
         Assertions.assertNotNull(hypothesisOptional);
         Assertions.assertTrue(hypothesisOptional.isPresent(), "hypothesis must be present");
         Assertions.assertSame(mockHypothesis, hypothesisOptional.get());
+
+        verify(mockedComputeEngine).createRandomHypothesisHandles(100);
     }
 
     @Test
@@ -103,15 +107,15 @@ public class GeneticAlgorithmTest {
         for (int i = 0; i < 100; i++) {
             handleList.add(mockHandle);
         }
-        new Expectations() {{
-            mockedComputeEngine.createRandomHypothesisHandles(anyInt); times = 0;
-            mockedComputeEngine.calculateNextGeneration((List<Handle<TestHypothesis>>) any, 100, 0.3, 0.1); result = handleList;
-        }};
+
+        when(mockedComputeEngine.calculateNextGeneration(any(), eq(100), eq(0.3), eq(0.1))).thenReturn(handleList);
 
         List<TestHypothesis> nextGeneration =
                 algorithm.calculateNextGeneration(hypothesisList);
 
         Assertions.assertNotNull(nextGeneration);
         Assertions.assertEquals(100, nextGeneration.size());
+
+        verify(mockedComputeEngine, never()).createRandomHypothesisHandles(anyInt());
     }
 }

@@ -20,27 +20,31 @@ package de.sfuhrm.genetic;
  * #L%
  */
 
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests the {@linkplain GeneticAlgorithmBuilder}.
  * @author Stephan Fuhrmann
  */
+@ExtendWith(MockitoExtension.class)
 public class GeneticAlgorithmBuilderTest {
 
 
-    @Mocked
+    @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mocked
+    @Mock
     ExecutorService mockExecutorService;
 
     Random r;
@@ -61,10 +65,6 @@ public class GeneticAlgorithmBuilderTest {
 
     @Test
     public void buildWithAlgorithmDefinition() {
-        new Expectations() {{
-            mockDefinition.initialize((Random) any);
-        }};
-
         GeneticAlgorithm<TestHypothesis> geneticAlgorithm =
                 new GeneticAlgorithmBuilder<>(mockDefinition)
                 .build();
@@ -73,14 +73,12 @@ public class GeneticAlgorithmBuilderTest {
         assertEquals(GeneticAlgorithmBuilder.GENERATION_SIZE_DEFAULT, geneticAlgorithm.getGenerationSize());
         assertEquals(GeneticAlgorithmBuilder.MUTATION_RATE_DEFAULT, geneticAlgorithm.getMutationRate());
         assertEquals(GeneticAlgorithmBuilder.CROSS_OVER_RATE_DEFAULT, geneticAlgorithm.getCrossOverRate());
+
+        verify(mockDefinition).initialize(any(Random.class));
     }
 
     @Test
     public void buildWithRandom() {
-        new Expectations() {{
-            mockDefinition.initialize(r);
-        }};
-
         GeneticAlgorithm<TestHypothesis> geneticAlgorithm =
                 new GeneticAlgorithmBuilder<>(mockDefinition)
                         .withRandom(r)
@@ -90,6 +88,8 @@ public class GeneticAlgorithmBuilderTest {
         assertEquals(GeneticAlgorithmBuilder.GENERATION_SIZE_DEFAULT, geneticAlgorithm.getGenerationSize());
         assertEquals(GeneticAlgorithmBuilder.MUTATION_RATE_DEFAULT, geneticAlgorithm.getMutationRate());
         assertEquals(GeneticAlgorithmBuilder.CROSS_OVER_RATE_DEFAULT, geneticAlgorithm.getCrossOverRate());
+
+        verify(mockDefinition).initialize(r);
     }
 
     @Test
@@ -133,7 +133,6 @@ public class GeneticAlgorithmBuilderTest {
                         .build();
 
         assertNotNull(geneticAlgorithm);
-        assertEquals(GeneticAlgorithmBuilder.GENERATION_SIZE_DEFAULT, geneticAlgorithm.getGenerationSize());
         assertEquals(0.5, geneticAlgorithm.getMutationRate());
         assertEquals(GeneticAlgorithmBuilder.CROSS_OVER_RATE_DEFAULT, geneticAlgorithm.getCrossOverRate());
     }

@@ -20,37 +20,42 @@ package de.sfuhrm.genetic;
  * #L%
  */
 
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Random;
 
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
 /**
  * Test for the {@linkplain ComputeEngine}.
  * @author Stephan Fuhrmann
  */
+@ExtendWith(MockitoExtension.class)
 public class ComputeEngineTest {
 
-    @Injectable
+    @Mock
     Handle<TestHypothesis> mockHandleOne;
 
-    @Injectable
+    @Mock
     Handle<TestHypothesis> mockHandleTwo;
 
-    @Injectable
+    @Mock
     Handle<TestHypothesis> mockHandleThree;
 
-    @Mocked
+    @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mocked
+    @Mock
     Random mockRandom;
 
     private ComputeEngine<TestHypothesis> instance;
@@ -67,23 +72,24 @@ public class ComputeEngineTest {
 
     @Test
     public void probabilisticSelectWithSingleElementList() {
-        new Expectations() {{
-            mockRandom.nextDouble(); result = 0.05; times = 1;
-            mockHandleOne.getProbability(); result = 1.; times = 1;
-        }};
+        when(mockRandom.nextDouble()).thenReturn(0.05);
+        when(mockHandleOne.getProbability()).thenReturn(1.);
+
         Handle<TestHypothesis> result = instance.probabilisticSelect(
                 Collections.singletonList(mockHandleOne));
 
         Assertions.assertEquals(mockHandleOne, result);
+
+        verify(mockRandom).nextDouble();
+        verify(mockHandleOne).getProbability();
     }
 
     @Test
     public void probabilisticSelectWithTwoElementList() {
-        new Expectations() {{
-            mockRandom.nextDouble(); result = 0.05; times = 1;
-            mockHandleOne.getProbability(); result = .0; times = 1;
-            mockHandleTwo.getProbability(); result = 1.; times = 1;
-        }};
+        when(mockRandom.nextDouble()).thenReturn(0.05);
+        when(mockHandleOne.getProbability()).thenReturn(.0);
+        when(mockHandleTwo.getProbability()).thenReturn(1.);
+
         Handle<TestHypothesis> result = instance.probabilisticSelect(
                 Arrays.asList(mockHandleOne, mockHandleTwo));
 
@@ -92,12 +98,11 @@ public class ComputeEngineTest {
 
     @Test
     public void probabilisticSelectWithThreeElementList() {
-        new Expectations() {{
-            mockRandom.nextDouble(); result = 0.35; times = 1;
-            mockHandleOne.getProbability(); result = .0; times = 1;
-            mockHandleTwo.getProbability(); result = .1; times = 1;
-            mockHandleThree.getProbability(); result = .9; times = 1;
-        }};
+        when(mockRandom.nextDouble()).thenReturn(0.35);
+        when(mockHandleOne.getProbability()).thenReturn(.0);
+        when(mockHandleTwo.getProbability()).thenReturn(.1);
+        when(mockHandleThree.getProbability()).thenReturn(.9);
+
         Handle<TestHypothesis> result = instance.probabilisticSelect(
                 Arrays.asList(mockHandleOne, mockHandleTwo, mockHandleThree));
 
@@ -106,20 +111,16 @@ public class ComputeEngineTest {
 
     @Test
     public void maxWithEmptyList() {
-        new Expectations() {{
-            mockHandleOne.getFitness(); result = .5; times = 0;
-        }};
-
         Optional<Handle<TestHypothesis>> result = instance.max(Collections.emptyList());
 
         Assertions.assertFalse(result.isPresent());
+
+        verify(mockHandleOne, never()).getFitness();
     }
 
     @Test
     public void maxWithSingleElement() {
-        new Expectations() {{
-            mockHandleOne.getFitness(); result = .5; times = 1;
-        }};
+        when(mockHandleOne.getFitness()).thenReturn(.5);
 
         Optional<Handle<TestHypothesis>> result = instance.max(Collections.singletonList(mockHandleOne));
 
@@ -129,10 +130,8 @@ public class ComputeEngineTest {
 
     @Test
     public void maxWithTwoElements() {
-        new Expectations() {{
-            mockHandleOne.getFitness(); result = .5; times = 1;
-            mockHandleTwo.getFitness(); result = .6; times = 1;
-        }};
+        when(mockHandleOne.getFitness()).thenReturn(.5);
+        when(mockHandleTwo.getFitness()).thenReturn(.6);
 
         Optional<Handle<TestHypothesis>> result = instance.max(Arrays.asList(mockHandleOne, mockHandleTwo));
 
@@ -142,11 +141,9 @@ public class ComputeEngineTest {
 
     @Test
     public void maxWithThreeElements() {
-        new Expectations() {{
-            mockHandleOne.getFitness(); result = .5; times = 1;
-            mockHandleTwo.getFitness(); result = .6; times = 1;
-            mockHandleThree.getFitness(); result = .8; times = 1;
-        }};
+        when(mockHandleOne.getFitness()).thenReturn(.5);
+        when(mockHandleTwo.getFitness()).thenReturn(.6);
+        when(mockHandleThree.getFitness()).thenReturn(.8);
 
         Optional<Handle<TestHypothesis>> result = instance.max(Arrays.asList(mockHandleOne, mockHandleTwo, mockHandleThree));
 
