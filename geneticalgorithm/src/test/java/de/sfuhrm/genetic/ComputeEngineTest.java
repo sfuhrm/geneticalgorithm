@@ -30,10 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.Random;
 
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 /**
@@ -55,8 +52,7 @@ public class ComputeEngineTest {
     @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mock
-    Random mockRandom;
+    TestRandom mockRandom = new TestRandom();
 
     private ComputeEngine<TestHypothesis> instance;
 
@@ -72,7 +68,7 @@ public class ComputeEngineTest {
 
     @Test
     public void probabilisticSelectWithSingleElementList() {
-        when(mockRandom.nextDouble()).thenReturn(0.05);
+        mockRandom.whenNextDouble(0.05);
         when(mockHandleOne.getProbability()).thenReturn(1.);
 
         Handle<TestHypothesis> result = instance.probabilisticSelect(
@@ -80,13 +76,13 @@ public class ComputeEngineTest {
 
         Assertions.assertEquals(mockHandleOne, result);
 
-        verify(mockRandom).nextDouble();
+        Assertions.assertTrue(mockRandom.isNextDoubleCalled());
         verify(mockHandleOne).getProbability();
     }
 
     @Test
     public void probabilisticSelectWithTwoElementList() {
-        when(mockRandom.nextDouble()).thenReturn(0.05);
+        mockRandom.whenNextDouble(0.05);
         when(mockHandleOne.getProbability()).thenReturn(.0);
         when(mockHandleTwo.getProbability()).thenReturn(1.);
 
@@ -98,7 +94,7 @@ public class ComputeEngineTest {
 
     @Test
     public void probabilisticSelectWithThreeElementList() {
-        when(mockRandom.nextDouble()).thenReturn(0.35);
+        mockRandom.whenNextDouble(0.35);
         when(mockHandleOne.getProbability()).thenReturn(.0);
         when(mockHandleTwo.getProbability()).thenReturn(.1);
         when(mockHandleThree.getProbability()).thenReturn(.9);

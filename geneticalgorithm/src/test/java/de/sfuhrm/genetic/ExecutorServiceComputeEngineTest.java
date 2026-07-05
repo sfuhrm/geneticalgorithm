@@ -30,12 +30,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 /**
@@ -53,8 +51,7 @@ public class ExecutorServiceComputeEngineTest {
     @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mock
-    Random mockRandom;
+    TestRandom mockRandom = new TestRandom();
 
     ExecutorService executorService;
 
@@ -74,7 +71,7 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void probabilisticSelect() {
         when(mockHandle.getProbability()).thenReturn(.5);
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         Handle<TestHypothesis> result = instance.probabilisticSelect(population);
@@ -85,7 +82,7 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void select() {
         when(mockHandle.getProbability()).thenReturn(.5);
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
@@ -102,7 +99,7 @@ public class ExecutorServiceComputeEngineTest {
     public void crossover() {
         when(mockHandle.getProbability()).thenReturn(.5);
         when(mockDefinition.crossOverHypothesis(any(), any())).thenReturn(Arrays.asList(mockHypothesis, mockHypothesis));
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
@@ -118,7 +115,7 @@ public class ExecutorServiceComputeEngineTest {
     @Test
     public void mutate() {
         when(mockDefinition.mutateHypothesis(any())).thenReturn(mockHypothesis);
-        when(mockRandom.nextInt(anyInt())).thenReturn(0);
+        mockRandom.whenNextInt(0);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.mutate(population, 1);
@@ -137,7 +134,7 @@ public class ExecutorServiceComputeEngineTest {
         verify(mockDefinition, times(2)).calculateFitness(any());
         verify(mockHandle, times(2)).setFitness(0.3);
         verify(mockHandle, times(4)).getFitness();
-        verify(mockRandom, never()).nextDouble();
-        verify(mockRandom, never()).nextInt(anyInt());
+        Assertions.assertFalse(mockRandom.isNextDoubleCalled());
+        Assertions.assertFalse(mockRandom.isNextIntCalled());
     }
 }

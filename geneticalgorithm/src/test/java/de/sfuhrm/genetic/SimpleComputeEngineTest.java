@@ -30,10 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 /**
@@ -51,8 +49,7 @@ public class SimpleComputeEngineTest {
     @Mock
     AlgorithmDefinition<TestHypothesis> mockDefinition;
 
-    @Mock
-    Random mockRandom;
+    TestRandom mockRandom = new TestRandom();
 
     private SimpleComputeEngine<TestHypothesis> instance;
 
@@ -69,7 +66,7 @@ public class SimpleComputeEngineTest {
     @Test
     public void probabilisticSelect() {
         when(mockHandle.getProbability()).thenReturn(.5);
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         Handle<TestHypothesis> result = instance.probabilisticSelect(population);
@@ -80,7 +77,7 @@ public class SimpleComputeEngineTest {
     @Test
     public void select() {
         when(mockHandle.getProbability()).thenReturn(.5);
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         List<Handle<TestHypothesis>> target = new ArrayList<>();
@@ -97,7 +94,7 @@ public class SimpleComputeEngineTest {
     public void crossover() {
         when(mockHandle.getProbability()).thenReturn(.5);
         when(mockDefinition.crossOverHypothesis(any(), any())).thenReturn(Arrays.asList(mockInstance, mockInstance));
-        when(mockRandom.nextDouble()).thenReturn(0.6);
+        mockRandom.whenNextDouble(0.6);
         when(mockHandle.getHypothesis()).thenReturn(mockInstance);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
@@ -113,13 +110,13 @@ public class SimpleComputeEngineTest {
     @Test
     public void mutate() {
         when(mockDefinition.mutateHypothesis(any())).thenReturn(mockInstance);
-        when(mockRandom.nextInt(anyInt())).thenReturn(0);
+        mockRandom.whenNextInt(0);
 
         List<Handle<TestHypothesis>> population = Arrays.asList(mockHandle, mockHandle);
         instance.mutate(population, 1);
 
         verify(mockDefinition).mutateHypothesis(any());
-        verify(mockRandom).nextInt(anyInt());
+        Assertions.assertTrue(mockRandom.isNextIntCalled());
     }
 
     @Test
@@ -135,7 +132,7 @@ public class SimpleComputeEngineTest {
         verify(mockDefinition, times(2)).calculateFitness(any());
         verify(mockHandle, times(2)).setFitness(0.3);
         verify(mockHandle, times(4)).getFitness();
-        verify(mockRandom, never()).nextDouble();
-        verify(mockRandom, never()).nextInt(anyInt());
+        Assertions.assertFalse(mockRandom.isNextDoubleCalled());
+        Assertions.assertFalse(mockRandom.isNextIntCalled());
     }
 }

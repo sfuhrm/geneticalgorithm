@@ -33,7 +33,7 @@ import lombok.Setter;
  * @author Stephan Fuhrmann
  * @since 3.0.0
  */
-class Handle<T> {
+public class Handle<T> {
 
     /** Is the {@linkplain #fitness} calculated? This flag is used
      * for lazy evaluation.
