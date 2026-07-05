@@ -2,7 +2,7 @@ Genetic Algorithm in Java
 ===================
 [![Java CI with Maven](https://github.com/sfuhrm/geneticalgorithm/actions/workflows/maven-ref.yml/badge.svg)](https://github.com/sfuhrm/geneticalgorithm/actions/workflows/maven.yml)
 [![Coverage](https://raw.githubusercontent.com/sfuhrm/geneticalgorithm/refs/heads/gh-pages/jacoco.svg)]() 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.sfuhrm/geneticalgorithm)
+[![Maven Central](https://img.shields.io/maven-central/v/de.sfuhrm/geneticalgorithm)](https://central.sonatype.com/artifact/de.sfuhrm/geneticalgorithm)
 [![javadoc](https://javadoc.io/badge2/de.sfuhrm/geneticalgorithm/javadoc.svg)](https://javadoc.io/doc/de.sfuhrm/geneticalgorithm)
 [![ReleaseDate](https://img.shields.io/github/release-date/sfuhrm/geneticalgorithm)](https://github.com/sfuhrm/geneticalgorithm/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
